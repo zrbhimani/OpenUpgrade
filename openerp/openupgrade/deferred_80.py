@@ -196,7 +196,15 @@ def migrate_stock_move_warehouse(cr):
         SET warehouse_id = po.warehouse_id
         FROM procurement_order po
         WHERE sm.procurement_id = po.id
-            OR po.move_dest_id = sm.id
+        """)
+
+    openupgrade.logged_query(
+        cr,
+        """
+        UPDATE stock_move sm
+        SET warehouse_id = po.warehouse_id
+        FROM procurement_order po
+        WHERE po.move_dest_id = sm.id and sm.warehouse_id is null
         """)
 
 
