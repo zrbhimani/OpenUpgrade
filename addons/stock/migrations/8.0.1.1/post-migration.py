@@ -966,9 +966,8 @@ def sql_migrate_stock_qty(cr, registry):
     error_qty = cr.fetchone()
     if error_qty:
         logger.error(
-            "%d / %d stock moves failed. Please see the table"
-            " 'stock_quants_openupgrade_8_log' for more details." % (
-                error_qty, moves_qty))
+            "stock moves failed. Please see the table"
+            " 'stock_quants_openupgrade_8_log' for more details.")
     else:
         logger.info("%d done moves processed by SQL." % (moves_qty))
 
