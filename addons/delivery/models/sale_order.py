@@ -15,15 +15,7 @@ class SaleOrder(models.Model):
 
     @api.depends('carrier_id', 'order_line')
     def _compute_delivery_price(self):
-        for order in self:
-            if order.state != 'draft':
-                # We do not want to recompute the shipping price of an already validated/done SO
-                continue
-            elif order.carrier_id.delivery_type != 'grid' and not order.order_line:
-                # Prevent SOAP call to external shipping provider when SO has no lines yet
-                continue
-            else:
-                order.delivery_price = order.carrier_id.with_context(order_id=order.id).price
+        pass
 
     @api.onchange('partner_id')
     def onchange_partner_id_dtype(self):
