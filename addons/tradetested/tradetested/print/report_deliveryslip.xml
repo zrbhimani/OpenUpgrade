@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_delivery_document">
+      <t t-call="tradetested.external_layout2">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+          <div class="oe_structure"/>
+          <br/>
+          <br/>
+          <br/>
+          <div class="row">
+            <div class="col-xs-6">
+              <strong>Customer Address :</strong>
+              <div t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true, "phone_icons": false}'/>
+            </div>
+            <div class="col-xs-6">
+              <strong>Contact Address :</strong>
+              <div t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true, "phone_icons": false}'/>
+            </div>
+          </div>
+          <br/>
+          <h2>
+            <span>Delivery Order:</span>
+            <span t-field="o.name"/>
+          </h2>
+          <br/>
+          <br/>
+          <table class="table table-condensed" border="0">
+            <tr>
+              <th style="border:1px solid #e6e6e6; text-align:center;">
+                <strong>Order(Origin)</strong>
+              </th>
+              <th style="border:1px solid #e6e6e6; text-align:center;">
+                <strong>Schedule Date</strong>
+              </th>
+              <th style="border:1px solid #e6e6e6; text-align:center;">
+                Weight
+              </th>
+            </tr>
+            <tr style="border: 1px solid #e6e6e6;">
+              <td style="border:1px solid #e6e6e6; text-align:center;">
+                <span t-field="o.origin"/>
+              </td>
+              <td style="border:1px solid #e6e6e6; text-align:center;">
+                <span t-field="o.create_date"/>
+              </td>
+              <td style="border:1px solid #e6e6e6; text-align:center;">
+                <span t-field="o.weight"/>
+              </td>
+            </tr>
+          </table>
+          <br/>
+          <table class="table table-condensed">
+            <thead border="1">
+              <tr>
+                <th>Description</th>
+                <th class="text-right">Status</th>
+                <th class="text-right">Source Location</th>
+                <th class="text-right">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="o.move_lines" t-as="l">
+                <td>
+                  <span t-field="l.product_id"/>
+                </td>
+                <td class="text-right">
+                  <span t-field="l.state"/>
+                </td>
+                <td class="text-right">
+                  <span t-field="l.location_dest_id"/>
+                </td>
+                <td class="text-right">
+                  <span t-field="l.product_uom_qty"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </t>
+    </template>
+
+    <template id="report_deliveryslip">
+      <t t-foreach="docs" t-as="o">
+        <t t-call="tradetested.report_delivery_document" t-lang="o.partner_id.lang"/>
+      </t>
+    </template>
+
+</odoo>

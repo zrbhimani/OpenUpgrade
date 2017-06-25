@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_tradetested_config_settings" model="ir.ui.view">
+            <field name="name">tradetested settings</field>
+            <field name="model">tradetested.config</field>
+            <field name="arch" type="xml">
+                <form string="Configure Tradetested" class="oe_form_configuration">
+                    <header>
+                        <button string="Save" type="object" name="execute" class="oe_highlight"/>
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <group string="Thumbor">
+                        <div>
+                            <label for="thumbor:thumbor_key">Key</label>
+                            <field name="thumbor:thumbor_key" class="oe_inline"/>
+                        </div>
+                        <div>
+                            <label for="thumbor:domain">Domain</label>
+                            <field name="thumbor:domain" class="oe_inline"/>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_tradetested_config" model="ir.actions.act_window">
+            <field name="name">Thumbor Configuration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tradetested.config</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+        <menuitem id="menu_tradetested_config" action="action_tradetested_config" parent="menu_config_api" sequence="0"/>
+    </data>
+</openerp>

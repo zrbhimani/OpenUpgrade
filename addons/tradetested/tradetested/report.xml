@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+  <data>
+
+    <report
+            string="Print"
+            id="report_print_case"
+            model="crm.helpdesk"
+            report_type="qweb-pdf"
+            name="tradetested.print_case"
+            file="tradetested.print_case"/>
+
+    <report
+            id="stock.action_report_delivery"
+            string="Delivery Slip"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="stock.report_deliveryslip"
+            file="stock.report_deliveryslip"/>
+
+    <report
+            auto="False"
+            id="sale.report_sale_order"
+            model="sale.order"
+            name="sale.report_saleorder"
+            file="sale.report_saleorder"
+            string="Quotation/Invoice"
+            usage="default"
+            report_type="qweb-pdf"
+            rml="False"
+            attachment="False"/>
+
+    <report
+            string="Request for Quotation"
+            id="purchase.report_purchase_quotation"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="purchase.report_purchasequotation"
+            file="purchase.report_purchasequotation"
+    />
+
+  </data>
+</openerp>

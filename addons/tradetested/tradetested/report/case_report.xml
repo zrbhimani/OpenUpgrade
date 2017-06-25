@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <record id="view_report_crm_helpdesk_tree" model="ir.ui.view">
+    <field name="name">crm.helpdesk.report.tree</field>
+    <field name="model">crm.helpdesk.report</field>
+    <field name="arch" type="xml">
+      <tree string="Helpdesk" create="false">
+        <field name="name" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="section_id" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="partner_id" invisible="1"/>
+        <field name="date_deadline" invisible="1"/>
+        <field name="priority" invisible="1"/>
+        <field name="nbr" string="Number of Cases" sum="#Helpdesk"/>
+        <field name="email" sum="# Mails" invisible="1"/>
+        <field name="delay_close"/>
+        <field name="delay_expected" invisible="1"/>
+        <field name="planned_cost" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="resolution_id" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="product_categ_id" invisible="1"/>
+        <field name="year_open" invisible="1"/>
+        <field name="month_open" invisible="1"/>
+        <field name="week_open" invisible="1"/>
+        <field name="week_closed" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_report_crm_helpdesk_filter" model="ir.ui.view">
+    <field name="name">crm.helpdesk.report.select</field>
+    <field name="model">crm.helpdesk.report</field>
+    <field name="arch" type="xml">
+      <search string="Search">
+        <filter string="Salesperson">
+          <attribute name="string">Staff Member</attribute>
+        </filter>
+        <filter string="Year Open" name="year_open" domain="[]" context="{'group_by':'year_open'}"/>
+        <filter string="Month Open" name="month_open" domain="[]" context="{'group_by':'month_open'}"/>
+        <separator/>
+        <filter string="Week Open" name="week_open" domain="[]" context="{'group_by':'week_open'}"/>
+        <filter string="Week Closed" name="week_closed" domain="[]" context="{'group_by':'week_closed'}"/>
+        <filter string="Sales Team">
+          <attribute name="string">Team</attribute>
+        </filter>
+        <filter string="Category" icon="terp-personal+" name="category" domain="[]" context="{'group_by':'categ_id'}"/>
+        <filter string="Resolution" icon="terp-personal+" domain="[]" context="{'group_by':'resolution_id'}"/>
+        <filter string="New" icon="terp-check" domain="[('state','=','draft')]"/>
+        <filter string="Open" icon="terp-camera_test" domain="[('state','=','open')]"/>
+        <filter string="Pending" icon="terp-dialog-close" domain="[('state','=','pending')]"/>
+        <filter string="Closed" icon="terp-dialog-close" domain="[('state','=','done')]"/>
+        <filter string="Cancelled" icon="terp-dialog-close" domain="[('state','=','cancel')]"/>
+        <filter string="Not Cancelled" name="not_cancel" domain="[('state','!=','cancel')]"/>
+        <separator/>
+        <filter icon="terp-personal" string="My Case(s)" help="My Case(s)" domain="[('user_id','=',uid)]"/>
+        <separator/>
+        <filter string="My Sales Team(s)" icon="terp-personal+" context="{'invisible_section': False}" domain="[('section_id.user_id','=',uid)]" help="My Sales Team(s)"/>
+        <separator/>
+        <filter string="My Company" icon="terp-go-home" context="{'invisible_section': False}" domain="[('section_id.user_id.company_id','=',uid)]" help="My company"/>
+        <field name="user_id" string="Salesperson"/>
+        <field name="section_id" string="Sales Team" context="{'invisible_section': False}"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+        <group expand="0" string="Extended Filters..." groups="base.group_no_one">
+          <field name="priority" string="Priority"/>
+          <field name="categ_id"/>
+          <field name="resolution_id" filter_domain="[('resolution_ids','=',self)]"/>
+        </group>
+        <group expand="1" string="Group By...">
+          <filter string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+          <filter string="Sales Team" icon="terp-personal+" domain="[]" context="{'group_by':'section_id'}"/>
+          <filter string="Partner" icon="terp-partner" domain="[]" context="{'group_by':'partner_id'}"/>
+          <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+          <filter string="Company" icon="terp-go-home" domain="[]" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+          <filter string="Day Closed" icon="terp-go-today" domain="[]" context="{'group_by':'day'}" help="Date of helpdesk requests Closed"/>
+          <filter string="Month Closed" icon="terp-go-month" domain="[]" context="{'group_by':'month'}" help="Month of helpdesk requests Closed"/>
+          <filter string="Year Closed" icon="terp-go-year" domain="[]" context="{'group_by':'name'}" help="Year of helpdesk requests Closed"/>
+          <filter string="Product" icon="terp-go-year" domain="[]" context="{'group_by':'product_id'}"/>
+          <filter string="Product Category" icon="terp-go-year" domain="[]" context="{'group_by':'product_categ_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+
+  <record id="action_report_crm_helpdesk" model="ir.actions.act_window">
+    <field name="name">Case Analysis</field>
+    <field name="res_model">crm.helpdesk.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,graph</field>
+    <field name="context">{"search_default_year":1,"search_default_User":1,"search_default_this_month":1,'group_by_no_leaf':1,'group_by':[], 'search_default_year_open':1, 'search_default_month_open':1, 'search_default_category':1, 'search_default_not_cancel':1}</field>
+      <field name="view_id" ref="view_report_crm_helpdesk_tree" />
+      <field name="search_view_id" ref="view_report_crm_helpdesk_filter" />
+      <field name="help">Have a general overview of all support requests by sorting them with specific criteria such as the processing time, number of requests answered, emails sent and costs.</field>
+  </record>
+
+
+  <menuitem action="action_report_crm_helpdesk" id="menu_report_crm_helpdesks_tree" parent="sales_team.menu_sale_report" sequence="20" groups="group_customer_service_manager"/>
+
+
+</odoo>

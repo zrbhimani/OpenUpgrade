@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--SCS Export API Log-->
+
+    <record id="scs_export_log_tree_view" model="ir.ui.view">
+      <field name="name">scs.export.log.tree</field>
+      <field name="model">scs.export.log</field>
+      <field name="arch" type="xml">
+        <tree string="SCS Export LOG" colors="red:state=='error'">
+          <field name="timestamp"/>
+          <field name="user_id"/>
+          <field name="picking_id"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="scs_export_log_form_view" model="ir.ui.view">
+      <field name="name">scs.export.log.form</field>
+      <field name="model">scs.export.log</field>
+      <field name="arch" type="xml">
+        <form string="SCS Export Log">
+          <group>
+            <field name="timestamp" readonly="1"/>
+            <field name="user_id" readonly="1"/>
+            <field name="picking_id" readonly="1"/>
+            <field name="state" readonly="1"/>
+          </group>
+          <group>
+            <field name="response" colspan="2" nolabel="1"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_export_log">
+      <field name="name">SCS Export Log</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.export.log</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+    </record>
+
+    <!--SCS Export-->
+
+    <record id="scs_export_api_config_tree_view" model="ir.ui.view">
+      <field name="name">scs.export.api.tree</field>
+      <field name="model">scs.export.api</field>
+      <field name="arch" type="xml">
+        <tree string="SCS Export">
+          <field name="api_key"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="scs_export_api_config_form_view" model="ir.ui.view">
+      <field name="name">scs.export.api.form</field>
+      <field name="model">scs.export.api</field>
+      <field name="arch" type="xml">
+        <form string="SCS Export">
+          <header>
+            <button name="heart_beat" string="Test Connection" type="object" states="draft,error"/>
+            <button name="clear_logs" string="Clear Logs" type="object" states="connected"/>
+            <button name="set_to_draft" string="Reset" type="object" states="connected,error"/>
+
+            <field name="state" widget="statusbar"/>
+          </header>
+          <group>
+            <group>
+              <field name="api_key" required="1"/>
+              <field name="password" password="1" required="1"/>
+              <field name="debug"/>
+            </group>
+            <group>
+              <field name="export_start" widget="float_time"/>
+              <field name="export_stop" widget="float_time"/>
+            </group>
+          </group>
+          <group>
+            <field name="log_ids" nolabel="1" colspan="4" readonly="1">
+              <tree string="Logs" colors="red:state=='error'">
+                <field name="timestamp"/>
+                <field name="user_id"/>
+                <field name="picking_id"/>
+                <field name="state"/>
+              </tree>
+              <form>
+                <group>
+                  <field name="timestamp" readonly="1"/>
+                  <field name="user_id" readonly="1"/>
+                  <field name="picking_id" readonly="1"/>
+                  <field name="state" readonly="1"/>
+                </group>
+                <group>
+                  <field name="response" colspan="2" nolabel="1"/>
+                </group>
+              </form>
+            </field>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_export_api_config">
+      <field name="name">SCS Export API</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.export.api</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="view_id" ref="scs_export_api_config_tree_view" />
+    </record>
+
+    <menuitem id="menu_scs_config" name="SCS" parent="menu_config_api" sequence="140"/>
+
+    <menuitem id="menu_scs_export_api_config" action="action_scs_export_api_config" parent="menu_scs_config" sequence="130"/>
+
+
+</odoo>

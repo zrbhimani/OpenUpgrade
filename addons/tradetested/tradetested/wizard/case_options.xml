@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <!--Case Resolutions-->
+
+  <record model="ir.ui.view" id="view_crm_helpdesk_case_resolution_form">
+    <field name="name">crm.case.resolution</field>
+    <field name="model">crm.case.resolution</field>
+    <field name="arch" type="xml">
+      <form string="Set Resolution">
+        <field name="case_id" invisible="1"/>
+        <group string="Resolution">
+          <field name="resolution_id"/>
+          <field name="description" widget="html" colspan="4"/>
+        </group>
+        <footer>
+          <button name="case_open" string="Save" type="object" class="oe_highlight"/>
+          or
+          <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- Case Close wizard -->
+
+  <record model="ir.ui.view" id="view_crm_helpdesk_case_close_form">
+    <field name="name">case_close_form</field>
+    <field name="model">crm.helpdesk.case.close</field>
+    <field name="arch" type="xml">
+      <form string="Close Case">
+        <div>
+          <h3>Reason for Closing</h3>
+          <br/>
+          <field name="reason" required="1"/>
+        </div>
+        <footer>
+          <button name="case_close" string="Close Case" type="object" class="oe_highlight"/>
+          or
+          <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!--Create Case-->
+
+  <record model="ir.ui.view" id="view_crm_case_create_form">
+    <field name="name">crm_case_create</field>
+    <field name="model">crm.case.create</field>
+    <field name="arch" type="xml">
+      <form string="Create Case">
+        <group invisible="1">
+          <field name="order_product_ids" readonly="1"/>
+          <field name="show_product_opt"/>
+          <field name="show_return"/>
+          <field name="show_owner"/>
+          <field name="show_user"/>
+          <field name="show_section"/>
+          <field name="show_priority"/>
+          <field name="show_description"/>
+          <field name="show_deadline"/>
+          <field name="show_desi_resolution"/>
+          <field name="order_id"/>
+        </group>
+        <group string="Issue">
+          <field name="categ_id" required="1" widget="selection"/>
+          <field name="product_id" attrs="{'invisible':[('show_product_opt','!=','single')],'required':[('show_product_opt','=','single')]}"/>
+          <field name="line_ids" attrs="{'invisible':[('show_product_opt','!=','multiple')], 'required':[('show_product_opt','=','multiple')]}">
+            <tree editable="bottom">
+              <field name="product_id" options="{'no_create':True, 'no_open':True}" widget="selection"/>
+            </tree>
+          </field>
+          <field name="return_shipment" attrs="{'invisible':[('show_return','=',False)]}"/>
+          <field name="owner_id" attrs="{'invisible':[('show_owner','=',False)]}"/>
+          <field name="user_id" attrs="{'invisible':[('show_user','=',False)]}"/>
+          <field name="section_id" attrs="{'invisible':[('show_section','=',False)]}"/>
+          <field name="priority" attrs="{'invisible':[('show_priority','=',False)]}"/>
+          <field name="date_deadline" attrs="{'invisible':[('show_deadline','=',False)]}"/>
+          <field name="description" widget="html" attrs="{'invisible':[('show_description','=',False)]}"/>
+          <field name="desi_resolution_ids" attrs="{'invisible':[('show_desi_resolution','=',False)]}" widget="many2many_tags" options="{'create':False, 'create_edit':False, 'no_open':True}"/>
+        </group>
+        <group string="Resolution">
+          <field name="resolution_id" widget="selection" help="Pick a resolution if already known (optional)"/>
+        </group>
+        <group>
+        </group>
+        <footer>
+          <button name="open_case" string="Open Case" type="object" class="oe_highlight"/>
+          or
+          <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_crm_case_create" model="ir.actions.act_window">
+    <field name="name">Create Case</field>
+    <field name="res_model">crm.case.create</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!-- Case Pending State     -->
+
+  <record model="ir.ui.view" id="view_crm_case_pending_form">
+    <field name="name">case_close_pending</field>
+    <field name="model">crm.case.pending</field>
+    <field name="arch" type="xml">
+      <form string="Pending">
+        <group>
+          <field name="pending_options" required="1"/>
+          <field name="pending_date" attrs="{'invisible':[('pending_options','!=','pick_date')], 'required':[('pending_options','=','pick_date')]}"/>
+        </group>
+        <footer>
+          <button name="set_pending" string="Submit" type="object" class="oe_highlight"/>
+          or
+          <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_crm_case_set_pending" model="ir.actions.act_window">
+    <field name="name">Pending</field>
+    <field name="res_model">crm.case.pending</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!--Assign Service Agent-->
+
+  <record id="view_service_agent_form" model="ir.ui.view">
+    <field name="name">service.agent</field>
+    <field name="model">service.agent</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Assign Service Agent">
+        <group>
+          <field name="partner_id" string="Service Agent" required="1"/>
+        </group>
+        <footer>
+          <button name="do_next" string="Next" type="object" class="oe_highlight"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_assign_service_agent" model="ir.actions.act_window">
+    <field name="name">Assign Service Agent</field>
+    <field name="res_model">service.agent</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!--Assembly Contractor-->
+
+  <record id="view_assembly_contractor_form" model="ir.ui.view">
+    <field name="name">assembly.contractor</field>
+    <field name="model">assembly.contractor</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Assign Assembly Contractor">
+        <group>
+          <field name="partner_id" domain="[]" context="{}" string="Assembly Contractor" required="1"/>
+        </group>
+        <footer>
+          <button name="do_next" string="Next" type="object" class="oe_highlight"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_assign_assembly_contractor" model="ir.actions.act_window">
+    <field name="name">Assign Assembly Contractor</field>
+    <field name="res_model">assembly.contractor</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <!--Create Case-->
+
+  <record id="view_create_case_form" model="ir.ui.view">
+    <field name="name">create.case</field>
+    <field name="model">create.case</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Product">
+        <field name="case_line_ids" nolabel="1">
+          <tree editable="botton">
+            <field name="product_id" required="0"/>
+          </tree>
+        </field>
+        <footer>
+          <button name="create_case" string="Create &amp; Close" type="object" class="oe_highlight"/>
+          <button name="create_case_view" string="Create and View" type="object" class="oe_highlight"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_create_case" model="ir.actions.act_window">
+    <field name="name">Products to Add</field>
+    <field name="res_model">create.case</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="view_create_case_form"/>
+    <field name="target">new</field>
+  </record>
+
+</odoo>

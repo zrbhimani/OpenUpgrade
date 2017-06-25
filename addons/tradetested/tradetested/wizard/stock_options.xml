@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <!-- Delivery Order Option -->
+
+  <record id="view_delivery_order_option_form" model="ir.ui.view">
+    <field name="name">Delivery Order Option</field>
+    <field name="model">delivery.order.option</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Delivery Order Option">
+        <field name="delivery_option" invisible="1"/>
+        <footer>
+          <button name="set_processing" string="Make in Process" type="object" class="oe_highlight" attrs="{'invisible':[('delivery_option','!=','make_in_process')]}"/>
+          <button name="set_unprocessing" string="Ready to deliver" class="oe_highlight" type="object" attrs="{'invisible':[('delivery_option','!=','ready_to_deliver')]}"/>
+          <button name="do_quick_deliver" string="Deliver" class="oe_highlight" type="object" attrs="{'invisible':[('delivery_option','!=','deliver')]}"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <act_window id="window_delivery_order_option_1"
+              name="Make in Process"
+              res_model="delivery.order.option"
+              src_model="stock.picking"
+              view_mode="form"
+              target="new"
+              view_type="form"
+              context="{'delivery_option' : 'make_in_process'}"
+              groups="tradetested.group_stock_dispatch"/>
+
+  <act_window id="window_delivery_order_option_2"
+              name="Ready to Deliver"
+              res_model="delivery.order.option"
+              src_model="stock.picking"
+              view_mode="form"
+              target="new"
+              view_type="form"
+              context="{'delivery_option' : 'ready_to_deliver'}"
+              groups="tradetested.group_shop_salesperson"/>
+
+  <act_window id="window_delivery_order_option_3"
+              name="Deliver"
+              res_model="delivery.order.option"
+              src_model="stock.picking"
+              view_mode="form"
+              target="new"
+              view_type="form"
+              context="{'delivery_option' : 'deliver'}"
+              groups="tradetested.group_stock_dispatch"/>
+
+  <!-- Internal Move Create -->
+
+    <record id="view_internal_move_form" model="ir.ui.view">
+      <field name="name">Internal Move Option</field>
+      <field name="model">internal.move.create</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Internal Move">
+           <group>
+            <field name="company_id" domain="[('name','not in',['Group', 'United States'])]" required="1" readonly="context.get('view_readonly',0)"/>
+            <field name="move_type" readonly="context.get('view_readonly',0)" required="1"/>
+          </group>
+          <group attrs="{'invisible': [('move_type','!=','Parts Staging to Parts Warehouse')]}">
+            <field name="serial_number"/>
+            <field name="note"/>
+          </group>
+          <group>
+            <field name="low_stock_warning_on_load" invisible="1"/>
+            <field name="line_ids" colspan="4" nolabel="1">
+              <tree editable="bottom">
+                <field name="product_id" required="1" domain="[('company_id','=',parent.company_id)]"/>
+                <field name="quantity" required="1"/>
+              </tree>
+            </field>
+          </group>
+          <footer>
+            <button name="create_internal_move" string="Create" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+            or
+            <button name="manual_entry" string="Skip to Manual Entry" type="object" groups="stock.group_stock_dispatch" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window id="window_internal_move_create"
+                name="Create Internal Move"
+                res_model="internal.move.create"
+                src_model="stock.picking"
+                view_mode="form"
+                target="new"
+                view_type="form"/>
+
+
+    <record id="action_create_internal_move" model="ir.actions.act_window">
+      <field name="name">Create Internal Move</field>
+      <field name="res_model">internal.move.create</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <menuitem action="action_create_internal_move" id="menu_action_create_internal_move" parent="stock.menu_stock_warehouse_mgmt" sequence="20"/>
+
+  <!-- Move into Warehouse -->
+
+  <record id="return_to_parts_form" model="ir.ui.view">
+    <field name="name">Return to Parts</field>
+    <field name="model">return.to.parts</field>
+    <field name="arch" type="xml">
+      <form string="Return to Parts">
+        <group>
+          <field name="mode" invisible="1"/>
+          <field name="picking_id" invisible="1"/>
+          <field name="product_id" attrs="{'invisible':[('mode','!=','return_to_parts')], 'required':[('mode','=','return_to_parts')]}" context="{'fltr_picking_id': picking_id}" options="{'create': False, 'create_edit':False}"/>
+          <field name="note" nolabel="1" colspan="4" required="1"/>
+        </group>
+        <footer>
+          <button name="return_to_parts" string="Move" type="object" class="oe_highlight" attrs="{'invisible':[('mode','!=','return_to_parts')]}"/>
+          <button name="move_to_parts" string="Move" type="object" class="oe_highlight" attrs="{'invisible':[('mode','!=','move_to_parts')]}"/>
+          <button name="move_to_mezzanine" string="Move" type="object" class="oe_highlight" attrs="{'invisible':[('mode','!=','move_to_mezzanine')]}"/>
+          or
+          <button string="Cancel" class="oe_link" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="act_move_to_parts" model="ir.actions.act_window">
+    <field name="name">Move to Parts</field>
+    <field name="res_model">return.to.parts</field>
+    <field name="view_mode">form</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="target">new</field>
+  </record>
+
+  <record id="act_move_to_mezzanine" model="ir.actions.act_window">
+    <field name="name">Move to Mezzanine</field>
+    <field name="res_model">return.to.parts</field>
+    <field name="view_mode">form</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="target">new</field>
+  </record>
+
+  <!--Export Incoming Shipment-->
+
+  <record id="export_incoming_shipment_view" model="ir.ui.view">
+    <field name="name">export.incoming.shipment.form.view</field>
+    <field name="model">export.incoming.shipment</field>
+    <field name="arch" type="xml">
+      <form string="Export CSV">
+        <group colspan="2" col="2">
+          <field name="file" filename="file_name" attrs="{'invisible':[('file','=',False)]}" readonly="1"/>
+          <field name="file_name" invisible="1" colspan="4"/>
+        </group>
+        <newline/>
+        <separator string="" colspan="4"/>
+        <footer>
+          <button name="export_csv" string="Export CSV" type="object" class="oe_highlight"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <act_window
+          name="Export CSV"
+          res_model="export.incoming.shipment"
+          src_model="stock.picking"
+          view_mode="form"
+          target="new"
+          key2="client_action_multi"
+          id="action_csv_template"/>
+
+</odoo>

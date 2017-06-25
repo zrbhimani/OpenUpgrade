@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="shipment_tracking_tree_view">
+      <field name="name">Shipment Tracking</field>
+      <field name="model">shipment.tracking</field>
+      <field name="arch" type="xml">
+        <tree string="Shipment Tracking">
+          <field name="name"/>
+          <field name="function"/>
+          <field name="picking_counts"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="shipment_tracking_form_view">
+      <field name="name">Shipment Tracking</field>
+      <field name="model">shipment.tracking</field>
+      <field name="arch" type="xml">
+        <form string="Shipment Tracking">
+          <header>
+            <button name="run" string="Run" type="object" class="oe_highlight"/>
+            <button name="clear_logs" string="Clear Logs" type="object" class="oe_highlight"/>
+          </header>
+          <group>
+            <group>
+              <field name="name" required="1"/>
+              <field name="url" required="1"/>
+              <field name="function" required="1"/>
+              <label for="picking_counts"/>
+              <div>
+                <field name="picking_counts" class="oe_inline"/>
+                <button name="picking_show" type="object" string="Show" class="oe_link"/>
+              </div>
+            </group>
+          </group>
+          <newline/>
+          <group>
+            <notebook>
+              <page string="Logs">
+                <field name="log_ids" colspan="4" nolabel="1">
+                  <tree>
+                    <field name="timestamp"/>
+                    <field name="message"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Search Criteria">
+                <field name="search_args" colspan="4" nolabel="1"/>
+              </page>
+            </notebook>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_shipment_tracking">
+      <field name="name">Shipment Tracking</field>
+      <field name="res_model">shipment.tracking</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_shipment_tracking" action="action_shipment_tracking" parent="menu_config_api" sequence="170"/>
+
+
+</odoo>

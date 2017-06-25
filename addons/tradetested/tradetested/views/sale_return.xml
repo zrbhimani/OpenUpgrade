@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!--Sale Order Return-->
+
+  <record id="view_sale_order_return_tree" model="ir.ui.view">
+    <field name="name">sale.order.return.tree</field>
+    <field name="model">sale.order.return</field>
+    <field name="arch" type="xml">
+      <tree string="Returns" colors="blue:state=='draft'; red:state=='processing'; grey:state=='cancel';">
+        <button name="open_this" string="Open" type="object" icon="fa-link"/>
+        <field name="create_date"/>
+        <field name="order_id"/>
+        <field name="type"/>
+        <field name="state"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_order_return_form" model="ir.ui.view">
+    <field name="name">sale.order.return.form</field>
+    <field name="model">sale.order.return</field>
+    <field name="arch" type="xml">
+      <form string="Returns">
+        <header>
+          <div>
+            <button name="process_sale_return" type="object" class="oe_highlight" string="Process Return" attrs="{'invisible':['|',('show_process_button','=',False),('state','!=','draft')]}" groups="tradetested.group_shop_salesperson"/>
+            <button name="action_view_delivery" string="View Delivery Order" type="object" class="oe_highlight"/>
+            <button name="process_payment" type="object" string="Add Payment" states="draft"/>
+            <button name="button_cancel" string="Cancel" type="object" states="draft"/>
+            <field name="state" nolabel="1" widget="statusbar" statusbar_visible="draft,processing,done" statusbar_colors='{"done":"green"}'/>
+          </div>
+        </header>
+        <sheet string="Returns">
+          <div>
+            <h1>
+              Sale Order:
+              <field name="order_id" required="1" attrs="{'readonly':[('order_id','!=',False)]}" class="oe_inline"/>
+            </h1>
+            <label for="type"/>
+            <filed name="type"/>
+            <field name="show_process_button" invisible="1"/>
+            <field name="company_id" invisible="1"/>
+            <field name="partner_id" invisible="1"/>
+          </div>
+          <div>
+            <separator string="Products To Return"/>
+            <newline/>
+            <field name="return_lines" context="{'default_line_type':'return'}">
+              <tree editable="bottom" create="false">
+                <field name="product_id" readonly="1"/>
+                <field name="name" readonly="1"/>
+                <field name="product_uom_qty" required="1"/>
+                <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]" readonly="1"/>
+                <field name="price_unit" readonly="1"/>
+                <field name="price_subtotal" readonly="1"/>
+              </tree>
+            </field>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+              <field name="return_amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+              <field name="return_amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+              <div class="oe_subtotal_footer_separator oe_inline">
+                <label for="amount_total"/>
+              </div>
+              <field name="return_amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </group>
+            <button name="reset_return_lines" type="object" string="Reset" class="oe_link oe_save_only" states="draft"/>
+            <div class="oe_clear"/>
+
+            <separator string="Products To Send"/>
+            <newline/>
+            <field name="send_lines" context="{'default_line_type':'send'}">
+              <tree editable="bottom">
+                <field name="product_id" domain="[('company_id','=',parent.company_id)]"/>
+                <field name="name" required="1"/>
+                <field name="product_uom_qty" required="1"/>
+                <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]"/>
+                <field name="price_unit"/>
+                <field name="price_subtotal"/>
+                <field name="line_type" invisible="1"/>
+              </tree>
+            </field>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+              <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+              <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+              <div class="oe_subtotal_footer_separator oe_inline">
+                <label for="amount_total"/>
+              </div>
+              <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </group>
+            <button name="reset_send_lines" type="object" string="Reset" class="oe_link oe_save_only" states="draft"/>
+            <group class="oe_inline">
+              <group>
+                <field name="carrier_id"/>
+              </group>
+              <group></group>
+            </group>
+            <div class="oe_clear"/>
+          </div>
+          <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+            <div class="oe_subtotal_footer_separator oe_inline" attrs="{'invisible':[('state','!=','draft')]}">
+              <label for="balance_remaining"/>
+            </div>
+            <field name="balance_remaining" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible':[('state','!=','draft')]}"/>
+            <field name="so_balance_remaining" class="oe_subtotal_footer_separator" readonly="1" widget='monetary' options="{'currency_field': 'currency_id'}" attrs="{'invisible':[('state','=','draft')]}"/>
+          </group>
+          <div class="oe_clear"/>
+          <field name="picking_ids" invisible="1"/>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_ids" widget="mail_thread"/>
+          <field name="message_follower_ids" widget="mail_followers"/>
+          <div style="padding-right:160px; text-align:center">
+          </div>
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_sale_order_return_filter" model="ir.ui.view">
+    <field name="name">sale.order.return.filter</field>
+    <field name="model">sale.order.return</field>
+    <field name="arch" type="xml">
+      <search string="Return Order">
+        <field name="order_id" string="Sale Order"/>
+        <group expand="0" string="Group By...">
+          <filter string="Type" name="grp_type" domain="[]" context="{'group_by':'type'}"/>
+          <filter string="Status" domain="[]" name="grp_state" context="{'group_by':'state'}"/>
+        </group>
+        <filter string="Open" name="fltr_open" domain="[('state','in',['draft','processing'])]"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_order_return" model="ir.actions.act_window">
+    <field name="name">Returns Review</field>
+    <field name="res_model">sale.order.return</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="target">current</field>
+    <field name="search_view_id" ref="view_sale_order_return_filter"/>
+    <field name="context">{'search_default_grp_type':1, 'search_default_fltr_open':1, 'search_default_grp_state':1}</field>
+  </record>
+
+  <menuitem action="action_sale_order_return" id="menu_sale_order_return" parent="stock.menu_stock_warehouse_mgmt" sequence="25"/>
+
+
+  <!---->
+  <record id="view_sale_order_return_update" model="ir.ui.view">
+    <field name="name">sale.order.return.update.form</field>
+    <field name="model">sale.order.return.update</field>
+    <field name="arch" type="xml">
+      <form string="Returns">
+        <group>
+
+        </group>
+        <footer>
+          <button name="update_done" string="Mark Done" type="object" class="oe_highlight"/>
+          or
+          <button name="cancel" special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <act_window
+          id="window_sale_order_return_update"
+          name="Done"
+          res_model="sale.order.return.update"
+          src_model="sale.order.return"
+          view_mode="form"
+          target="new"
+          view_type="form"
+          key2="client_action_multi"
+          groups="tradetested.group_stock_dispatch"
+  />
+
+</odoo>

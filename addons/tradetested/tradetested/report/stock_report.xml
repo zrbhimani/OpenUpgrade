@@ -1,0 +1,347 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <record id="view_stock_analysis_tree" model="ir.ui.view">
+    <field name="name">stock.analysis.tree</field>
+    <field name="model">stock.analysis</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree string="Stock Analysis">
+        <field name="location_id"/>
+        <field name="default_code"/>
+        <field name="product_id"/>
+        <field name="qty_available"/>
+        <field name="qty_available_value"/>
+        <field name="virtual_available"/>
+        <field name="virtual_available_value"/>
+        <field name="usage" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_stock_analysis_search" model="ir.ui.view">
+    <field name="name">stock.analysis.search</field>
+    <field name="model">stock.analysis</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search string="Stock Analysis">
+        <filter string="Can be Purchased" domain="[('state','=','open')]"/>
+        <filter string="Can be Sold" domain="[('state','=','open')]"/>
+        <filter string="Negative Stock" domain="['|',('qty_available','&lt;',0),('virtual_available','&lt;',0)]"/>
+        <!--<filter string="Buy" name="filter_buy" domain="[('supply_method','=','buy')]"/>-->
+        <!--<separator/>-->
+        <filter string="Main Locations" name="main_location" domain="[('location_id','in',[24,18,12,15,31])]"/>
+        <filter string="Internal Locations" name="filter_internal" domain="[('location_id.usage','=','internal')]"/>
+
+        <field name="location_id"/>
+        <field name="product_id"/>
+
+        <group string="Group By..." expand="0">
+          <filter string="Location" name="g_location" context="{'group_by':'location_id'}"/>
+          <filter string="Category" name="g_categ" context="{'group_by':'categ_id'}"/>
+          <filter string="Product" name="g_product" context="{'group_by':'product_id'}"/>
+          <filter string="Location Type" context="{'group_by':'usage'}"/>
+        </group>
+
+      </search>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_stock_analysis">
+    <field name="name">Stock Analysis</field>
+    <field name="res_model">stock.analysis</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+    <field name="search_view_id" ref="view_stock_analysis_search"/>
+    <field name="context">{'search_default_filter_buy':1, 'search_default_g_location':1, 'search_default_g_categ':1, 'search_default_g_product':1, 'search_default_main_location':1}</field>
+  </record>
+
+  <menuitem id="menu_stock_analysis" parent="stock.menu_warehouse_report" action="action_stock_analysis" sequence="30" groups="stock.group_stock_user"/>
+
+
+  <!--Moves Analysis-->
+
+  <record id="view_stock_tree" model="ir.ui.view">
+    <field name="name">report.stock.move.tree</field>
+    <field name="model">report.stock.move</field>
+    <field name="arch" type="xml">
+      <tree string="Moves Analysis" create="false">
+        <field name="date" invisible="1"/>
+        <field name="year" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="type" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="partner_id" invisible="1" context="{'contact_display':'partner'}"/>
+        <field name="picking_id" invisible="1"/>
+        <field name="location_id" invisible="1"/>
+        <field name="location_dest_id" invisible="1"/>
+        <field name="same_location" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="product_qty" sum="Total quantity"/>
+        <field name="product_qty_in" sum="Total incoming quantity"/>
+        <field name="product_qty_out" sum="Total outgoing quantity"/>
+        <field name="value" sum="Total value"/>
+        <field name="day_diff1"/>
+        <field name="day_diff"/>
+        <field name="day_diff2" string="Delay(Days)"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_stock_graph" model="ir.ui.view">
+    <field name="name">report.stock.move.graph</field>
+    <field name="model">report.stock.move</field>
+    <field name="arch" type="xml">
+      <graph string="Moves Analysis" type="bar">
+        <field name="product_id"/>
+        <field name="product_qty" operator="+"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="view_stock_search" model="ir.ui.view">
+    <field name="name">report.stock.move.search</field>
+    <field name="model">report.stock.move</field>
+    <field name="arch" type="xml">
+      <search string="Moves Analysis">
+        <filter string="Done" name="done" icon="terp-dialog-close" domain="[('state','=','done')]" help="Completed Stock-Moves"/>
+        <filter string="Todo" name="todo" icon="terp-gtk-go-back-rtl" domain="[('state','in',('assigned','waiting','confirmed'))]" help="Future Stock-Moves"/>
+        <separator/>
+        <filter string="Cost of Goods Sold" name="cost_sold"
+                domain="[('same_location','=',2),('location_id.usage','in',['customer','internal']),('location_dest_id.usage','in',['customer','internal']),('location_dest_id','in',[9,24,18,12,15,31])]"/>
+        <separator/>
+        <filter icon="terp-go-home" name="in" string="Incoming" domain="[('type','=','in')]"/>
+        <filter icon="terp-go-home" name="internal" string="Internal" domain="[('type','=','internal')]"/>
+        <filter icon="terp-go-home" name="out" string="Outgoing" domain="[('type','=','out')]"/>
+        <field name="product_id" default_focus="1"/>
+        <field name="partner_id" context="{'contact_display':'partner'}"/>
+        <group expand="0" string="Extended Filters...">
+          <field name="location_id"/>
+          <field name="location_dest_id"/>
+          <field name="categ_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="date"/>
+        </group>
+        <group expand="1" string="Group By...">
+          <filter string="Company" name="company" icon="terp-go-home" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+          <filter string="Year" name="month" icon="terp-go-year" context="{'group_by':'year'}" help="Year Planned"/>
+          <filter string="Month" name="year" icon="terp-go-month" context="{'group_by':'date'}" help="Month Planned"/>
+          <filter string="Day" icon="terp-go-today" context="{'group_by':'day'}" help="Day Planned"/>
+          <separator/>
+          <filter string="Source Location" name="src" icon="terp-gtk-jump-to-rtl" context="{'group_by':'location_id'}"/>
+          <filter string="Dest. Location" name="dest" icon="terp-gtk-jump-to-ltr" context="{'group_by':'location_dest_id'}"/>
+          <separator/>
+          <filter name="group_partner" string="Partner" icon="terp-partner" context="{'group_by':'partner_id'}"/>
+          <filter name="group_categ_id" string="Product Category" icon="terp-stock_symbol-selection" context="{'group_by':'categ_id'}"/>
+          <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
+          <filter name="group_picking" string="Shipment" icon="terp-accessories-archiver" context="{'group_by':'picking_id'}"/>
+          <filter string="Type" name="group_type" icon="terp-stock_symbol-selection" context="{'group_by':'type'}" help="Shipping type specify, goods coming in or going out"/>
+          <filter string="Status" name="group_state" icon="terp-stock_effects-object-colorize" context="{'group_by':'state'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_stock_move_report" model="ir.actions.act_window">
+    <field name="name">Moves Analysis</field>
+    <field name="res_model">report.stock.move</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,graph</field>
+    <field name="search_view_id" ref="view_stock_search"/>
+    <field name="context">{'contact_display': 'partner','search_default_done':1, 'search_default_todo':1, 'search_default_company':1, 'search_default_year':1, 'search_default_month':1, 'search_default_src':1, 'search_default_dest':1,
+      'search_default_cost_sold':1}
+    </field>
+    <field name="help">Moves Analysis allows you to easily check and analyse your company stock moves. Use this report when you want to analyse the different routes taken by your products and inventory management performance.</field>
+  </record>
+
+  <menuitem action="action_stock_move_report" id="menu_action_stock_move_report" parent="stock.menu_warehouse_report" sequence="9" groups="account.group_account_user"/>
+
+
+  <!-- Aged Stock -->
+
+  <record id="view_report_stock_aged_tree" model="ir.ui.view">
+    <field name="name">report.stock.aged.tree</field>
+    <field name="model">report.stock.aged</field>
+    <field name="arch" type="xml">
+      <tree string="Aged Stock" create="false">
+        <field name="product_id"/>
+        <field name="stock_value"/>
+        <field name="stock_value_6_month_ago"/>
+        <field name="stock_value_12_month_ago"/>
+        <field name="stock_value_24_month_ago"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_report_stock_aged" model="ir.actions.act_window">
+    <field name="name">Aged Stock</field>
+    <field name="res_model">report.stock.aged</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+  </record>
+
+  <menuitem id="menu_report_stock_aged" parent="stock.menu_warehouse_report" action="action_report_stock_aged" sequence="30" groups="stock.group_stock_user"/>
+
+
+  <!-- Cost of Goods sold -->
+
+  <record id="view_cost_of_goods_sold_tree" model="ir.ui.view">
+    <field name="name">cost.of.goods.sold.tree</field>
+    <field name="model">cost.of.goods.sold</field>
+    <field name="arch" type="xml">
+      <tree string="Moves Analysis" create="false">
+        <field name="date" invisible="1"/>
+        <field name="year" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="type" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="partner_id" invisible="1" context="{'contact_display':'partner'}"/>
+        <field name="picking_id" invisible="1"/>
+        <field name="location_id" invisible="1"/>
+        <field name="location_dest_id" invisible="1"/>
+        <field name="same_location" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="product_qty" sum="Total quantity"/>
+        <field name="product_qty_in" sum="Total incoming quantity"/>
+        <field name="product_qty_out" sum="Total outgoing quantity"/>
+        <field name="product_qty_net" sum="Net quantity"/>
+        <field name="value" sum="Total value"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_cost_of_goods_sold_search" model="ir.ui.view">
+    <field name="name">cost.of.goods.sold.search</field>
+    <field name="model">cost.of.goods.sold</field>
+    <field name="arch" type="xml">
+      <search string="Moves Analysis">
+        <filter string="Done" name="done" icon="terp-dialog-close" domain="[('state','=','done')]" help="Completed Stock-Moves"/>
+        <filter string="Todo" name="todo" icon="terp-gtk-go-back-rtl" domain="[('state','in',('assigned','waiting','confirmed'))]" help="Future Stock-Moves"/>
+        <separator/>
+        <filter string="Cost of Goods Sold" name="cost_sold"
+                domain="[('same_location','=',2),('location_id.usage','in',['customer','internal']),('location_dest_id.usage','in',['customer','internal']),('location_dest_id','in',[9,24,18,12,15,31])]"/>
+        <separator/>
+        <filter icon="terp-go-home" name="in" string="Incoming" domain="[('type','=','in')]"/>
+        <filter icon="terp-go-home" name="internal" string="Internal" domain="[('type','=','internal')]"/>
+        <filter icon="terp-go-home" name="out" string="Outgoing" domain="[('type','=','out')]"/>
+        <field name="product_id" default_focus="1"/>
+        <field name="partner_id" context="{'contact_display':'partner'}"/>
+        <group expand="0" string="Extended Filters...">
+          <field name="location_id"/>
+          <field name="location_dest_id"/>
+          <field name="categ_id"/>
+          <field name="company_id" groups="base.group_multi_company"/>
+          <field name="date"/>
+        </group>
+        <group expand="1" string="Group By...">
+          <filter string="Company" name="company" icon="terp-go-home" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+          <filter string="Year" name="month" icon="terp-go-year" context="{'group_by':'year'}" help="Year Planned"/>
+          <filter string="Month" name="year" icon="terp-go-month" context="{'group_by':'date'}" help="Month Planned"/>
+          <filter string="Day" icon="terp-go-today" context="{'group_by':'day'}" help="Day Planned"/>
+          <separator/>
+          <filter string="Source Location" name="src" icon="terp-gtk-jump-to-rtl" context="{'group_by':'location_id'}"/>
+          <filter string="Dest. Location" name="dest" icon="terp-gtk-jump-to-ltr" context="{'group_by':'location_dest_id'}"/>
+          <separator/>
+          <filter name="group_partner" string="Partner" icon="terp-partner" context="{'group_by':'partner_id'}"/>
+          <filter name="group_categ_id" string="Product Category" icon="terp-stock_symbol-selection" context="{'group_by':'categ_id'}"/>
+          <filter name="group_product" string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
+          <filter name="group_picking" string="Shipment" icon="terp-accessories-archiver" context="{'group_by':'picking_id'}"/>
+          <filter string="Type" name="group_type" icon="terp-stock_symbol-selection" context="{'group_by':'type'}" help="Shipping type specify, goods coming in or going out"/>
+          <filter string="Status" name="group_state" icon="terp-stock_effects-object-colorize" context="{'group_by':'state'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_cost_of_goods_sold_report" model="ir.actions.act_window">
+    <field name="name">Cost Of Goods Sold</field>
+    <field name="res_model">cost.of.goods.sold</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,graph</field>
+    <field name="search_view_id" ref="view_cost_of_goods_sold_search"/>
+    <field name="context">{'contact_display': 'partner','search_default_done':1, 'search_default_todo':1, 'search_default_company':1, 'search_default_year':1, 'search_default_month':1, 'search_default_src':1, 'search_default_dest':1,
+      'search_default_cost_sold':1}
+    </field>
+  </record>
+
+  <menuitem action="action_cost_of_goods_sold_report" id="menu_action_cost_of_goods_sold_report" parent="stock.menu_warehouse_report" sequence="31" groups="account.group_account_user"/>
+
+  <!-- Freight Analysis Report-->
+
+  <record id="view_freight_report_tree" model="ir.ui.view">
+    <field name="name">freight.report.tree</field>
+    <field name="model">freight.report</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree string="Freight Analysis">
+        <field name="freight_revenue"/>
+        <field name="freight_cost"/>
+        <field name="margin"/>
+        <field name="company_id" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="channel" invisible="1"/>
+        <field name="marketing_method_id" invisible="1"/>
+        <field name="year" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="order_id" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="state_id" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_freight_report_search" model="ir.ui.view">
+    <field name="name">freight.report.search</field>
+    <field name="model">freight.report</field>
+    <field name="type">search</field>
+    <field name="arch" type="xml">
+      <search string="Freight Analysis">
+        <filter string="Quotations" domain="[('state','=','draft')]"/>
+        <filter string="Sales" domain="[('state','not in',('draft','done','cancel'))]"/>
+        <filter string="New Zealand" domain="[('company_id','=',1)]"/>
+        <filter string="Australia" domain="[('company_id','=',3)]"/>
+        <separator/>
+        <field name="product_id"/>
+        <field name="user_id"/>
+        <field name="categ_id"/>
+        <field name="company_id"/>
+        <group string="Group By...">
+          <filter string="Company" name="company" context="{'group_by':'company_id'}"/>
+          <filter string="Salesperson" name="user" context="{'group_by':'user_id'}"/>
+          <filter string="Sales Channel" name="sale_channel" context="{'group_by':'channel'}"/>
+          <filter string="Marketing Method" name="marketing_method" context="{'group_by':'marketing_method_id'}"/>
+
+          <filter string="Day" context="{'group_by':'day'}"/>
+          <filter name="year" string="Year" context="{'group_by':'year'}"/>
+          <filter name="month" string="Month" context="{'group_by':'month'}"/>
+
+          <filter string="Sales Order" name="order_id" context="{'group_by':'order_id','set_visible':True}"/>
+          <filter string="Product" name="product" context="{'group_by':'product_id','set_visible':True}"/>
+          <filter string="Category of Product" name="category" context="{'group_by':'categ_id'}"/>
+
+          <filter string="Customer State" name="customer_state" context="{'group_by':'state_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_freight_report">
+    <field name="name">Freight Analysis</field>
+    <field name="res_model">freight.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+    <field name="search_view_id" ref="view_freight_report_search"/>
+    <field name="context">{'search_default_company':1, 'search_default_year':1, 'search_default_month':1}</field>
+  </record>
+
+  <menuitem id="menu_freight_report" parent="stock.menu_warehouse_report" action="action_freight_report" sequence="40" groups="sales_team.group_sale_salesman_all_leads"/>
+
+</odoo>

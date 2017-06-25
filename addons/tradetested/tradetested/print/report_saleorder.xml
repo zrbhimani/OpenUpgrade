@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_saleorder_document">
+      <t t-call="report.external_layout">
+        <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})"/>
+        <div class="page" style="font-size:11px">
+          <div class="oe_structure"/>
+          <div class="row">
+
+
+            <div class="col-xs-7">
+              <h2>
+                <span t-if="doc.state!='quote'">TAX INVOICE</span>
+                <span t-if="doc.state=='quote'">QUOTE</span>
+                <span t-field="doc.name"/>
+              </h2>
+
+              <strong style="margin-left:10px">Billing address:</strong>
+              <div style="margin-left:20px" t-field="doc.partner_invoice_id" t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true, "phone_icons": false}'/>
+
+              <t t-if="doc.carrier_id.name != 'Pickup'">
+                <br/>
+                <strong style="margin-left:10px">Shipping address:</strong>
+                <div style="margin-left:20px" t-field="doc.display_address"/>
+              </t>
+
+            </div>
+            <div class="col-xs-2" style="width:130px">
+              <div>
+                <t t-if="doc.state=='quote'">
+                  <strong>Quotation Date</strong>
+                  <p t-field="doc.date_order"/>
+                  <strong>Quotation Number</strong>
+                  <p t-field="doc.name"/>
+                  <strong>GST Number</strong>
+                  <p>104244556</p>
+                </t>
+                <t t-if="doc.state!='quote'">
+                  <strong>Order Date</strong>
+                  <p t-field="doc.date_order"/>
+                  <strong>Order Number</strong>
+                  <p t-field="doc.name"/>
+                  <!--<strong>Customer Reference</strong>-->
+                  <!--<p t-field="doc.name"/>-->
+                  <strong>GST Number</strong>
+                  <p>104244556</p>
+                </t>
+
+              </div>
+            </div>
+            <div class="col-xs-2" style="width:140px">
+              <span>Trade Tested Limited</span>
+              <span t-field="doc.company_id.street"/>
+              <span t-field="doc.company_id.street2"/>
+              <span t-field="doc.company_id.city"/> <span t-field="doc.company_id.zip"/>
+              <span t-field="doc.company_id.country_id.name"/>
+            </div>
+          </div>
+
+          <!--<div class="col-xs-5 col-xs-offset-1">-->
+              <!--<div t-field="doc.partner_id"-->
+                   <!--t-field-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>-->
+            <!--</div>-->
+
+          <br/>
+          <br/>
+
+          <!--Invisible section: had to keep it, because been inherited by other views. -->
+          <div class="row mt32 mb32" id="informations" style="display:none">
+            <div t-if="doc.client_order_ref" class="col-xs-3">
+              <strong>Your Reference:</strong>
+              <p t-field="doc.client_order_ref"/>
+            </div>
+            <div t-if="doc.date_order" class="col-xs-3">
+              <strong t-if="doc.state not in ['draft','sent']">Date Ordered:</strong>
+              <strong t-if="doc.state in ['draft','sent']">Quotation Date:</strong>
+              <p t-field="doc.date_order"/>
+            </div>
+            <div t-if="doc.user_id.name" class="col-xs-3">
+              <strong>Salesperson:</strong>
+              <p t-field="doc.user_id"/>
+            </div>
+            <div name="payment_term" t-if="doc.payment_term_id" class="col-xs-3">
+              <strong>Payment Term:</strong>
+              <p t-field="doc.payment_term_id"/>
+            </div>
+          </div>
+
+          <!-- Is there a discount on at least one line? -->
+          <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+
+          <table class="table table-condensed">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th class="text-right">GST</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Unit Price</th>
+                <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Disc.(%)</th>
+                <th class="text-right">Amount <span t-field="doc.currency_id.name"/> </th>
+              </tr>
+            </thead>
+            <tbody class="sale_tbody">
+              <t t-foreach="doc.order_line" t-as="l">
+                <tr t-if="l.product_uom_qty">
+                  <td>
+                    <span t-field="l.name"/>
+                  </td>
+                  <td class="text-right">
+                    <t t-if="l.tax_id">
+                      <span t-esc="'%.2f %%%'% l.tax_id[0].amount"/>
+                    </t>
+                  </td>
+                  <td class="text-right">
+                    <span t-field="l.product_uom_qty"/>
+                    <span groups="product.group_uom" t-field="l.product_uom"/>
+                  </td>
+                  <td class="text-right">
+                    <span t-field="l.price_unit"/>
+                  </td>
+                  <td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+                    <span t-field="l.discount"/>
+                  </td>
+                  <td class="text-right"><span t-field="l.price_subtotal"/>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+          <div class="row" name="total">
+            <div class="col-xs-4 pull-right">
+              <table class="table table-condensed">
+                <tr>
+                  <td>Subtotal</td>
+                  <td class="text-right">
+                    <span t-field="doc.amount_untaxed" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>GST</td>
+                  <td class="text-right">
+                    <span t-field="doc.amount_tax" />
+                  </td>
+                </tr>
+                <tr class="border-black">
+                  <td>
+                    <strong>Total</strong>
+                  </td>
+                  <td class="text-right">
+                    <span t-field="doc.amount_total"/>
+                  </td>
+                </tr>
+                <t t-if="doc.state!='quote'">
+                  <tr>
+                    <td>
+                      <strong>Less Payments</strong>
+                    </td>
+                    <td class="text-right">
+                      <span t-field="doc.payments_total_less_refunds" widget="monetary"/>
+                    </td>
+                  </tr>
+                  <tr class="border-black">
+                    <td>
+                      <strong>Balance Remaining</strong>
+                    </td>
+                    <td class="text-right">
+                      <span t-field="doc.balance_remaining" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    </td>
+                  </tr>
+                </t>
+              </table>
+            </div>
+          </div>
+
+          <!--<span t-raw="doc.company_id.payment_details.replace('{REFERENCE}', doc.name)"/>-->
+
+          <p t-if="doc.state=='quote'">
+            Quote valid for 30 days
+          </p>
+
+          <p t-if="doc.payment_term_id.note">
+            <span t-field="doc.payment_term_id.note"/>
+          </p>
+          <p t-if="not doc.payment_term_id and doc.partner_id.property_payment_term_id">
+            <span t-field="doc.partner_id.property_payment_term_id.note"/>
+          </p>
+          <p id="fiscal_position_remark" t-if="doc.fiscal_position_id and doc.fiscal_position_id.note">
+            <strong>Fiscal Position Remark:</strong>
+            <span t-field="doc.fiscal_position_id.note"/>
+          </p>
+          <div class="oe_structure"/>
+        </div>
+      </t>
+    </template>
+
+
+    <template id="report_saleorder">
+      <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="doc">
+          <t t-call="tradetested.report_saleorder_document" t-lang="doc.partner_id.lang"/>
+        </t>
+      </t>
+    </template>
+
+</odoo>

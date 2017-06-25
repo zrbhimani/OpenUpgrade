@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="sql_export_wizard_form_view" model="ir.ui.view">
+      <field name="name">sql.export.wizard.form</field>
+      <field name="model">sql.export.wizard</field>
+      <field name="arch" type="xml">
+        <form string="SQL Export">
+          <group>
+            <group>
+              <field name="sql_export_id" readonly="1" invisible="1"/>
+              <field name="download_file" filename="file_name" readonly="1"/>
+              <field name="file_name" readonly="1" invisible="1"/>
+            </group>
+          </group>
+          <footer>
+            <button name="show_download" string="Show Download" type="object"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sql_export_wizard">
+      <field name="name">Export SQL</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">sql.export.wizard</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="view_id" ref="sql_export_wizard_form_view"/>
+    </record>
+
+    <record id="sql_export_tree_view" model="ir.ui.view">
+      <field name="name">sql.export.tree</field>
+      <field name="model">sql.export</field>
+      <field name="arch" type="xml">
+        <tree string="SQL Export">
+          <field name="name"/>
+          <field name="model_id"/>
+          <field name="filter_id"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="sql_export_form_view" model="ir.ui.view">
+      <field name="name">sql.export.form</field>
+      <field name="model">sql.export</field>
+      <field name="arch" type="xml">
+        <form string="SQL Export">
+          <header>
+            <button name="%(action_sql_export_wizard)d" type="action" string="Export"/>
+            <button name="create_action" string="Create option menu" type="object" attrs="{'invisible':[('ir_act_window_id','!=',False),('ir_value_id','!=',False)]}"/>
+            <button name="delete_action" string="Delete option menu" type="object" attrs="{'invisible':[('ir_act_window_id','=',False),('ir_value_id','=',False)]}"/>
+          </header>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="model_id"/>
+              <field name="model" invisible="1"/>
+              <field name="filter_id" domain="[('model_id','=',model)]" invisible="1"/>
+              <field name="sql"/>
+            </group>
+            <group>
+              <field name="ir_act_window_id" readonly="1" invisible="1"/>
+              <field name="ir_value_id" readonly="1" invisible="1"/>
+            </group>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sql_export">
+      <field name="name">SQL Export</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">sql.export</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="view_id" ref="sql_export_tree_view"/>
+    </record>
+
+    <menuitem id="menu_sql_export" action="action_sql_export" parent="menu_config_api" sequence="180"/>
+
+</odoo>

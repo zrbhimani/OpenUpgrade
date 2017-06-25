@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+
+
+    <!--Email template  for Service Agents .....-->
+    <record id="email_template_service_agents" model="mail.template">
+            <field name="name">Service Agent Engagement</field>
+            <field name="email_from">${object.company_id.email or ''}</field>
+            <field name="subject">Support Request for Case # ${object.id}</field>
+            <field name="email_to">${object.agent_id and object.agent_id.email or ''}</field>
+            <field name="partner_to">${object.agent_id and object.agent_id.id}</field>
+            <field name="model_id" ref="model_crm_helpdesk_agent"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.agent_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.agent_id.name},</p>
+
+    <p>Here is detail of support case # ${object.id} </p>
+
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>DETAILS</strong><br />
+
+       &nbsp;&nbsp;Customer: <strong>${object.partner_id.name}</strong><br />
+
+       &nbsp;&nbsp;Issue: <strong>${object.categ_id.name or ''}</strong><br />
+       &nbsp;&nbsp;Priority: <strong>${object.priority or ''}</strong><br />
+       &nbsp;&nbsp;Description: <strong>${object.description or ''}</strong><br />
+
+       % if object.ref:
+          &nbsp;&nbsp;Issue: <strong>${object.ref._table_name}</strong><br />
+       % endif
+    </p>
+
+    <p>Please feel free to contact for more details</p>
+    Thank You <br/>
+    ${object.user_id and object.user_id.name}!
+
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    <!--Email template  for Assembly Contractor .....-->
+
+    <record id="email_template_assembly_contractors" model="mail.template">
+            <field name="name">Assembly Contractor Engagement</field>
+            <field name="email_from">${object.company_id.email or ''}</field>
+            <field name="subject">Assembly Contract for Case # ${object.id}</field>
+            <field name="email_to">${object.agent_id and object.agent_id.email or ''}</field>
+            <field name="partner_to">${object.agent_id and object.agent_id.id}</field>
+            <field name="model_id" ref="model_crm_helpdesk_assembly_contractor"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.agent_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.assembly_contractor_id.name},</p>
+
+    <p>Thanks for agreeing to undertake an assembly quote for our customer. Please find details of the job below:</p>
+
+    <p style="border-left: 1px solid #8e0000; margin-left: 30px;">
+       &nbsp;&nbsp;<strong>DETAILS</strong><br />
+
+       &nbsp;&nbsp;Order Number: <strong>${object.order_id.name}</strong><br />
+
+        &nbsp;&nbsp;Customer Name: <strong>${object.partner_id.name}</strong><br />
+
+       &nbsp;&nbsp;Customer Phone Number: <strong>${object.phone}</strong><br />
+
+       &nbsp;&nbsp;Customer Address:
+       <strong>
+								 % if object.order_id.ship_street:
+								     ${object.order_id.ship_street},
+								 % endif
+
+								 % if object.order_id.ship_street2:
+								     ${object.order_id.ship_street2},
+								 % endif
+								 % if object.order_id.ship_state_id:
+								     % if object.order_id.ship_city:
+								         ${object.order_id.ship_city},&nbsp;${object.order_id.ship_state_id.name}
+								     % else
+								         ${object.order_id.ship_state_id.name}
+								     % endif
+								 % elif object.order_id.ship_city:
+								      ${object.order_id.ship_city}
+								 % endif
+								 % if object.order_id.ship_zip:
+								     ${object.order_id.ship_zip}
+								 % endif
+      </strong>
+      <br/>
+
+      % if object.product_id:
+         &nbsp;&nbsp;Product : <strong>${object.product_id.name}</strong><br />
+      % endif
+
+    </p>
+
+    <p>Please feel free to get in touch if you need any further information on ${object.order_id.company_id.phone}.</p>
+
+    <p>
+			Regards,<br/>
+			Customer Support<br/>
+			Trade Tested<br/>
+    </p>
+
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+     <!--Email template for ETA to Sale Orders .....-->
+    <record id="email_template_eta_updates_mail" model="mail.template">
+            <field name="name">ETA Update</field>
+            <field name="email_from">${object.company_id.email or ''}</field>
+            <field name="subject">ETA Update of Your Order # ${object.name}</field>
+            <field name="email_to">${object.partner_id.email or ''}</field>
+            <field name="email_cc">${object.company_id.email or 'support@tradetested.co.nz'}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.partner_id.name},</p>
+
+    <p>Thank you for your patience. Your order items will be available soon, here is the details of the same</p>
+
+    % for line in object.order_line:
+      % if line.product_id.type == 'product':
+        % if line.product_id.po_expected_date:
+          <p> ${line.product_id.name}  - ${line.product_id.po_expected_date}
+        % endif
+      % endif
+    % endfor
+
+    <p>Please feel free to contact for more details</p>
+    Thank You <br/>
+    TradeTested!
+
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    <record id="email_template_outwards_exception_mail" model="mail.template">
+      <field name="name">Outwards Exception</field>
+      <field name="email_from">${object.company_id.email or ''}</field>
+      <field name="subject">Delivery Order Exception # ${object.name}</field>
+      <field name="email_to">outwards_exceptions@tradetested.co.nz</field>
+      <field name="model_id" ref="stock.model_stock_picking"/>
+      <field name="auto_delete" eval="True"/>
+      <field name="lang">${object.partner_id.lang}</field>
+      <field name="body_html"><![CDATA[
+        <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+            <p>Outward Exception ${object.name},</p>
+
+            <h3>Exception Note</h3>
+            <p>
+              ${object.dispatch_message}
+            </p>
+
+            <h3>Delivered Products</h3>
+            <p>
+              ${object.dispatch_delivered}
+            </p>
+
+            <p>
+              Regards,<br/>
+              Customer Support<br/>
+              Trade Tested<br/>
+            </p>
+
+            </div>
+        </div>]]>
+      </field>
+    </record>
+
+    <!--Email Manuals -->
+    <record id="email_template_email_manuals_mail" model="mail.template">
+            <field name="name">Email Manuals</field>
+            <field name="email_from">${object.company_id.email or ''}</field>
+            <field name="subject">Manuals for Your Order # ${object.name}</field>
+            <field name="email_to">${object.partner_id.email or ''}</field>
+            <field name="email_cc">${object.company_id.email or 'support@tradetested.co.nz'}</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+    <p>Hello ${object.partner_id.name},</p>
+
+    <p>Thank you for your order. please find manuals attached for the products bought.</p>
+
+    <table border="1">
+      <tr>
+        <th width="250px">Product</th>
+        <th width="150px">Document</th>
+        <th width="150px">Attached File Name</th>
+      </tr>
+
+      % for line in object.order_line:
+        % if line.product_id.related_document_ids:
+          % for doc in line.product_id.related_document_ids:
+            % if doc.type == 'File':
+              <tr>
+                <td>${line.product_id.name}</td>
+                <td>${doc.name}</td>
+                <td>${doc.datas_fname}</td>
+              </tr>
+            % endif
+          % endfor
+        % endif
+      % endfor
+
+    </table>
+
+    <p>Please feel free to contact for more details</p>
+    Thank You <br/>
+    TradeTested!
+
+    </div>
+</div>
+            ]]></field>
+        </record>
+
+    <!--Email Quote-->
+    <record id="email_template_edi_quote_mail" model="mail.template">
+      <field name="name">Email Quote</field>
+      <field name="email_from">${object.company_id.email or ''}</field>
+      <field name="subject">Your Quote # ${object.name or '' }</field>
+      <field name="email_to">${object.partner_id.email or ''}</field>
+      <field name="email_cc">${object.company_id.email or 'support@tradetested.co.nz'}</field>
+      <field name="partner_to">${object.partner_id.id}</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="auto_delete" eval="False"/>
+      <field name="lang">${object.partner_id.lang}</field>
+      <field name="body_html"><![CDATA[
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <!-- TradeTested -->
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta property="og:title" content="Your invoice for order ${object.name or ''}" />
+      <title>Your invoice for order ${object.name or ''}</title>
+      <style type="text/css">
+		#backgroundTable,body{width:100%!important;padding:0;margin:0}#templatePreheader,.backgroundTable,body{background-color:#EEE}#outlook a,.headerContent,body{padding:0}body{-webkit-text-size-adjust:none}img{border:none;font-size:14px;font-weight:700;height:auto;line-height:100%;outline:0;text-decoration:none;text-transform:capitalize}#backgroundTable{height:100%!important}#templateContainer{border:1px solid #DDD}.preheaderContent div{color:#505050;font-family:Arial,sans-serif;font-size:10px;line-height:100%;text-align:left}.headerContent,.headerNav{font-family:Arial;line-height:100%;text-align:center;vertical-align:middle}.preheaderContent div a:link,.preheaderContent div a:visited{color:#369;font-weight:400;text-decoration:underline}.preheaderContent div img{height:auto;max-width:620px}#templateHeader{background-color:#FFF;border-bottom:0}.headerContent{color:#202020;font-size:34px;font-weight:700}.headerContent a:link,.headerContent a:visited{color:#369;font-weight:400;text-decoration:underline}.headerNav{color:#D2D2D2;background-color:#202020;font-size:12px;padding:8px}#templateContainer,#templateFooter,#utility,.bodyContent{background-color:#FDFDFD}.headerNav a{text-decoration:underline;color:#D2D2D2}.headerNav td{padding:0 10px;margin:0}#headerImage{height:auto;max-width:620px!important}.heading{color:#505050;font-family:Arial,sans-serif;font-size:22px;line-height:180%;text-align:left;font-weight:700;align:left}.bodyContent,.header{font-size:14px;text-align:left;font-family:Arial,sans-serif}.header{color:#fff;line-height:175%;font-weight:400;padding:0;margin:0}.header ul{list-style:none;padding-left:0;padding-top:0;margin-top:0}.header li a:link,.header li a:visited{text-decoration:none;color:#FFF}.bodyContent{color:#444;line-height:150%}.bodyContent div a:link,.bodyContent div a:visited{color:#369;font-weight:400;text-decoration:underline}.bodyContent img{display:inline;margin-bottom:10px}.center{text-align:center}#templateFooter{border-top:0}.footerContent div{color:#707070;font-family:Arial,sans-serif;font-size:12px;line-height:125%;text-align:left}#social div,#utility div,.product-price{text-align:center}.footerContent div a:link,.footerContent div a:visited{color:#369;font-weight:400;text-decoration:underline}.footerContent img{display:inline}#social{background-color:#F7F7F7}#utility{border-top:1px solid #DDD}#monkeyRewards img{max-width:160px}.product-title{line-height:30px;font-size:12px}.product-price{font-weight:700;font-size:30px;line-height:38px;color:#d2232a}.intro-description{font-size:14px;padding-top:5px;padding-bottom:10px}
+      </style>
+   </head>
+   <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+      <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
+      <tr>
+         <td align="center" valign="top">
+            <!-- // Begin Template Preheader \\ -->
+            <table border="0" cellpadding="10" cellspacing="0" width="620" id="templatePreheader">
+               <tr>
+                  <td valign="top" class="preheaderContent">
+                  </td>
+               </tr>
+            </table>
+            <!-- // End Template Preheader \\ -->
+            <table border="0" cellpadding="0" cellspacing="0" width="620" id="templateContainer">
+               <tr>
+                  <td align="center" valign="top">
+                      <!-- // Begin Template Header \\ -->
+                     <table border="0" cellpadding="0" cellspacing="0" id="template_header" width="620" style="background-color:white;border-bottom:0">
+                        <tr>
+                           <td class="header_content" style="background:#2f2f2f;color:#202020;font-family:Arial;font-size:34px;font-weight:700;line-height:100%;text-align:center;vertical-align:middle;padding:0">
+                              <table width="620">
+                                 <tr>
+                                    <td style="text-align:left;" width="620">
+                                       <a href="http://${object.company_id.website}" style="line-height:12px;color:#336699;font-weight:normal;text-decoration:underline"><img alt="Trade Tested" src="http://${object.company_id.website}/images/email/201406/logo.gif" style="border:none;font-size:14px;font-weight:700;height:auto;line-height:100%;outline:none;text-decoration:none;text-transform:capitalize"></a>
+                                    </td>
+                                  </tr>
+                              </table>
+                           </td>
+                        </tr>
+                     </table>
+                     <!-- // End Template Header \\ -->
+                  </td>
+               </tr>
+               <tr>
+                  <td align="center" valign="top">
+                     <!-- // Begin Template Body \\ -->
+                     <table border="0" cellpadding="0" cellspacing="0" width="620" id="templateBody">
+                        <tr>
+                           <td valign="top" class="bodyContent">
+                              <!-- // Begin Module: Standard Content \\ -->
+                              <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+                                 <tr>
+                                    <td valign="top">
+                                       <!-- Body -->
+                                       <table cellspacing="0" cellpadding="10px 0px 10px 0px" border="0" width="620">
+                                          <tbody>
+                                             <tr>
+                                                <td valign="top">
+                                                <p>Hi ${object.partner_id.name},</p>
+
+                                                <p>Thanks for your purchase from Trade Tested. Please see your invoice attached.</p>
+
+                                                <strong>Order Details</strong><br />
+                                                <p style="border-left: 1px solid #fc0; margin-left: 30px;">
+                                                   &nbsp;&nbsp;Order date: ${object.date_order}<br />
+                                                   &nbsp;&nbsp;Order number: ${object.name}<br />
+                                                   % if object.client_order_ref:
+                                                         &nbsp;&nbsp;Order reference: ${object.client_order_ref}<br />
+                                                   % endif
+                                                   &nbsp;&nbsp;Order total: $${'{0:.2f}'.format(object.amount_total) or '0.00'}</p>
+                                                <br />
+
+                                               <table style="border-collapse: collapse; border: 1px solid #999; width: 100%;">
+                                               <tr>
+                                                 <th align="left" bgcolor="#d9e5ee" style="padding:4px 12px 4px 12px; border:1px solid #bebcb7; line-height:1em;">Product</th>
+                                                 <th align="left" bgcolor="#d9e5ee" style="padding:4px 12px 4px 12px; border:1px solid #bebcb7; line-height:1em;">Quantity</th>
+                                               </tr>
+                                               % for line in object.order_line:
+                                                % if line.product_id.type == 'product':
+                                                      <tr>
+                                                        <td align="left" style="padding:4px 12px 4px 12px; border:1px solid #bebcb7; background:#f8f7f5; line-height:1em;">
+                                                          <a href="${line.product_id.magento_url_key}">${line.product_id.name}</a>
+                                                        </td>
+                                                        <td align="left" style="padding:4px 12px 4px 12px; border:1px solid #bebcb7; background:#f8f7f5; line-height:1em;">
+                                                          ${str(line.product_uom_qty)[-2:] == '.0' and str(line.product_uom_qty)[:-2] or str(line.product_uom_qty)}
+                                                        </td>
+                                                      </tr>
+                                                 % endif
+                                               % endfor
+                                               </table>
+                                               <p>Please double check the details on your invoice and the products above to make sure your order is correct. If your name, contact details, address or product(s) ordered aren't what you expected it's important you let us know immediately by replying to this email.</p>
+                                               <p>The Team at Trade Tested<br/>
+                                               </td>
+                                             </tr>
+                                          </tbody>
+                                       </table>
+                                       <!-- /Body -->
+                                    </td>
+                                 </tr>
+                              </table>
+                              <!-- // End Module: Standard Content \\ -->
+                           </td>
+                        </tr>
+                     </table>
+                     <!-- // End Template Body \\ -->
+                  </td>
+               </tr>
+               <tr>
+                  <td align="center" valign="top">
+                     <!-- // Begin Template Footer \\ -->
+                     <table border="0" cellpadding="0" cellspacing="0" width="620" height="50" id="templateFooter">
+                        <tr>
+                           <td valign="top" class="footerContent">
+                              <!-- // Begin Module: Standard Footer \\ -->
+                              <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                 <tr>
+                                    <td colspan="2" valign="middle" id="social" style="padding:4px; border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">
+                                       <div >
+                                          <a href="${object.company_id.website}" style="color: #336699;font-weight: normal;text-decoration: underline;">${object.company_id.website}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.facebook.com/tradetested" style="color: #336699;font-weight: normal;text-decoration: underline;"><img align="top" alt="facebook" src="http://gallery.mailchimp.com/0d61bb2ec9002f0e9872b8c36/images/facebook.png" style="display: inline;border: none;font-size: 14px;font-weight: bold;height: auto;line-height: 100%;outline: none;text-decoration: none;text-transform: capitalize;" width="18"></a>&nbsp;<a href="http://www.facebook.com/tradetested" style="color: #336699;font-weight: normal;text-decoration: underline;">Like us on Facebook</a>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              </table>
+                              <!-- // End Module: Standard Footer \\ -->
+                           </td>
+                        </tr>
+                     </table>
+                     <!-- // End Template Footer \\ -->
+                  </td>
+               </tr>
+            </table>
+   </body>
+</html>
+            ]]></field>
+    </record>
+
+  </data>
+</odoo>

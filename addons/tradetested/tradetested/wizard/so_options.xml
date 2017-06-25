@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<odoo>
+  <data>
+
+    <!-- Change Address - Depot Delivery -->
+    <record id="view_depot_delivery_form" model="ir.ui.view">
+      <field name="name">depot.delivery</field>
+      <field name="model">depot.delivery</field>
+      <field name="arch" type="xml">
+        <form string="Depot Delivery">
+          <group>
+            <field name="country_id" readonly="1"/>
+            <field name="partner_id" domain="[('country_id','=',country_id),('is_depot','=',True)]" string="Depot" attrs="{'invisible':[('country_id','=',False)]}" context="{'bypass_namesearch':True}"/>
+            <field name="partner_id_dummy" string="Depot" domain="[('is_depot','=',True)]" attrs="{'invisible':[('country_id','!=',False)]}"/>
+          </group>
+          <footer>
+            <button name="change_address" string="Change Address" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_change_address_depot_delivery" model="ir.actions.act_window">
+      <field name="name">Depot Delivery</field>
+      <field name="res_model">depot.delivery</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <!-- Merge Draft Sales Orders-->
+    <record id="view_merge_orders_form" model="ir.ui.view">
+      <field name="name">merge.orders.form</field>
+      <field name="model">merge.orders</field>
+      <field name="arch" type="xml">
+        <form string="Merge Draft Sales Orders">
+          <field name="not_allowed" invisible="1"/>
+          <h2>
+            <field name="message" nolabel="1" readonly="1"/>
+          </h2>
+          <field name="related_orders" colspan="4" nolabel="1" attrs="{'invisible':[('not_allowed','=',True)]}" domain="[('id','=',0)]">
+            <tree string="Sales Orders" class="sale_sale_order" fonts="bold:message_unread==True" colors="red:balance_remaining&gt;0;grey:state=='cancel';blue:state in ('waiting_date')">
+              <field name="message_unread" invisible="1"/>
+              <field name="name" string="Order #"/>
+              <field name="date_order"/>
+              <field name="partner_id"/>
+              <field name="user_id"/>
+              <field name="amount_total" sum="Total Tax Included" string="Order Total"/>
+              <field name="balance_remaining" sum="bal_rem" string="Balance"/>
+              <field name="state"/>
+            </tree>
+          </field>
+          <footer>
+            <button name="merge_orders" string="Yes! Merge" type="object" class="oe_highlight" attrs="{'invisible':[('not_allowed','=',True)]}"/>
+            <button special="cancel" string="Close" class="oe_highlight" attrs="{'invisible':[('not_allowed','=',False)]}"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_merge_sales_order" model="ir.actions.act_window">
+      <field name="name">Merge Sales Orders</field>
+      <field name="res_model">merge.orders</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_merge_orders_form"/>
+      <field name="target">new</field>
+    </record>
+
+    <!-- Cancel Sale Order -->
+    <record id="view_cancel_order_form" model="ir.ui.view">
+      <field name="name">cancel.order</field>
+      <field name="model">cancel.order</field>
+      <field name="arch" type="xml">
+        <form string="Cancel Sale Order?">
+          <h1>
+            <label string="Alert!"/>
+          </h1>
+          <h3>
+            <label string="Are you sure you want to cancel this order?"/>
+          </h3>
+          <footer>
+            <button name="button_cancel_order" string="Yes" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="No" class="oe_link" default_focus="1"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_cancel_order" model="ir.actions.act_window">
+      <field name="name">Cancel Sale Order</field>
+      <field name="res_model">cancel.order</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="view_cancel_order_form"/>
+      <field name="target">new</field>
+    </record>
+
+    <!-- Sale Quick Exchange -->
+    <record id="view_sale_quick_exchange_form" model="ir.ui.view">
+      <field name="name">sale.quick.exchange</field>
+      <field name="model">sale.quick.exchange</field>
+      <field name="arch" type="xml">
+        <form string="Quick Exchange">
+          <group>
+            <field name="order_id" readonly="1"/>
+            <field name="company_id" invisible="1"/>
+            <field name="product_ids" domain="[('company_id','=',company_id),('sale_ok','=',True)]" required="1"/>
+            <field name="transfer_amount" required="1"/>
+            <field name="notes" required="1"/>
+          </group>
+          <footer>
+            <button name="create_new_order" string="Create New Order" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <!--Review Payment-->
+    <record id="view_review_payment" model="ir.ui.view">
+      <field name="name">review_payment</field>
+      <field name="model">review.payment</field>
+      <field name="arch" type="xml">
+        <form string="Review Payment">
+          <group>
+            <h1>
+              Are you Sure ?
+            </h1>
+          </group>
+          <div style="height:50px">
+
+          </div>
+          <footer>
+            <button name="mark_reviewed" string="Yes! Selected Payments Reviewed" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window
+            id="action_window_review_payment"
+            name="Mark as Reviewed"
+            key2="client_action_multi"
+            res_model="review.payment"
+            src_model="payment.report"
+            view_mode="form"
+            target="new"
+            view_type="form"/>
+
+    <!--Sale Order Line: Customer Expected Date-->
+    <record id="view_sol_customer_expected_date" model="ir.ui.view">
+      <field name="name">sol.expected.date.form</field>
+      <field name="model">sol.expected.date</field>
+      <field name="arch" type="xml">
+        <form string="Set Customer Expected Date">
+          <group>
+            <h3>
+              Set Customer Expected Date to PO Expected Date?
+            </h3>
+          </group>
+          <footer>
+            <button name="update_customer_expected_date" string="Update" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window
+            id="action_customer_expected_date"
+            name="Set Customer Expected Date"
+            key2="client_action_multi"
+            res_model="sol.expected.date"
+            src_model="sale.order.line"
+            view_mode="form"
+            target="new"
+            view_type="form"/>
+
+    <!--Sale Order Validate-->
+    <record id="view_sale_order_validate_form" model="ir.ui.view">
+      <field name="name">sale.order.validate.form</field>
+      <field name="model">sale.order.validate</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Warning">
+          <field name="order_id" invisible="1"/>
+          <field name="validation" invisible="1"/>
+          <h3>
+            <field name="msg" readonly="1"/>
+          </h3>
+          <h4 attrs="{'invisible':[('validation','!=','rural')]}">
+            <field name="partner_id" readonly="1"/>
+            <field name="rural_address" readonly="1"/>
+          </h4>
+          <group attrs="{'invisible':[('validation','!=','identity')]}">
+            <div>
+              <br/>
+              <label for="license_number"/>
+              <br/>
+              <field name="license_number" style="width:30%%"/>
+              <br/>
+              <br/>
+              <label for="license_version"/>
+              <br/>
+              <field name="license_version" style="width:30%%"/>
+            </div>
+            <div>
+              <img src="tradetested/static/src/img/driver_license.png"/>
+            </div>
+          </group>
+          <footer>
+            <button name="validate" string="Process Order" type="object" class="oe_highlight" attrs="{'invisible':[('validation','not in',['rural','general'])]}"/>
+            <button name="update_tax" string="Yes &amp; Process Order" type="object" class="oe_highlight" attrs="{'invisible':[('validation','!=','tax')]}"/>
+            <button name="validate" string="No &amp; Process Order" type="object" attrs="{'invisible':[('validation','!=','tax')]}"/>
+            <button name="validate_identity" string="Process Order" type="object" attrs="{'invisible':[('validation','!=','identity')]}"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <!--Cancel and Create Order -->
+
+    <record id="view_cancel_and_create_order_form" model="ir.ui.view">
+      <field name="name">cancel.and.create.order.form</field>
+      <field name="model">cancel.and.create.order</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Cancel and Create New Order">
+          <h3>
+            <label string="Cancel this Order and Create New Order, Continue?"/>
+          </h3>
+          <footer>
+            <button name="cancel_and_create" string="Yes! Create New Order" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window
+            id="wizard_cancel_and_create_order"
+            name="Cancel and Create New Order"
+            res_model="cancel.and.create.order"
+            src_model="sale.order"
+            view_mode="form"
+            target="new"
+            view_type="form"/>
+
+    <!--Hold Order-->
+
+    <record model="ir.ui.view" id="view_sale_hold_order_form">
+      <field name="name">sale_hold_order</field>
+      <field name="model">sale.hold.order</field>
+      <field name="arch" type="xml">
+        <form string="Create Case">
+          <field name="order_id" invisible="1"/>
+          <field name="mode" invisible="1"/>
+          <group attrs="{'invisible':[('mode','!=','held')]}">
+            <field name="order_status" attrs="{'required':[('mode','=','held')]}"/>
+            <field name="future_date"/>
+          </group>
+          <group attrs="{'invisible':[('mode','!=','exception')]}">
+            <field name="exception_reason_ids" widget="many2many_tags"/>
+          </group>
+          <div style="height:50px"></div>
+          <footer>
+            <button name="open_dispatch" string="Save" type="object" class="oe_highlight"/>
+            or
+            <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_sale_hold_order" model="ir.actions.act_window">
+      <field name="name">Hold Order</field>
+      <field name="res_model">sale.hold.order</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="context">{'default_mode':'held'}</field>
+    </record>
+
+    <record id="action_sale_update_exception" model="ir.actions.act_window">
+      <field name="name">Update Exception</field>
+      <field name="res_model">sale.hold.order</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="context">{'default_mode':'exception'}</field>
+    </record>
+
+    <!--Treatme Import-->
+
+    <record id="view_treatme_import_form" model="ir.ui.view">
+      <field name="name">treatme.import.form</field>
+      <field name="model">treatme.import</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="TreatMe Import">
+          <group>
+            <field name="csv_file" required="1"/>
+          </group>
+          <group>
+            <group>
+              <field name="line_ids" colspan="4" nolabel="1">
+                <tree editable="bottom">
+                  <field name="product_id" required="1"/>
+                  <field name="quantity" required="1"/>
+                  <field name="price" required="1"/>
+                </tree>
+              </field>
+            </group>
+            <group>
+              <field name="delivery_ids" colspan="4" nolabel="1">
+                <tree editable="bottom">
+                  <field name="method" required="1"/>
+                  <field name="carrier_id" required="1" widget="selection"/>
+                  <field name="price"/>
+                </tree>
+              </field>
+            </group>
+          </group>
+          <footer>
+            <button name="do_import" string="Import" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window id="window_treatme_import"
+                name="TreatMe Import"
+                res_model="treatme.import"
+                src_model="sale.order"
+                view_mode="form" target="new"
+                view_type="form"/>
+
+    <!--Partner Operations-->
+    <record id="view_partner_operations_form" model="ir.ui.view">
+      <field name="name">partner.operations.form</field>
+      <field name="model">partner.operations</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Partner Operations">
+          <group>
+          </group>
+          <footer>
+            <button name="update_first_name_all" string="Update All Partner's First Name" type="object" class="oe_highlight"/>
+            <button name="merge_customers" string="Run Merge Customers" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window id="window_partner_operations"
+                name="Partner Operations"
+                res_model="partner.operations"
+                src_model="res.partner"
+                view_mode="form" target="new"
+                view_type="form"/>
+
+  </data>
+</odoo>

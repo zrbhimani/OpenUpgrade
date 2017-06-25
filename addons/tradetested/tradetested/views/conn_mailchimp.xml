@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!-- Members -->
+    <record model="ir.ui.view" id="mailchimp_member_form_view">
+      <field name="name">Mailchimp member</field>
+      <field name="model">mailchimp.member</field>
+      <field name="arch" type="xml">
+        <tree string="Members">
+          <field name="partner_id"/>
+          <field name="list_id"/>
+          <field name="leid"/>
+          <field name="euid"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_view_members">
+      <field name="name">Members</field>
+      <field name="res_model">mailchimp.member</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree</field>
+    </record>
+
+    <!-- Batches -->
+    <record model="ir.ui.view" id="mailchimp_batch_tree_view">
+      <field name="name">Mailchimp batch</field>
+      <field name="model">mailchimp.batch</field>
+      <field name="arch" type="xml">
+        <tree string="Batches">
+          <field name="batch_id"/>
+          <field name="post_date"/>
+          <field name="proc_date"/>
+          <button name="get_batch_status" type="object" string="Get Status" icon="gtk-go-down"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="mailchimp_batch_form_view">
+      <field name="name">Mailchimp batch</field>
+      <field name="model">mailchimp.batch</field>
+      <field name="arch" type="xml">
+        <form string="Batches">
+          <header>
+            <button name="get_batch_status" type="object" string="Get Status" icon="gtk-go-down"/>
+          </header>
+          <group>
+            <field name="batch_id"/>
+            <field name="post_date"/>
+            <field name="proc_date"/>
+            <field name="resp"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_view_batches">
+      <field name="name">Batches</field>
+      <field name="res_model">mailchimp.batch</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!--Config -->
+    <record model="ir.ui.view" id="mailchimp_config_tree_view">
+      <field name="name">Mailchimp Configuration</field>
+      <field name="model">mailchimp.config</field>
+      <field name="arch" type="xml">
+        <tree string="Mailchimp Configuration">
+          <field name="name"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="mailchimp_config_form_view">
+      <field name="name">Mailchimp Configuration</field>
+      <field name="model">mailchimp.config</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form create="0">
+          <header>
+            <div>
+              <button name="test_connection" string="Test Connection" type="object" states="New,Error"/>
+              <button name="reset_to_draft" string="Reset" type="object" states="Connected"/>
+              <button name="import_lists" string="Import Lists" type="object" states="Connected"/>
+              <button name="import_groups" string="Import Groups" type="object" states="Connected"/>
+
+              <button name="import_members" string="Sync Members" type="object" states="Connected"/>
+              <button name="mailchimp_export_cron" string="Export Members Now" type="object" states="Connected" class="oe_highlight"/>
+              <button name="export_all" string="Re-export All" type="object" states="Connected"/>
+
+              <field name="state" widget="statusbar" status="New,Connected"/>
+            </div>
+          </header>
+          <sheet>
+            <div class="oe_right oe_button_box" name="button_box">
+              <button name="%(action_view_members)d" string="Members" type="action" icon="fa-users" class="oe_stat_button"/>
+              <button name="%(action_view_batches)d" string="Batches" type="action" icon="fa-tasks" class="oe_stat_button"/>
+            </div>
+            <group>
+              <group>
+                <field name="name" required="1"/>
+                <field name="api_key" required="1" password="1"/>
+                <field name="exclude_channel_ids" widget="many2many_tags"/>
+              </group>
+              <newline/>
+              <notebook colspan="4">
+                <page string="Mailing Lists">
+                  <field name="list_ids" colspan="4" nolabel="1">
+                    <tree editable="bottom">
+                      <field name="name" readonly="1"/>
+                      <field name="mailchimp_id" readonly="1"/>
+                      <field name="company_id"/>
+                    </tree>
+                  </field>
+                </page>
+                <page string="Groups">
+                  <field name="group_ids" colspan="4" nolabel="1" readonly="1">
+                    <tree string="Groups">
+                      <field name="list_id"/>
+                      <field name="category_name"/>
+                      <field name="name"/>
+                      <field name="mailchimp_id"/>
+                    </tree>
+                  </field>
+                </page>
+              </notebook>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_mailchimp_configuration">
+      <field name="name">Mailchimp</field>
+      <field name="res_model">mailchimp.config</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_mailchimp_config" action="action_mailchimp_configuration" parent="menu_config_api" sequence="160"/>
+
+    <!--Partner Categories-->
+
+    <record id="view_partner_category_form" model="ir.ui.view">
+      <field name="name">Partner Categories</field>
+      <field name="model">res.partner.category</field>
+      <field name="inherit_id" ref="base.view_partner_category_form"/>
+      <field name="arch" type="xml">
+        <field name="parent_id" position="after">
+          <field name="group_ids" widget="many2many_tags"/>
+        </field>
+      </field>
+    </record>
+
+</odoo>

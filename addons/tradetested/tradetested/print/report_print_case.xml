@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <template id="print_case_doc">
+    <t t-call="report.html_container">
+      <t t-call="tradetested.external_layout2">
+        <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+        <div class="page">
+          <br/><br/>
+          <h3>Case
+            <span t-esc="o.id"/>
+          </h3>
+          <h3>
+            <span t-field="o.order_id"/>
+          </h3>
+
+          <span><strong>Case Details</strong></span>
+          <table class="table table-condensed" border="0">
+            <tr>
+              <td style="border: 1px solid #e6e6e6;width:100px;">Company</td>
+              <td style="border: 1px solid #e6e6e6;width:300px;"><span t-field="o.company_id"/></td>
+              <td style="border: 1px solid #e6e6e6;width:125px;">Creation Date</td>
+              <td style="border: 1px solid #e6e6e6;width:275px;"><span t-field="o.create_date"  t-field-options='{"format": "MM/dd/yyyy"}'/></td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #e6e6e6;">Owner</td>
+              <td style="border: 1px solid #e6e6e6;"><span t-field="o.owner_id"/></td>
+              <td style="border: 1px solid #e6e6e6;">Update Date</td>
+              <td style="border: 1px solid #e6e6e6;"><span t-field="o.write_date" t-field-options='{"format": "MM/dd/yyyy"}'/></td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #e6e6e6;">Responsible</td>
+              <td style="border: 1px solid #e6e6e6;"><span t-field="o.user_id"/></td>
+              <td style="border: 1px solid #e6e6e6;">Closed Date</td>
+              <td style="border: 1px solid #e6e6e6;"><span t-field="o.date_closed"/></td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid #e6e6e6;">Sales Team</td>
+              <td style="border: 1px solid #e6e6e6;"><span t-field="o.section_id"/></td>
+              <td style="border: 1px solid #e6e6e6;"></td>
+              <td style="border: 1px solid #e6e6e6;"></td>
+            </tr>
+          </table>
+
+          <div class="row">
+            <div class="col-xs-6" style="padding-right:0px">
+              <span><strong>Issue</strong></span>
+              <table class="table table-condensed" align="left" width="400px">
+                <tr>
+                  <td style="border: 1px solid #e6e6e6; width:100px">Deadline</td>
+                  <td style="border: 1px solid #e6e6e6; width:300px"><span t-field="o.date_deadline"/></td>
+                </tr>
+                <tr>
+                  <td style="border: 1px solid #e6e6e6;">Priority</td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.priority"/></td>
+                </tr>
+                <tr>
+                  <td style="border: 1px solid #e6e6e6;">Issue</td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.categ_id"/></td>
+                </tr>
+                <tr>
+                  <td style="border: 1px solid #e6e6e6;">Resolution</td>
+                  <td style="border: 1px solid #e6e6e6;">
+                    <t t-foreach="o.resolution_ids" t-as="r">
+                      <span t-field="r.name"/>,
+                    </t>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="col-xs-6" style="padding-left:0px">
+              <span><strong>Related Documents</strong></span>
+              <table class="table table-condensed" align="right">
+                <tr>
+                  <td style="border: 1px solid #e6e6e6; width:125px">Sales Order</td>
+                  <td style="border: 1px solid #e6e6e6; width:275px"><span t-field="o.order_id"/></td>
+                </tr>
+                <tr t-if="o.ref">
+                  <td style="border: 1px solid #e6e6e6;"><span t-esc="o.ref._description"/></td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.ref.name"/></td>
+                </tr>
+                <tr t-if="o.ref2">
+                  <td style="border: 1px solid #e6e6e6;"><span t-esc="o.ref2._description"/></td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.ref2.name"/></td>
+                </tr>
+                <tr t-if="o.ref3">
+                  <td style="border: 1px solid #e6e6e6;"><span t-esc="o.ref3._description"/></td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.ref3.name"/></td>
+                </tr>
+                <tr t-if="o.ref4">
+                  <td style="border: 1px solid #e6e6e6;"><span t-esc="o.ref4._description"/></td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.ref4.name"/></td>
+                </tr>
+                <tr t-if="o.ref5">
+                  <td style="border: 1px solid #e6e6e6;"><span t-esc="o.ref5._description"/></td>
+                  <td style="border: 1px solid #e6e6e6;"><span t-field="o.ref5.name"/></td>
+                </tr>
+              </table>
+           </div>
+          </div>
+
+          <table class="table table-condensed" align="left" style="margin-top:3%;width:58%">
+            <tr>
+              <td style="border: 1px solid #e6e6e6;">
+                <strong>Original Shipping Address :</strong><br/>
+                <span t-field="o.order_id.partner_id"/><br/>
+                <span t-field="o.order_id.ship_tt_company_name"/><br/>
+                <span t-field="o.order_id.ship_street"/><br/>
+                <span t-field="o.order_id.ship_street2"/><br/>
+                <span t-field="o.order_id.ship_city"/>, <span t-field="o.order_id.ship_state_id"/>,
+                <span t-field="o.order_id.ship_zip"/><br/>
+                <t t-if="o.order_id.phone">
+                  <br/>
+                  <span>Phone:</span>
+                  <span t-field="o.order_id.phone"/>
+                </t>
+                <t t-if="o.order_id.delivery_instructions">
+                  <br/>
+                  <span>Delivery Instructions:</span>
+                  <span t-field="o.order_id.delivery_instructions"/>
+                </t>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </t>
+    </t>
+  </template>
+
+
+  <template id="print_case">
+    <t t-foreach="docs" t-as="o">
+      <t t-call="tradetested.print_case_doc" t-lang="o.partner_id.lang"/>
+    </t>
+  </template>
+
+</odoo>
