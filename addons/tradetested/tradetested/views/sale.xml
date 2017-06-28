@@ -1,0 +1,1438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_eftpos">
+      <field name="sequence">1</field>
+      <field name="code">eftpos</field>
+      <field name="name">EFTPOS</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_cash">
+      <field name="sequence">2</field>
+      <field name="code">cash</field>
+      <field name="name">Cash</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_paypal">
+      <field name="sequence">3</field>
+      <field name="code">paypal</field>
+      <field name="name">Paypal</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_credit_card_auto">
+      <field name="sequence">4</field>
+      <field name="code">credit_card_auto</field>
+      <field name="name">Credit Card Auto</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_bank_deposit">
+      <field name="sequence">5</field>
+      <field name="code">bank_deposit</field>
+      <field name="name">Bank Deposit</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_pay_now">
+      <field name="sequence">6</field>
+      <field name="code">pay_now</field>
+      <field name="name">Pay Now</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_voucher">
+      <field name="sequence">7</field>
+      <field name="code">voucher</field>
+      <field name="name">Voucher</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_cheque">
+      <field name="sequence">8</field>
+      <field name="code">cheque</field>
+      <field name="name">Cheque</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_credit_account">
+      <field name="sequence">9</field>
+      <field name="code">credit_account</field>
+      <field name="name">Credit Account</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_method_transfer">
+      <field name="sequence">10</field>
+      <field name="code">transfer</field>
+      <field name="name">Transfer</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_credit_card">
+      <field name="sequence">11</field>
+      <field name="code">credit_card</field>
+      <field name="name">Credit Card Manual</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_farmlands_card">
+      <field name="sequence">12</field>
+      <field name="code">farmlands_card</field>
+      <field name="name">Farmlands Card</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_gift_card">
+      <field name="sequence">13</field>
+      <field name="code">gift_card</field>
+      <field name="name">Gift Card</field>
+    </record>
+
+    <record model="sale.order.payment.method" id="sale_order_payment_method_store_credit">
+      <field name="sequence">14</field>
+      <field name="code">store_credit</field>
+      <field name="name">Store Credit</field>
+    </record>
+
+    <!-- Sale Order Business Exceptions -->
+
+    <record model="sale.order.exception" id="sale_order_exception_full_order_check">
+      <field name="sequence">1</field>
+      <field name="name">Full Order Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_aus_pickup_oos">
+      <field name="sequence">2</field>
+      <field name="name">Australian Pickup OOS</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_trade_me_oos">
+      <field name="sequence">3</field>
+      <field name="name">Trade Me OOS</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_ebay_oos">
+      <field name="sequence">4</field>
+      <field name="name">eBay OOS</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_phn_num_req">
+      <field name="sequence">5</field>
+      <field name="name">Phone Number Required</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_shipping_add_req">
+      <field name="sequence">6</field>
+      <field name="name">Shipping Address Required</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_shipping_add_check">
+      <field name="sequence">7</field>
+      <field name="name">Shipping Address Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_deli_inst_check">
+      <field name="sequence">8</field>
+      <field name="name">Delivery Instructions Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_prod_sku_check">
+      <field name="sequence">9</field>
+      <field name="name">Product SKU Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_depot_deli_req">
+      <field name="sequence">10</field>
+      <field name="name">Depot Delivery Required</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_freight_quote_req">
+      <field name="sequence">11</field>
+      <field name="name">Freight Quote Required</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_fraud_score_check">
+      <field name="sequence">12</field>
+      <field name="name">Fraud Score Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_payment_review_req">
+      <field name="sequence">13</field>
+      <field name="name">Payment Review Required</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_open_case_check">
+      <field name="sequence">14</field>
+      <field name="name">Open Case Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_open_ticket_check">
+      <field name="sequence">15</field>
+      <field name="name">Open Ticket Check</field>
+    </record>
+
+    <record model="sale.order.exception" id="sale_order_exception_related_order_check">
+      <field name="sequence">16</field>
+      <field name="name">Related Order Check</field>
+    </record>
+
+    <!-- Sale Order Marketing Method -->
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_unknown">
+      <field name="sequence">1</field>
+      <field name="code"></field>
+      <field name="name">Unknown</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_trade_me">
+      <field name="sequence">2</field>
+      <field name="code">trade_me</field>
+      <field name="name">Trade Me</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_google">
+      <field name="sequence">3</field>
+      <field name="code">google</field>
+      <field name="name">Google</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_ebay">
+      <field name="sequence">4</field>
+      <field name="code">ebay</field>
+      <field name="name">eBay</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_direct">
+      <field name="sequence">5</field>
+      <field name="code">direct</field>
+      <field name="name">Direct</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_showroom">
+      <field name="sequence">6</field>
+      <field name="code">showroom</field>
+      <field name="name">Showroom</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_print">
+      <field name="sequence">7</field>
+      <field name="code">print</field>
+      <field name="name">Print</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_email">
+      <field name="sequence">8</field>
+      <field name="code">email</field>
+      <field name="name">Email</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_catalogue">
+      <field name="sequence">9</field>
+      <field name="code">catelogue</field>
+      <field name="name">Catalogue</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_adwords">
+      <field name="sequence">10</field>
+      <field name="code">adwords</field>
+      <field name="name">Adwords</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_daily_deal">
+      <field name="sequence">11</field>
+      <field name="code">daily_deal</field>
+      <field name="name">Daily Deal</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_radio">
+      <field name="sequence">12</field>
+      <field name="code">radio</field>
+      <field name="name">Radio</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_unpaid_search">
+      <field name="sequence">13</field>
+      <field name="code">unpaid_search</field>
+      <field name="name">Unpaid Search</field>
+    </record>
+
+    <record model="sale.order.marketing.method" id="sale_order_marketing_method_treat_me">
+      <field name="sequence">14</field>
+      <field name="code">treat_me</field>
+      <field name="name">Treat Me</field>
+    </record>
+
+  </data>
+
+
+  <!--groups="group_deprecated"-->
+
+  <menuitem name="Sales" id="base.menu_base_partner" sequence="-1" groups="sales_team.group_sale_salesman"/>
+
+  <menuitem id="menu_sales" name="Sales" parent="sales_team.menu_base_partner" sequence="2"/>
+
+  <menuitem id="sale.menu_sale_quotations" action="sale.action_quotations" parent="sales_team.menu_sales" sequence="11" groups="group_deprecated"/>
+
+  <menuitem id="menu_config_sale" name="Sales" groups="" parent="sales_team.menu_sale_config" sequence="2"/>
+
+  <menuitem id="menu_config_address_book" parent="sales_team.menu_sale_config" name="Contacts" sequence="3" groups="base.group_system"/>
+
+  <menuitem id="sale.prod_config_main" name="Products" parent="sales_team.menu_sale_config" sequence="4"/>
+
+  <menuitem id="menu_crm_config_lead" name="Leads &amp; Opportunities" parent="sales_team.menu_sale_config" sequence="" groups="sales_team.group_sale_manager"/>
+
+  <record id="view_order_form" model="ir.ui.view">
+    <field name="name">sale.order.form</field>
+    <field name="model">sale.order</field>
+    <field name="priority">3</field>
+    <field name="arch" type="xml">
+      <form string="Sales Order" class="sale_sale_order_form">
+        <header>
+          <button name="action_cancel" states="draft,sent,sale" type="object" string="Cancel"/>
+
+          <button name="action_quote" string="Change to Quote" type="object" attrs="{'invisible':['|',('state','!=','draft'),('sale_order_payment_id','!=',[])]}" groups="sales_team.group_sale_salesman"/>
+
+          <button name="%(action_crm_case_create)d" type="action" string="Create Case" attrs="{'invisible':[('pending_cases','=',True)]}"/>
+          <button name="%(action_change_address_depot_delivery)d" type="action" string="Depot Delivery" attrs="{'invisible':[('state','in',['progress','done'])]}"/>
+
+          <button name="action_quotation_send" string="Email Invoice" type="object" states="draft"/>
+          <button name="action_quotation_send" string="Email Quotation" type="object" states="quote"/>
+
+          <button name="%(action_sale_hold_order)d" type="action" string="Hold" attrs="{'invisible':['|',('order_held','!=',False),('state','in',['progress','done','cancel'])]}" context="{'default_mode':'held'}"/>
+          <button name="unhold_order" string="Unhold Order" type="object" attrs="{'invisible':[('order_held','!=',True)]}"/>
+
+          <button name="action_draft" states="cancel" type="object" string="Set to Order"/>
+          <!--<button name="action_done" type="object" string="Set to Done" states="sale" help="If a sale order is done, you cannot modify it manually anymore. However, you will still be able to invoice or deliver. This is used to freeze the sale order."/>-->
+
+          <button name="add_payment" type="object" string="Add Payment" class="oe_highlight" attrs="{'invisible': [('balance_remaining','=',0)]}"/>
+
+          <button name="action_confirm_validate" string="Process" type="object" context="{'show_sale': True}"
+                  attrs="{'invisible':['|','|','|','|',('can_merge','not in',['Possible', False]),('state','not in',['draft']),('sale_order_payment_id','=',[])]}" class="btn-primary"/>
+          <!--,('visible_confirm_sale','!=',True)-->
+          <button name="action_confirm_validate" string="Process" type="object" context="{'show_sale': True}"
+                  attrs="{'invisible':['|','|','|','|',('can_merge','!=','Yes'),('state','not in',['draft','quote']),('sale_order_payment_id','=',[])]}" class="btn-primary"/>
+          <!--,('visible_confirm_sale','!=',True)-->
+
+          <button name="%(action_merge_sales_order)d" string="Merge" type="action" class="oe_highlight" attrs="{'invisible':[('can_merge','!=','Yes')]}" groups="sales_team.group_sale_salesman"/>
+          <button name="%(action_merge_sales_order)d" string="Merge" type="action" attrs="{'invisible':[('can_merge','!=','Possible')]}" groups="sales_team.group_sale_salesman"/>
+
+          <button name="action_button_quote_revert" string="Change to Order" type="object" states="quote" class="oe_highlight" groups="sales_team.group_sale_salesman"/>
+
+          <field name="state" widget="statusbar" statusbar_visible="draft,sale,done"/>
+        </header>
+
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('invoice_count', '=', 0)]}">
+              <field name="invoice_count" widget="statinfo" string="Invoices"/>
+            </button>
+          </div>
+          <div class="oe_title">
+            <h1>
+              <span style="margin-right:5px" class="oe_form_field oe_form_field_char oe_inline oe_form_required">Order</span>
+              <field name="name" readonly="1" class="oe_inline"/>
+            </h1>
+          </div>
+          <span attrs="{'invisible':[('case_note','=',False)]}" style="background: #ffcc03; display:block; padding:5px 10px 5px 10px; border: 1px solid #999">
+            <field name="case_note" readonly="1"/>
+          </span>
+
+          <group col="4">
+            <group colspan="2">
+              <field name="last_partner_id" invisible="1"/>
+              <!-- This field to solve the issue of onchange called on partner fields change and so showing up the use last ship address -->
+              <label for="partner_id"/>
+              <div>
+                <field name="partner_id" style="width:230px" domain="[('customer','=',True)]"
+                       context="{'search_default_customer':1, 'restrict_when_empty':True, 'partner_sale_view':True, 'form_view_ref':'tradetested.view_partner_from_sale_order', 'tree_view_ref': 'tradetested.view_partner_tree_search_more', 'search_view_ref': 'tradetested.view_partner_filter_search_more'}"
+                       options='{"always_reload": True, "quick_create":false}' required="0"/>
+                <img class="oe_customer_quick_create oe_edit_only" attrs="{'invisible':[('partner_id','!=',False)]}" src="/tradetested/static/src/img/add-customer.png" height="24px" width="24px"/>
+              </div>
+              <field name="last_ship_address" invisible="1" readonly="1"/>
+              <label string="" colspan="1" attrs="{'invisible':[('last_ship_address','=',False)]}"/>
+              <div attrs="{'invisible':[('last_ship_address','=',False)]}" class="oe_edit_only">
+                <div attrs="{'invisible':['|','|','|','|','|','|',('ship_tt_company_name','!=',False),('ship_street','!=',False),('ship_street2','!=',False),('ship_city','!=',False),('ship_zip','!=',False),('ship_state_id','!=',False)]}">
+                  <b>
+                    <label string="Do you want to use last shipping address?"/>
+                    <button name="use_last_ship_address" string="Yes" type="object" class="oe_link"/>
+                    or
+                    <button name="no_last_ship_address" string="No" type="object" class="oe_link"/>
+                  </b>
+                </div>
+              </div>
+              <newline/>
+              <label for="phone"/>
+              <div>
+                <field name="phone" style="width:35%%"/>
+                <span class="oe_form_field oe_form_field_char" style="width:28%%">
+                  <span class="oe_form_char_content oe_edit_only" attrs="{'invisible':[('phone2','!=',False)]}">
+                    <strong>Other Ph.</strong>
+                  </span>
+                  <span class="oe_form_char_content oe_read_only" attrs="{'invisible':[('phone2','=',False)]}">
+                    <strong>Other Ph.</strong>
+                  </span>
+                </span>
+                <field name="phone2" style="width:37%%"/>
+              </div>
+              <field name="ship_tt_company_name"/>
+              <div width="1%%" style="padding-top:4px; width:100%%;" class="oe_form_group_cell_label">
+                <label for="ship_street" string="Delivery Address" style="font-weight:bold !important"/>
+                <div class="oe_clear">
+                  <br/>
+                </div>
+                <span attrs="{'invisible':[('is_rural_delivery','=',False)]}" style="background-color:#ffff04; width:140px; display:block" title="Warning: Rural delivery address">
+                  <img src="tradetested/static/src/img/box.png" height="24px"/>
+                  <span style="margin-left:5px; font-weight:bold; font-size:12px">Rural Delivery</span>
+                </span>
+              </div>
+              <div style="border-left: 1px solid #ddd; margin-left:0.5px; padding-left:8px; padding-top:1px; margin-top:-2px; margin-bottom:-2px">
+                <field name="ship_street" placeholder="Street..."/>
+                <field name="ship_street2"/>
+                <div>
+                  <field name="ship_city" placeholder="City" style="width: 70%%" attrs="{'required':[('ship_street','!=',False)]}"/>
+                  <field name="ship_zip" placeholder="Postcode" style="width: 30%%" options='{"no_open": True}' attrs="{'required':[('ship_street','!=',False)]}"/>
+                  <field name="ship_state_id" context="{'country_id': ship_country_id}" placeholder="State" style="width: 50%%" options='{"no_open": True}'
+                         attrs="{'invisible':[('ship_country_id','=',172)], 'required':[('ship_country_id','=',14)]}"/>
+                </div>
+                <field name="ship_country_id" placeholder="Country" options='{"no_open": True}' attrs="{'required':[('ship_street','!=',False)]}"/>
+              </div>
+              <field name="signature_opt_out" attrs="{'invisible':[('carrier_id','=',1)]}"/>
+              <field name="delivery_instructions" attrs="{'invisible':[('carrier_id','=',1)]}"/>
+              <field name="change_in_address" invisible="1" readonly="1"/>
+              <field name="is_rural_delivery" invisible="1"/>
+              <label string="" colspan="1" attrs="{'invisible':['|',('change_in_address','=',False),('quote_count','=',0)]}"/>
+              <div attrs="{'invisible':['|',('change_in_address','=',False),('quote_count','=',0)]}">
+                <b>
+                  <field name="quote_count" class="oe_inline"/>
+                  <label string="other draft sales orders for this customer, update addresses for all orders?"/>
+                  <br/>
+                  <button name="update_draft_order_address" string="Yes" type="object" class="oe_link"/>
+                  or
+                  <button name="no_update_draft_order_address" string="No" type="object" class="oe_link"/>
+                </b>
+              </div>
+              <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
+              <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
+              <field name="project_id" groups="analytic.group_analytic_accounting" context="{'default_partner_id':partner_invoice_id, 'default_name':name}"/>
+            </group>
+            <group colspan="1">
+              <field name="date_order"/>
+              <field name="warehouse_id" options="{'no_create': True}"/>
+              <field name="user_id" attrs="{'readonly':[('is_sale_manager','!=',True)]}"
+                     context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice', 'base.group_sale_salesman_all_leads']}"/>
+              <field name="marketing_method_id" options="{'limit': 15, 'create': false, 'create_edit': false, 'no_open': True}"/>
+              <field name="client_order_ref"/>
+              <field name="pricelist_id" invisible="1"/>
+              <field name="currency_id" invisible="1"/>
+              <field name="validity_date" invisible="1"/>
+              <field name="payment_term_id" options="{'no_create': True}" invisible="1"/>
+              <field name="is_sale_manager" invisible="1"/>
+              <field name="id" invisible="1"/>
+            </group>
+          </group>
+          <group invisible="1">
+            <!--Invisible Section-->
+            <field name="visible_confirm_sale" invisible="0"/>
+            <field name="can_merge" invisible="0"/>
+            <field name="pending_cases" invisible="0"/>
+            <field name="can_merge" invisible="0"/>
+          </group>
+
+          <notebook>
+            <page string="Order Lines">
+              <field name="order_line" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('done','cancel'))]}" context="{'sku_only': True}">
+                <form string="Sales Order Lines">
+                  <group>
+                    <group>
+                      <field name="product_id" context="{'warehouse':parent.warehouse_id, 'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                             attrs="{'readonly': ['|', ('qty_invoiced', '&gt;', 0), ('procurement_ids', '!=', [])]}"/>
+                      <field name="invoice_status" invisible="1"/>
+                      <field name="qty_to_invoice" invisible="1"/>
+                      <field name="qty_delivered_updateable" invisible="1"/>
+                      <field name="procurement_ids" invisible="1"/>
+                      <field name="price_subtotal" invisible="1"/>
+                      <label for="product_uom_qty" string="Ordered Quantity"/>
+                      <div>
+                        <field context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'uom_qty_change':True, 'company_id': parent.company_id}" name="product_uom_qty"
+                               class="oe_inline"/>
+                        <field name="product_uom" class="oe_inline oe_no_button" groups="product.group_uom"/>
+                      </div>
+                      <label for="qty_delivered" string="Delivered Quantity" invisible="not context.get('show_sale')"/>
+                      <div>
+                        <field name="qty_delivered" invisible="not context.get('show_sale')" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                      </div>
+                      <label for="qty_invoiced" string="Invoiced Quantity" invisible="not context.get('show_sale')"/>
+                      <div>
+                        <field name="qty_invoiced" invisible="not context.get('show_sale')"/>
+                      </div>
+                      <field name="price_unit"/>
+                      <label for="discount" groups="sale.group_discount_per_so_line"/>
+                      <div name="discount" groups="sale.group_discount_per_so_line">
+                        <field name="discount" class="oe_inline"/>
+                        %%
+                      </div>
+                    </group>
+                    <group>
+                      <field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
+                      <label for="customer_lead"/>
+                      <div>
+                        <field name="customer_lead" class="oe_inline"/>
+                        days
+                      </div>
+                    </group>
+                  </group>
+                  <label for="name"/>
+                  <field name="name"/>
+                  <div groups="base.group_no_one">
+                    <label for="invoice_lines"/>
+                    <field name="invoice_lines"/>
+                  </div>
+                </form>
+                <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
+                  <field name="sequence" widget="handle"/>
+                  <button name="open_product" icon="fa-link" type="object"/>
+                  <field name="product_id" string="SKU" options="{'no_create':True}" attrs="{'readonly': ['|', ('qty_invoiced', '&gt;', 0), ('procurement_ids', '!=', [])]}"
+                         context="{'warehouse':parent.warehouse_id, 'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"/>
+                  <field name="name" string="Name"/>
+                  <field name="product_uom_qty" string="Ordered" context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"/>
+                  <field name="stock_indicator" string="" widget="stock_indicator" readonly="1"/>
+                  <field name="stock_indicator_tooltip" invisible="1"/>
+                  <field name="qty_delivered" attrs="{'readonly': [('qty_delivered_updateable', '=', False)]}"/>
+                  <field name="qty_invoiced" invisible="1"/>
+                  <field name="qty_to_invoice" invisible="1"/>
+                  <field name="product_uom" context="{'company_id': parent.company_id}" groups="product.group_uom" options='{"no_open": True}'/>
+                  <field name="tax_id" widget="many2many_tags" domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
+                  <field name="price_unit" attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
+                  <field name="discount" groups="sale.group_discount_per_so_line"/>
+                  <field name="price_subtotal" widget="monetary" invisible="1"/>
+                  <field name="price_tax" widget="monetary" invisible="1"/>
+                  <field name="price_total" widget="monetary" string="Subtotal"/>
+                  <field name="qty_delivered_updateable" invisible="1"/>
+                  <field name="procurement_ids" invisible="1"/>
+                  <field name="invoice_status" invisible="1"/>
+                  <field name="customer_lead" invisible="1"/>
+                </tree>
+                <kanban class="o_kanban_mobile">
+                  <field name="product_id"/>
+                  <field name="product_uom_qty"/>
+                  <field name="product_uom" groups="product.group_uom"/>
+                  <field name="price_subtotal"/>
+                  <templates>
+                    <t t-name="kanban-box">
+                      <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <strong>
+                              <span>
+                                <t t-esc="record.product_id.value"/>
+                              </span>
+                            </strong>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-8 text-muted">
+                            <span>
+                              <t t-esc="record.product_uom_qty.value"/>
+                              <t t-esc="record.product_uom.value"/>
+                            </span>
+                          </div>
+                          <div class="col-xs-4 text-muted">
+                            <span class="pull-right text-right">
+                              <t t-esc="record.price_subtotal.value"/>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </t>
+                  </templates>
+                </kanban>
+              </field>
+              <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                <field string="Total excl. GST" name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field string="GST" name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="amount_total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" string="Grand Total"/>
+                <field name="balance_remaining" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" string="Balance"/>
+              </group>
+              <group style="width: 65%%; clear:none;">
+                <label for="order_held" attrs="{'invisible':[('order_held','!=',True)]}"/>
+                <div attrs="{'invisible':[('order_held','!=',True)]}">
+                  <field name="order_held" style="width:20px" readonly="1"/>
+                  <field name="order_status" style="width:120px" readonly="1"/>
+                  <field name="future_date" style="width:70px" readonly="1"/>
+                </div>
+                <label for="dispatch_exception" attrs="{'invisible':[('dispatch_exception','!=',True)]}"/>
+                <div attrs="{'invisible':[('dispatch_exception','!=',True)]}">
+                  <field name="dispatch_exception" style="width:20px" readonly="1"/>
+                  <field name="exception_reason_ids" style="width:350px" widget="many2many_tags" readonly="1"/>
+                </div>
+                <div attrs="{'invisible':[('dispatch_exception','!=',True)]}" groups="tradetested.group_stock_dispatch">
+                  <button name="clear_exceptions" type="object" string="Clear All" context="{'default_mode':'exception'}" class="oe_link oe_right" style="margin-right:10px"/>
+                  <span class="oe_right">|</span>
+                  <button name="%(action_sale_update_exception)d" type="action" string="Update" context="{'default_mode':'exception'}" class="oe_link oe_left" style="margin-left:20px"/>
+                </div>
+                <newline/>
+                <label for="carrier_id"/>
+                <div>
+                  <field name="carrier_id" context="{'order_id':active_id or False}" class="oe_inline" domain="[]"/>
+                  <!-- domain=['|',('company_id','=',company_id),('company_id','=',False)]-->
+                  <button name="delivery_set" string="Add in Quote" type="object" class="oe_edit_only" attrs="{'invisible':['|',('carrier_id','=',False),('state','not in',('draft'))]}"/>
+                  <br/>
+                  <label string="If you don't 'Add in Quote', the exact price will be computed when invoicing based on delivery order(s)." class="oe_edit_only"
+                         attrs="{'invisible':['|',('carrier_id','=',False),('state','not in',('draft'))]}"/>
+                </div>
+                <field name="note" string="Pickup Identifier" placeholder="Example: Blue Toyota Hilux" attrs="{'invisible':[('carrier_id','!=',1)]}"/>
+              </group>
+              <div class="oe_clear"/>
+            </page>
+            <page string="Payments">
+              <button name="add_payment" type="object" string="Add New Payment" class="oe_link"/>
+              <field name="sale_order_payment_id" context="{'sale_order_id':active_id}">
+                <form>
+                  <group>
+                    <group>
+                      <field name="type" attrs="{'readonly':[('dpstxnref','!=',False)]}"/>
+                      <field name="method" required="1" attrs="{'readonly':[('dpstxnref','!=',False)]}"/>
+                      <field name="amount" attrs="{'readonly':[('dpstxnref','!=',False)]}"/>
+                      <field name="comment" attrs="{'readonly':[('dpstxnref','!=',False)]}"/>
+                      <field name="cc_txn_ref" readonly="1" attrs="{'invisible':[('dpstxnref','=',False)]}"/>
+                      <field name="dpstxnref" readonly="1" attrs="{'invisible':[('dpstxnref','=',False)]}"/>
+                      <field name="fraud_score_details" groups="tradetested.group_stock_dispatch"/>
+                    </group>
+                    <group>
+                      <field name="date" attrs="{'readonly':[('dpstxnref','!=',False)]}"/>
+                      <field name="user_id" readonly="1"/>
+                      <separator string="" colspan="2"/>
+                      <field name="reviewed" readonly="1"/>
+                      <field name="reviewed_date" readonly="1"/>
+                      <field name="reviewer_id" readonly="1"/>
+                    </group>
+                    <field name="sale_order_id" invisible="1"/>
+                  </group>
+                </form>
+                <tree create="false">
+                  <field name="date"/>
+                  <field name="type"/>
+                  <field name="method"/>
+                  <field name="amount"/>
+                  <field name="comment"/>
+                </tree>
+              </field>
+              <group class="oe_subtotal_footer oe_right" colspan="2" name="payments_field_total">
+                <field name="payments_total_less_refunds" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+              </group>
+              <div class="oe_inline">
+                <field name="fraud_score_details" groups="tradetested.group_stock_dispatch"/>
+              </div>
+            </page>
+            <page string="Delivery">
+              <field name="picking_ids" colspan="4" nolabel="1" readonly="1" mode="tree" view_mode="tree">
+                <tree>
+                  <button name="open_picking" type="object" string="Open" icon="fa-link"/>
+                  <field name="name"/>
+                  <field name="create_date"/>
+                  <field name="carrier_id"/>
+                  <field name="carrier_tracking_ref"/>
+                  <field name="state"/>
+                </tree>
+                <form>
+                  <button name="open_picking" type="object" string="Open" icon="fa-link"/>
+                </form>
+              </field>
+            </page>
+            <page string="Cases">
+              <button name="%(action_create_case)d" type="action" string="Add new item" class="oe_link" invisible="1"/>
+              <button name="%(action_crm_case_create)d" type="action" string="Create New Case" class="oe_link"/>
+              <field name="case_ids">
+                <tree string="Cases" colors="red:state in ('draft','open','pending')">
+                  <button name="crm_helpdesk_open_window" string="Open" type="object" icon="fa-link"/>
+                  <field name="create_date" string="Created"/>
+                  <field name="name" string="Title"/>
+                  <field name="resolution_ids" string="Resolutions"/>
+                  <field name="user_id"/>
+                  <field name="state"/>
+                  <field name="section_id" invisible="1"/>
+                </tree>
+              </field>
+            </page>
+            <page string="Tickets" attrs="{'invisible':[('ticket_ids','=',[])]}">
+              <field name="ticket_ids" colspan="4" nolabel="1">
+                <tree string="Zendesk Tickets" colors="red:state == 'Open'; green:state == 'Solved'; gray:state == 'Closed';">
+                  <field name="name"/>
+                  <field name="requester"/>
+                  <field name="created_at"/>
+                  <field name="updated_at"/>
+                  <field name="channel"/>
+                  <field name="state"/>
+                </tree>
+              </field>
+            </page>
+            <page string="Related Orders" colors="red">
+              <field name="related_orders">
+                <tree colors="gray:state=='cancel'; red:state=='draft'">
+                  <field name="date_order"/>
+                  <field name="name" string="Order Number"/>
+                  <field name="client_order_ref"/>
+                  <field name="amount_untaxed" string="Subtotal" invisible="1"/>
+                  <field name="total_quantity"/>
+                  <field name="amount_total"/>
+                  <field name="balance_remaining" string="Balance"/>
+                  <field name="state"/>
+                </tree>
+              </field>
+            </page>
+            <page string="Log">
+              <field name="log_ids" readonly="1">
+                <tree>
+                  <field name="user_id"/>
+                  <field name="date"/>
+                  <field name="activity"/>
+                  <field name="value_before"/>
+                  <field name="value_after"/>
+                </tree>
+                <form>
+                  <field name="user_id"/>
+                  <field name="value_before"/>
+                  <field name="date"/>
+                  <field name="value_after"/>
+                  <field name="activity"/>
+                </form>
+              </field>
+            </page>
+            <page string="Other Information" groups="base.group_sale_manager">
+              <group>
+                <group string="Sales Information" name="sales_person">
+                  <field name="team_id" options="{'no_create': True}"/>
+                  <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                </group>
+                <group name="sale_pay" string="Invoicing">
+                  <field name="fiscal_position_id" options="{'no_create': True}"/>
+                  <field name="invoice_status" attrs="{'invisible': [('state', 'not in', ('sale','done'))]}"/>
+                </group>
+                <group string="Reporting" name="technical" groups="base.group_no_one">
+                  <field name="origin" groups="base.group_no_one"/>
+                  <field name="procurement_group_id"/>
+                </group>
+                <group string="Shipping Information" name="sale_shipping">
+                  <field name="picking_policy" required="True"/>
+                </group>
+              </group>
+            </page>
+            <page string="External info" groups="base.group_sale_manager">
+              <group>
+                <group>
+                  <field name="channel"/>
+                  <field name="ship_via"/>
+                  <field name="tracking_number"/>
+                  <field name="trademe_purchase_id"/>
+                  <field name="trademe_listing_id"/>
+                  <field name="trademe_username"/>
+                  <field name="trademe_sale_type"/>
+                  <field name="trademe_pay_now_purchase"/>
+                  <br/>
+                  <br/>
+                  <newline/>
+                  <field name="magento_order_number"/>
+                  <field name="magento_create_date" readonly="1"/>
+                  <field name="magento_update_date" readonly="1"/>
+                </group>
+                <group>
+                  <field name="pick_date"/>
+                  <field name="ship_date"/>
+                  <field name="date_followup_email"/>
+                  <field name="date_productfaq_email"/>
+                  <field name="date_payment_confirm"/>
+                  <field name="date_payment_reminder"/>
+                  <field name="date_payment_reminder_2"/>
+                  <field name="date_pickup_email"/>
+                  <field name="email_status_update"/>
+                  <field name="cancel_case_date"/>
+                  <label for="mailchimp_export_date"/>
+                  <div>
+                    <field name="mailchimp_export_date"/>
+                    <button name="export_to_mailchimp" string="Export to Mailchimp" type="object" class="oe_link"/>
+                  </div>
+
+                  <field name="date_feedback"/>
+                  <br/>
+                  <br/>
+                  <newline/>
+                  <field name="license_number"/>
+                  <field name="license_version"/>
+                </group>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="obj_watcher_ids" widget="obj_watchers" groups="base.group_user"/>
+          <field name="message_follower_ids" widget="mail_followers" groups="base.group_no_one"/>
+          <field name="message_common_ids" widget="mail_thread"/>
+          <div style="text-align:center">
+            <button name="%(action_open_message)d" string="Edit Notes" type="action" class="oe_link"/>
+          </div>
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_order_tree" model="ir.ui.view">
+    <field name="name">sale.order.tree</field>
+    <field name="model">sale.order</field>
+    <field name="priority">1</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Orders" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'" colors="grey:state=='cancel';blue:state in ('waiting_date');red:state in ('invoice_except','shipping_except')">
+        <field name="message_needaction" invisible="1"/>
+        <field name="date_order"/>
+        <field name="name" string="Order #"/>
+        <field name="partner_id"/>
+        <field name="user_id"/>
+        <field name="warehouse_id"/>
+        <field name="amount_total" sum="Total" string="Order Total"/>
+        <field name="balance_remaining" sum="bal_rem" string="Balance"/>
+        <field name="state"/>
+        <field name="delivery_order_status" widget="selection_color"
+               colors='{"none":"gray", "draft":"gray", "waiting":"red", "confirmed":"red", "assigned":"green", "processing":"green", "done":"green", "cancel":"red", "partially_available":"gray"}'/>
+      </tree>
+    </field>
+  </record>
+
+
+  <record id="view_order_filter" model="ir.ui.view">
+    <field name="name">sale.order.list.select</field>
+    <field name="model">sale.order</field>
+    <field name="priority">1</field>
+    <field name="arch" type="xml">
+      <search string="Search Sales Order">
+        <field name="sale_order_id" context="{'order_search':True}" string="Sales Order"/>
+        <separator/>
+        <field name="partner_id" string="Customer" filter_domain="['|','|','|',('partner_id','ilike', self),('partner_id.street','ilike', self),('partner_id.street2','ilike', self),('partner_id.tt_company_name','ilike',self)]"/>
+        <separator/>
+        <field name="name" string="Sales Order" filter_domain="['|','|','|','|','|','|','|','|','|','|','|','|','|','|','|','|','|','|',
+                                         ('name','ilike',self),('client_order_ref','ilike',self),
+                                         ('partner_id.name','ilike',self),('partner_id.bill_tt_company_name','ilike',self),
+                                         ('partner_id.bill_street','ilike',self),('partner_id.bill_street2','ilike',self),
+                                         ('partner_id.bill_city','ilike',self),('partner_id.bill_zip','ilike',self),
+                                         ('partner_id.bill_delivery_instructions','ilike',self),('partner_id.phone','ilike',self),
+                                         ('ship_tt_company_name','ilike',self),
+                                         ('ship_street','ilike',self),('ship_street2','ilike',self),
+                                         ('ship_city','ilike',self),('ship_zip','ilike',self),
+                                         ('delivery_instructions','ilike',self),
+                                         ('order_line.name','ilike',self),('order_line.product_id.name','ilike',self),
+                                         ('order_line.product_id.default_code','=',self)]"/>
+
+
+        <field name="user_id"/>
+        <field name="team_id" string="Sales Team"/>
+        <field name="project_id"/>
+        <field name="product_id"/>
+        <!--Filters-->
+        <filter string="Quotes" name="quote" domain="[('state','=','quote')]" help="Quotes"/>
+        <filter name="sales" string="Sales" domain="[('state','not in',('quote','cancel'))]"/>
+        <separator/>
+        <filter string="My Sales" domain="[('user_id','=',uid)]" name="my_sale_orders_filter"/>
+        <separator/>
+        <filter string="Today" icon="terp-go-month" domain="[('date_order','=',current_date)]"/>
+        <filter string="This Week" domain="[('date_order','&lt;=', ((context_today()).strftime('%Y-%m-%d'))),
+                            ('date_order','&gt;=', ((context_today()-relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')))]"/>
+        <separator/>
+        <filter string="Unpaid 14 Days" icon="terp-go-month" domain="[('state','=','draft'),('payments_total_less_refunds', '=', 0),('date_order','&lt;', ((context_today()-relativedelta(days=14)).strftime('%Y-%m-%d')))]"/>
+        <separator/>
+        <filter string="Exceptions" icon="terp-go-month" context="{}" domain="[('order_held','=',False),('dispatch_exception','=',True)]"/>
+        <filter string="Held" icon="terp-go-month" context="{}" domain="[('order_held','=',True),'|',('future_date','=',False),('future_date','&lt;=',current_date)]"/>
+        <filter string="To Invoice" domain="[('invoice_status','=','to invoice')]" invisible="1"/>
+        <filter string="Upselling" domain="[('invoice_status','=','upselling')]" invisible="1"/>
+        <separator/>
+        <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]" invisible="1"/>
+        <group expand="0" string="Group By">
+          <filter name="customer" string="Customer" domain="[]" context="{'group_by':'partner_id'}"/>
+          <filter string="Salesperson" domain="[]" context="{'group_by':'user_id'}"/>
+          <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+
+          <filter string="Company" icon="terp-go-month" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter string="Year" icon="terp-go-month" domain="[]" context="{'group_by':'date_order:year'}"/>
+          <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_order'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="sale.action_orders" model="ir.actions.act_window">
+    <field name="name">Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+    <field name="search_view_id" ref="view_order_filter"/>
+    <field name="context">{'show_sale': True}</field>
+    <field name="domain">[]</field>
+  </record>
+
+  <menuitem action="sale.action_orders" id="sale.menu_sale_order" parent="sales_team.menu_sales" sequence="1" groups="sales_team.group_sale_salesman,sales_team.group_sale_manager"/>
+
+
+  <!--Sales Order Line-->
+
+  <record id="view_order_line_tree" model="ir.ui.view">
+    <field name="name">sale.order.line.tree.tt</field>
+    <field name="model">sale.order.line</field>
+    <field name="priority">8</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Order Lines" create="false">
+        <field name="product_id" invisible="1"/>
+        <field name="date_order"/>
+        <field name="order_id" string="Order #"/>
+        <field name="order_partner_id"/>
+        <field name="name"/>
+        <field name="product_uom_qty" string="Qty"/>
+        <field name="stock_alloc"/>
+        <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+        <field name="price_subtotal" sum="Total" widget="monetary"/>
+        <field name="order_balance"/>
+        <field name="order_state"/>
+        <field name="salesman_id"/>
+
+        <field name="qty_delivered" invisible="1"/>
+        <field name="qty_invoiced" invisible="1"/>
+        <field name="qty_to_invoice" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sales_order_line_filter" model="ir.ui.view">
+    <field name="name">sale.order.line.select.tt</field>
+    <field name="model">sale.order.line</field>
+    <field name="priority">8</field>
+    <field name="arch" type="xml">
+      <search string="Search Sales Order">
+        <filter string="To Invoice" domain="[('qty_to_invoice','&lt;&gt;', 0)]" help="Sales Order Lines ready to be invoiced"/>
+        <separator/>
+        <filter string="My Sales Order Lines" domain="[('salesman_id','=',uid)]" help="Sales Order Lines related to a Sales Order of mine"/>
+        <field name="order_id"/>
+        <field name="order_partner_id" operator="child_of"/>
+        <field name="product_id"/>
+        <field name="salesman_id"/>
+        <group expand="0" string="Group By">
+          <filter string="Customer" domain="[]" context="{'group_by':'order_partner_id'}"/>
+          <filter string="Salesperson" domain="[]" context="{'group_by':'salesman_id'}"/>
+          <filter string="Company" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+          <filter string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+          <filter string="Sales Channel" domain="[]" context="{'group_by':'order_channel'}"/>
+          <filter string="Paid" domain="[]" context="{'group_by':'order_paid'}"/>
+          <filter string="Order" domain="[]" context="{'group_by':'order_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+
+  <!-- Payment -->
+
+  <record model="ir.ui.view" id="view_sale_order_payment_form_readonly">
+    <field name="name">sale.order.payment.form</field>
+    <field name="model">sale.order.payment</field>
+    <field name="priority">32</field>
+    <field name="arch" type="xml">
+      <form string="Payment">
+        <group>
+          <group>
+            <field name="type" readonly="1"/>
+            <field name="method" readonly="1"/>
+            <field name="amount" readonly="1"/>
+            <field name="comment" readonly="1"/>
+            <field name="sale_order_id" readonly="1" string="Sales Order"/>
+            <field name="fraud_score_details" groups="tradetested.group_stock_dispatch" widget="serialized"/>
+          </group>
+          <group>
+            <field name="date" readonly="1"/>
+            <field name="user_id" readonly="1"/>
+            <separator string="" colspan="2"/>
+            <field name="reviewed" readonly="1"/>
+            <field name="reviewed_date" readonly="1"/>
+            <field name="reviewer_id" readonly="1"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_order_payment_form">
+    <field name="name">sale.order.payment.form</field>
+    <field name="model">sale.order.payment</field>
+    <field name="arch" type="xml">
+      <form string="Payment">
+        <group>
+          <group>
+            <field name="type"/>
+            <field name="method" required="1"/>
+            <field name="transfer_from_id" options="{'no_open':True, 'no_follow':True}" attrs="{'invisible':['|',('method','!=','transfer'),('type','!=','payment')], 'required':[('method','=','transfer'),('type','=','payment')]}"/>
+            <field name="transfer_to_id" options="{'no_open':True, 'no_follow':True}" attrs="{'invisible':['|',('method','!=','transfer'),('type','!=','refund')], 'required':[('method','=','transfer'),('type','=','refund')]}"/>
+            <field name="amount"/>
+            <field name="comment" attrs="{'required':[('method','in',['eftpos'])]}"/>
+          </group>
+          <group>
+            <field name="date"/>
+            <field name="user_id" readonly="1"/>
+            <separator string="" colspan="2"/>
+            <field name="reviewed" readonly="1"/>
+            <field name="reviewed_date" readonly="1"/>
+            <field name="reviewer_id" readonly="1"/>
+            <field name="date_rcpt_sent" readonly="1"/>
+          </group>
+          <group attrs="{'invisible':['|','|',('method','!=','credit_card_auto'),('is_cc_visible','!=',True),('type','!=','payment')]}">
+            <field name="is_cc_visible" invisible="1"/>
+            <label for="cc_number"/>
+            <div>
+              <field name="cc_number" style="width: 70%%"/>
+              <field name="cc_status" readonly="1" invisible="1"/>
+              <img src="../../../tradetested/static/src/img/accept.png" width="24px" attrs="{'invisible':[('cc_status','!=','valid')]}"/>
+              <img src="../../../tradetested/static/src/img/delete.png" width="24px" attrs="{'invisible':[('cc_status','!=','invalid')]}"/>
+            </div>
+            <field name="cc_holder"/>
+            <field name="cc_expiry" placeholder="MMYY" style="width: 30%%"/>
+            <field name="cc_cvc" style="width: 30%%" password="1"/>
+          </group>
+          <group>
+
+          </group>
+          <field name="sale_order_id" invisible="1"/>
+        </group>
+
+        <footer>
+          <button name="save" string="Save" type="object" class="oe_highlight" attrs="{'invisible':[('method','=','credit_card_auto')]}"/>
+          <button name="save" string="Process Payment" type="object" class="oe_highlight" attrs="{'invisible':['|','|',('method','!=','credit_card_auto'),('type','!=','payment'),('is_cc_visible','!=',True)]}"/>
+          or
+          <button special="cancel" string="Discard" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_create_payment" model="ir.actions.act_window">
+    <field name="name">Payment</field>
+    <field name="res_model">sale.order.payment</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+
+  <!-- Held Category  -->
+
+  <record model="ir.ui.view" id="view_sale_order_held_category_tree">
+    <field name="name">sale.order.held.category.tree</field>
+    <field name="model">sale.order.held.category</field>
+    <field name="arch" type="xml">
+      <tree string="Sale Order Held Category">
+        <field name="code"/>
+        <field name="name"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_order_held_category_form">
+    <field name="name">sale.order.held.category.form</field>
+    <field name="model">sale.order.held.category</field>
+    <field name="arch" type="xml">
+      <form string="Sale Order Held Category">
+        <group>
+          <field name="code"/>
+          <field name="name"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_order_held_category" model="ir.actions.act_window">
+    <field name="name">Held Categories</field>
+    <field name="res_model">sale.order.held.category</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_sale_order_held_category" id="menu_held_category" parent="menu_config_sale" sequence="-90" groups="sales_team.group_sale_manager"/>
+
+  <!-- Payment Method  -->
+
+  <record model="ir.ui.view" id="view_sale_order_payment_method_tree">
+    <field name="name">sale.order.payment.method.tree</field>
+    <field name="model">sale.order.payment.method</field>
+    <field name="arch" type="xml">
+      <tree string="Payment Method">
+        <field name="sequence" widget="handle"/>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="active"/>
+        <field name="send_rcpt_email"/>
+        <field name="team_ids"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_order_payment_method_form">
+    <field name="name">sale.order.payment.method.form</field>
+    <field name="model">sale.order.payment.method</field>
+    <field name="arch" type="xml">
+      <form string="Payment Method">
+        <group>
+          <field name="code" readonly="1"/>
+          <field name="name" readonly="1"/>
+          <field name="active"/>
+          <field name="team_ids" widget="many2many_tags"/>
+          <field name="send_rcpt_email"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_order_payment_method" model="ir.actions.act_window">
+    <field name="name">Payment Methods</field>
+    <field name="res_model">sale.order.payment.method</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_sale_order_payment_method" id="menu_sale_order_payment_method" parent="menu_config_sale" sequence="-110" groups="sales_team.group_sale_manager"/>
+
+
+  <!-- Marketing Methods -->
+
+  <record model="ir.ui.view" id="view_sale_order_marketing_method_tree">
+    <field name="name">sale.order.marketing.method.tree</field>
+    <field name="model">sale.order.marketing.method</field>
+    <field name="arch" type="xml">
+      <tree string="Marketing Method">
+        <field name="sequence" widget="handle"/>
+        <field name="code"/>
+        <field name="name"/>
+        <field name="active"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_order_marketing_method_form">
+    <field name="name">sale.order.marketing.method.form</field>
+    <field name="model">sale.order.marketing.method</field>
+    <field name="arch" type="xml">
+      <form string="Marketing Method">
+        <group>
+          <field name="code" required="1"/>
+          <field name="name" required="1"/>
+          <field name="active"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_order_marketing_method" model="ir.actions.act_window">
+    <field name="name">Marketing Methods</field>
+    <field name="res_model">sale.order.marketing.method</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_sale_order_marketing_method" id="menu_sale_order_marketing_method" parent="menu_config_sale" sequence="-100" groups="sales_team.group_sale_manager"/>
+
+
+  <!-- Sales Team Payment Methods -->
+
+  <record model="ir.ui.view" id="crm_team_view_form">
+    <field name="name">crm.team.form.tt</field>
+    <field name="model">crm.team</field>
+    <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+    <field name="arch" type="xml">
+      <page name="more_info" position="before">
+        <page string="Payment Methods">
+          <group>
+            <!--<field name="payment_method_ids" widget="many2many_tags"/>-->
+          </group>
+        </page>
+      </page>
+      <field name="user_id" position="before">
+        <!--<field name="parent_id"/>-->
+      </field>
+    </field>
+  </record>
+
+  <record id="crm_team_view_tree" model="ir.ui.view">
+    <field name="name">crm.team.tree</field>
+    <field name="model">crm.team</field>
+    <field name="inherit_id" ref="sales_team.crm_team_view_tree"/>
+    <field name="arch" type="xml">
+      <field name="user_id" position="after">
+        <!--<field name="parent_id"/>-->
+        <!--<field name="complete_name"/>-->
+      </field>
+    </field>
+  </record>
+
+  <menuitem action="sales_team.crm_team_act" id="sales_team_config" parent="menu_config_sale" sequence="-130" groups=""/>
+
+
+  <!--Dashboard-->
+
+  <record id="action_sale_order_watchlist" model="ir.actions.act_window">
+    <field name="name">Sales Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{'filter_my_watchlist':True}</field>
+  </record>
+
+  <record id="action_delivery_order_watchlist" model="ir.actions.act_window">
+    <field name="name">Delivery Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">stock.picking</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{'filter_my_watchlist':True}</field>
+  </record>
+
+  <record id="action_purchase_order_watchlist" model="ir.actions.act_window">
+    <field name="name">Purchase Orders</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">purchase.order</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{'filter_my_watchlist':True}</field>
+  </record>
+
+  <record id="action_case_watchlist" model="ir.actions.act_window">
+    <field name="name">Case</field>
+    <field name="res_model">crm.helpdesk</field>
+    <field name="view_mode">tree,form</field>
+    <field name="context">{'filter_my_watchlist':True}</field>
+    <field name="help"></field>
+  </record>
+
+  <record id="action_product_watchlist" model="ir.actions.act_window">
+    <field name="name">Products</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">product.product</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_type">form</field>
+    <field name="context">{'filter_my_watchlist':True}</field>
+    <field name="help"></field>
+  </record>
+
+  <record model="ir.ui.view" id="board_watch_list_form">
+    <field name="name">Watchlist</field>
+    <field name="model">board.board</field>
+    <field name="arch" type="xml">
+      <form string="Watcher List">
+        <board style="1">
+          <column>
+            <action name="%(action_sale_order_watchlist)d" string="Sale Orders"/>
+            <action name="%(action_delivery_order_watchlist)d" string="Delivery Orders"/>
+            <action name="%(action_case_watchlist)d" string="Cases"/>
+            <action name="%(action_purchase_order_watchlist)d" string="Purchase Orders"/>
+            <action name="%(action_product_watchlist)d" string="Products"/>
+          </column>
+        </board>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="open_board_watch_list">
+    <field name="name">My Watchlist</field>
+    <field name="res_model">board.board</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="usage">menu</field>
+    <field name="view_id" ref="board_watch_list_form"/>
+    <field name="context">{'watchlist': True}</field>
+  </record>
+
+  <menuitem id="menu_board_watch_list" parent="sales_team.menu_sales_team_act" action="open_board_watch_list" sequence="-1"/>
+
+
+  <!--Orders Management-->
+
+  <record id="view_order_line_delayed_tree" model="ir.ui.view">
+    <field name="name">sale.order.line.tree.tt</field>
+    <field name="model">sale.order.line</field>
+    <field name="priority">64</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Order Lines" create="false">
+        <button name="open_sale_order" type="object" icon="fa-expand"/>
+        <field name="date_order"/>
+        <field name="order_id"/>
+        <field name="order_partner_id"/>
+        <field name="product_id"/>
+        <field name="salesman_id"/>
+        <field name="order_warehouse_id"/>
+        <field name="order_balance"/>
+        <field name="order_state"/>
+        <field name="order_channel"/>
+        <field name="product_po_expected_date"/>
+        <button name="set_cust_expected_date" type="object" string="" icon="fa-arrow-right"/>
+        <field name="cust_expected_date"/>
+        <field name="order_paid" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <button name="remove_cust_expected_date" type="object" icon="fa-times"/>
+      </tree>
+    </field>
+  </record>
+
+
+  <menuitem name="Order Management" id="menu_order_mgmt" parent="sales_team.menu_base_partner" sequence="6"/>
+
+  <record model="ir.actions.act_window" id="open_order_lines_delayed">
+    <field name="name">Delayed &amp; Out of Stock</field>
+    <field name="res_model">sale.order.line</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('delayed','=',True)]</field>
+    <field name="view_id" ref="view_order_line_delayed_tree"/>
+  </record>
+
+  <menuitem name="Delayed &amp; Out of Stock" id="menu_order_line_delayed" parent="menu_order_mgmt" sequence="10" action="open_order_lines_delayed"/>
+
+  <record model="ir.actions.act_window" id="open_order_dispatch">
+    <field name="name">Dispatch</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem name="Dispatch" id="menu_order_dispatch" parent="menu_order_mgmt" sequence="20" action="open_order_dispatch"/>
+
+
+  <!--Rural Delivery-->
+
+  <menuitem name="Address Book" id="menu_config_address_book" parent="sales_team.menu_sale_config" sequence="6"/>
+
+  <record id="view_nz_rural_delivery_form" model="ir.ui.view">
+    <field name="name">nz.rural.delivery.form</field>
+    <field name="model">nz.rural.delivery</field>
+    <field name="arch" type="xml">
+      <form string="NZ Rural Delivery">
+        <group>
+          <field name="name" required="1"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_nz_rural_delivery" model="ir.actions.act_window">
+    <field name="name">NZ Rural Delivery</field>
+    <field name="res_model">nz.rural.delivery</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_nz_rural_delivery" id="menu_nz_rural_delivery" name="NZ Rural Delivery" parent="menu_config_address_book" sequence="3" groups="tradetested.group_stock_dispatch"/>
+
+
+  <!--  Sale Order Exception-->
+
+  <record model="ir.ui.view" id="view_sale_order_exception_tree">
+    <field name="name">sale.order.exception.tree</field>
+    <field name="model">sale.order.exception</field>
+    <field name="arch" type="xml">
+      <tree string="Sale Order Exception">
+        <field name="name"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_order_exception_form">
+    <field name="name">sale.order.exception.form</field>
+    <field name="model">sale.order.exception</field>
+    <field name="arch" type="xml">
+      <form string="Sale Order Exception">
+        <field name="name"/>
+      </form>
+    </field>
+  </record>
+
+
+  <!-- Sales Periods -->
+
+  <record model="ir.ui.view" id="view_sale_period_tree">
+    <field name="name">sale.period.tree</field>
+    <field name="model">sale.period</field>
+    <field name="arch" type="xml">
+      <tree string="Period">
+        <field name="name"/>
+        <field name="period_start"/>
+        <field name="period_end"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_period_form">
+    <field name="name">sale.period.form</field>
+    <field name="model">sale.period</field>
+    <field name="arch" type="xml">
+      <form string="Period">
+        <sheet>
+          <group>
+            <field name="name"/>
+            <field name="period_start"/>
+            <field name="period_end"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_period" model="ir.actions.act_window">
+    <field name="name">Periods</field>
+    <field name="res_model">sale.period</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_sale_period" id="menu_sale_period" parent="menu_config_sale" sequence="-80"/>
+
+
+  <!--Sales Periods Targets-->
+
+  <record model="ir.ui.view" id="view_sale_period_target_tree">
+    <field name="name">sale.period.target.tree</field>
+    <field name="model">sale.period.target</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Target">
+        <field name="user_id"/>
+        <field name="period_id"/>
+        <field name="amount"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="view_sale_period_target_form">
+    <field name="name">sale.period.target.form</field>
+    <field name="model">sale.period.target</field>
+    <field name="arch" type="xml">
+      <form string="Sales Target">
+        <sheet>
+          <group>
+            <field name="user_id"/>
+            <field name="period_id"/>
+            <field name="amount"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+
+  <record id="view_sale_period_target_filter" model="ir.ui.view">
+    <field name="name">sale.period.target.search</field>
+    <field name="model">sale.period.target</field>
+    <field name="arch" type="xml">
+      <search string="Search Sales Target">
+        <field name="user_id"/>
+        <field name="period_id"/>
+        <group expand="0" string="Group By">
+          <filter string="User" domain="[]" context="{'group_by':'user_id'}"/>
+          <filter string="Target Period" domain="[]" context="{'group_by':'period_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_period_target" model="ir.actions.act_window">
+    <field name="name">Sales Targets</field>
+    <field name="res_model">sale.period.target</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem action="action_sale_period_target" id="menu_sale_period_target" parent="menu_config_sale" sequence="-70"/>
+
+
+</odoo>

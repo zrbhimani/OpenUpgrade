@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <!--Purchase Analysis-->
+
+  <record id="view_purchase_order_tree" model="ir.ui.view">
+    <field name="name">purchase.order.tree</field>
+    <field name="model">purchase.report</field>
+    <field name="arch" type="xml">
+      <tree string="Purchase Orders Statistics" create="false">
+        <field name="date_order" invisible="1"/>
+        <field name="date_approve" invisible="1"/>
+        <field name="expected_date" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="partner_id" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="category_id" invisible="1"/>
+        <field name="product_uom" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="name" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="picking_type_id" invisible="1"/>
+        <field name="validator" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="location_id" invisible="1"/>
+        <field name="nbr_lines" sum="# of Lines"/>
+        <field name="unit_quantity" sum="Quantity"/>
+        <field name="price_average" sum="Average Price"/>
+        <field name="price_total" sum="Total Price"/>
+        <field name="price_standard" sum="Products Value"/>
+        <field name="negociation" widget="progressbar"/>
+        <field name="delay" sum="Days to Validate"/>
+        <field name="delay_pass" sum="Days to Deliver"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="purchase.action_purchase_order_report_all" model="ir.actions.act_window">
+    <field name="view_mode">tree,pivot,graph</field>
+    <field name="view_id" ref="view_purchase_order_tree"></field>
+    <field name="context">{'search_default_year':1,'search_default_month':1,'search_default_group_partner_id':1,'search_default_group_product_id': 1, 'search_default_orders': 1, 'group_by_no_leaf':1,'group_by':[]}</field>
+  </record>
+
+  <!--PO Shipments-->
+
+  <record id="view_po_shipments_form" model="ir.ui.view">
+    <field name="name">po.shipments.form</field>
+    <field name="model">report.po.shipment</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Incoming Shipments" create="false" edit="false">
+        <group>
+          <group>
+            <field name="file" filename="file_name" readonly="1"/>
+            <field name="file_name" invisible="1"/>
+          </group>
+        </group>
+        <footer>
+          <button name="get_report" string="Get Report" class="oe_highlight" type="object"/>
+          or
+          <button name="close" special="cancel" string="Close" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_po_shipments_report" model="ir.actions.act_window">
+    <field name="name">Incoming Shipments</field>
+    <field name="res_model">report.po.shipment</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <menuitem id="menu_po_shipments_report" parent="purchase.purchase_report" action="action_po_shipments_report" sequence="30"/>
+
+
+</odoo>

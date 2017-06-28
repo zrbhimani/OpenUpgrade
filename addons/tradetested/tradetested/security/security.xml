@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="tradetested.group_customer_service" model="res.groups">
+      <field name="name">Customer Service</field>
+      <field name="category_id" ref="base.module_category_warehouse_management"/>
+      <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record id="tradetested.group_shop_salesperson" model="res.groups">
+      <field name="name">Shop Salesperson</field>
+      <field name="category_id" ref="base.module_category_warehouse_management"/>
+      <field name="implied_ids" eval="[(4, ref('group_customer_service'))]"/>
+    </record>
+
+    <record id="tradetested.group_stock_dispatch" model="res.groups">
+      <field name="name">Dispatch Coordinator</field>
+      <field name="category_id" ref="base.module_category_warehouse_management"/>
+      <field name="implied_ids" eval="[(4, ref('group_shop_salesperson'))]"/>
+    </record>
+
+
+    <!--Customer Service -->
+
+    <record model="ir.module.category" id="category_customer_service">
+      <field name="name">Customer Service</field>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="group_customer_service_user" model="res.groups">
+      <field name="name">User</field>
+      <field name="category_id" ref="category_customer_service"/>
+      <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    </record>
+
+    <record id="group_customer_service_manager" model="res.groups">
+      <field name="name">Manager</field>
+      <field name="category_id" ref="category_customer_service"/>
+      <field name="implied_ids" eval="[(4, ref('group_customer_service_user'))]"/>
+      <field name="users" eval="[(4, ref('base.user_root'))]"/>
+    </record>
+
+    <!--Deprecated Group-->
+
+    <record id="group_deprecated" model="res.groups">
+      <field name="name">Deprecated</field>
+    </record>
+
+
+  </data>
+</openerp>
+

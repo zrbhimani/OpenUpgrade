@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<odoo>
+
+        <!-- Product Update Price / Margin -->
+
+    <record model="ir.ui.view" id="view_update_price_margin">
+      <field name="name">update_price_margin</field>
+      <field name="model">update.price.margin</field>
+      <field name="arch" type="xml">
+        <form string="Update Price / Margin">
+          <group>
+            <field name="price" attrs="{'invisible':[('state','=','update_margin')]}"/>
+            <label for="margin" attrs="{'invisible':[('state','=','update_price')]}"/>
+            <div attrs="{'invisible':[('state','=','update_price')]}">
+              <field name="margin" class="oe_inline"/>
+              %%
+            </div>
+            <field name="state" invisible="1"/>
+          </group>
+          <footer>
+            <button name="do_update" string="Update" type="object" class="oe_highlight"/>
+            or
+            <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_update_price_margin" model="ir.actions.act_window">
+      <field name="name">Update Price</field>
+      <field name="res_model">update.price.margin</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <!--Product's Supplier - Update Lead Time-->
+
+    <record id="view_bulk_update_leadtime" model="ir.ui.view">
+      <field name="name">bulk.update.leadtime</field>
+      <field name="model">bulk.update.leadtime</field>
+      <field name="arch" type="xml">
+        <form string="Update Lead Time">
+          <group>
+            <field name="delay"/>
+          </group>
+          <footer>
+            <button name="do_update_delay" string="Update" type="object" class="oe_highlight"/>
+            or
+            <button name="cancel" string="Cancel" special="cancel" type="object" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_update_leadtime" model="ir.actions.act_window">
+      <field name="name">Update Delivery Lead Times</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">bulk.update.leadtime</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <record model="ir.ui.view" id="geckoboard_config_tree_view">
+      <field name="name">Geckoboard Configuration</field>
+      <field name="model">geckoboard.config</field>
+      <field name="arch" type="xml">
+        <tree string="Geckoboard Configuration">
+          <field name="api_key" />
+        </tree>
+      </field>
+    </record>
+
+     <record model="ir.ui.view" id="geckoboard_config_form_view">
+      <field name="name">Geckoboard Configuration</field>
+      <field name="model">geckoboard.config</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Geckoboard Configuration" create="0">
+          <header>
+            <button name="synchronize_all" string="Synchronize All Widgets" type="object" />
+          </header>
+          <group>
+            <group>
+              <field name="api_key" required="1" />
+            </group>
+            <field name="widget_ids" colspan="4" nolabel="1">
+              <tree>
+                <field name="sync" />
+                <field name="name" />
+                <field name="context"/>
+                <button name="export_widget" string="Export" type="object"/>
+              </tree>
+              <form>
+                <group>
+                  <field name="name" required="1"/>
+                  <field name="function" required="1"/>
+                  <field name="widget_api" required="1"/>
+                  <field name="result"/>
+                  <field name="sync"/>
+                  <field name="context"/>
+                </group>
+              </form>
+            </field>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_geckoboard_configuration">
+      <field name="name">Geckoboard</field>
+      <field name="res_model">geckoboard.config</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_geckoboard_config" action="action_geckoboard_configuration" parent="menu_config_api" sequence="170"/>
+
+
+</odoo>

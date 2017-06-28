@@ -1,0 +1,11 @@
+.tt_reference{
+    display:inline-block;
+    font-weight:Bold;
+    width:140px !important;
+    padding-right:8px;
+}
+
+.img_icon img{
+    height: 16px;
+    width: 16px;
+}

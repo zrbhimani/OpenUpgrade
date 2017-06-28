@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <!--Warehouse-->
+
+    <record id="view_warehouse" model="ir.ui.view">
+      <field name="name">Stock Warehouse Inherited</field>
+      <field name="model">stock.warehouse</field>
+      <field name="inherit_id" ref="stock.view_warehouse"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='code']" position="after">
+          <field name="default_tax_id"/>
+          <field name="active"/>
+        </xpath>
+      </field>
+    </record>
+
+    <!--AMF Postcode -->
+
+    <record id="view_amf_postocde_form" model="ir.ui.view">
+      <field name="name">amf.postcode.form</field>
+      <field name="model">amf.postcode</field>
+      <field name="arch" type="xml">
+        <form string="AMF Postcode">
+          <sheet>
+            <group>
+              <field name="name"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_amf_postocde_tree" model="ir.ui.view">
+      <field name="name">amf.postcode.tree</field>
+      <field name="model">amf.postcode</field>
+      <field name="arch" type="xml">
+        <tree string="AMF Postcode">
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="action_amf_postcode" model="ir.actions.act_window">
+      <field name="name">AMF Postcodes</field>
+      <field name="res_model">amf.postcode</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem action="action_amf_postcode" id="menu_action_amf_postcode" parent="delivery.menu_delivery" sequence="15" groups="stock.group_stock_manager"/>
+
+    <!--Reordering Rules-->
+
+    <record id="view_warehouse_orderpoint_form" model="ir.ui.view">
+      <field name="name">stock.warehouse.orderpoint.form</field>
+      <field name="model">stock.warehouse.orderpoint</field>
+      <field name="inherit_id" ref="stock.view_warehouse_orderpoint_form"/>
+      <field name="arch" type="xml">
+        <field name="product_min_qty" position="before">
+          <label for="qty_automatic"/>
+          <div>
+            <field name="qty_automatic"/>
+            <button name="update_min_max_qty" string="update" class="oe_link oe_inline" type="object" attrs="{'invisible':[('qty_automatic','=',False)]}"/>
+          </div>
+        </field>
+        <field name="product_min_qty" position="attributes">
+          <attribute name="attrs">{'readonly':[('qty_automatic','=',True)]}</attribute>
+        </field>
+        <field name="product_max_qty" position="attributes">
+          <attribute name="attrs">{'readonly':[('qty_automatic','=',True)]}</attribute>
+        </field>
+        <field name="company_id" position="replace">
+          <field name="company_id" widget="selection" groups="base.group_multi_company" domain="[('name','!=','Group')]"/>
+        </field>
+        <field name="product_id" position="after">
+          <field name="state" readonly="1"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_warehouse_orderpoint_tree" model="ir.ui.view">
+      <field name="name">stock.warehouse.orderpoint.form</field>
+      <field name="model">stock.warehouse.orderpoint</field>
+      <field name="inherit_id" ref="stock.view_warehouse_orderpoint_tree"/>
+      <field name="arch" type="xml">
+        <field name="product_id" position="after">
+          <field name="state"/>
+        </field>
+      </field>
+    </record>
+
+    <menuitem action="stock.action_orderpoint_form" id="menu_stock_order_points" parent="purchase.menu_purchase_config" sequence="10"/>
+
+    <!--Delivery Carrier-->
+
+    <record id="view_delivery_carrier_form" model="ir.ui.view">
+      <field name="name">delivery.carrier.form</field>
+      <field name="model">delivery.carrier</field>
+      <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[@name='title']/group" position="replace">
+          <group>
+            <group>
+              <field name="delivery_type" widget="radio"/>
+              <label for="margin"/>
+              <div>
+                <field name="margin" class="oe_inline"/>%
+              </div>
+            </group>
+            <group>
+              <field name="integration_level" widget="radio" attrs="{'invisible': ['|', ('delivery_type', '=', 'fixed'), ('delivery_type', '=', 'base_on_rule')]}"/>
+            </group>
+          </group>
+          <group>
+            <field name="tracking_url"/>
+            <field name="company_id"/>
+          </group>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="view_delivery_carrier_tree" model="ir.ui.view">
+      <field name="name">delivery.carrier.tree</field>
+      <field name="model">delivery.carrier</field>
+      <field name="inherit_id" ref="delivery.view_delivery_carrier_tree"/>
+      <field name="arch" type="xml">
+        <field name="delivery_type" position="after">
+          <field name="company_id"/>
+        </field>
+      </field>
+    </record>
+
+  </data>
+</odoo>

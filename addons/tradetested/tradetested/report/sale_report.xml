@@ -1,0 +1,832 @@
+<?xml version="1.0"?>
+<odoo>
+
+
+  <record id="view_order_product_tree" model="ir.ui.view">
+    <field eval="1" name="priority"/>
+    <field name="name">sale.report.tree</field>
+    <field name="model">sale.report</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Analysis" create="false">
+        <field name="date" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="company_id" invisible="1" groups="base.group_multi_company"/>
+        <field name="partner_id" invisible="1"/>
+        <field name="product_id" invisible="1"/>
+        <field name="categ_id" filter_domain="[('categ_id','child_of',self)]"/>
+        <field name="nbr" sum="# of Lines"/>
+        <field name="product_uom_qty" sum="# of Qty"/>
+        <field name="product_uom" invisible="not context.get('set_visible',False)"/>
+        <field name="price_total" sum="Total Price"/>
+        <field name="revenue" sum="total_revenue"/>
+        <field name="price_total_untaxed" invisible="1"/>
+        <field name="cost_total" invisible="1"/>
+        <field name="profit"/>
+        <field name="payment" invisible="1"/>
+        <field name="frequency" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="analytic_account_id" invisible="1" groups="analytic.group_analytic_accounting"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_order_product_search" model="ir.ui.view">
+    <field name="name">sale.report.search</field>
+    <field name="model">sale.report</field>
+    <field name="inherit_id" ref="sale.view_order_product_search"/>
+    <field name="arch" type="xml">
+      <field name="user_id" position="after">
+        <field name="product_supplier_id"/>
+      </field>
+      <filter name="Quotations" position="replace">
+        <filter icon="terp-document-new" string="Quotations" domain="[('state','in',['draft','sent'])]"/>
+      </filter>
+      <filter name="Sales" position="after">
+        <separator/>
+        <filter icon="terp-personal" string="Partly Paid" help="Partial Payment Done" domain="[('payment','=','partial')]"/>
+        <filter icon="terp-personal" string="Fully Paid" help="Payment Done in Full" domain="[('payment','=','full')]"/>
+        <separator/>
+        <filter icon="terp-personal" string="New Zealand" help="New Zealand Orders" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter icon="terp-personal" string="Australia" help="Australia Orders" domain="[('company_id.name','=','Australia')]"/>
+        <separator/>
+        <filter icon="terp-personal" string="Customer Frequencey" help="Customer Frequency" context="{'group_by':'frequency'}"/>
+      </filter>
+      <field name="categ_id" position="replace">
+        <field name="categ_id" filter_domain="[('categ_id','child_of',self)]" context="{'product_tree_search':True}"/>
+      </field>
+    </field>
+  </record>
+
+  <record id="action_order_report_all" model="ir.actions.act_window">
+    <field name="name">Sales Analysis</field>
+    <field name="res_model">sale.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,graph</field>
+    <field name="context">{'search_default_year':1,'search_default_month':1,'search_default_User':1,'group_by_no_leaf':1,'group_by':[]}</field>
+    <field name="search_view_id" ref="view_order_product_search"/>
+  </record>
+
+  <menuitem action="action_order_report_all" id="menu_report_product_all2" parent="sales_team.menu_sale_report" sequence="10" groups="sales_team.group_sale_salesman_all_leads"/>
+
+
+  <!-- Product Profitability -->
+
+  <record id="view_sale_profit_tree" model="ir.ui.view">
+    <field name="name">sale.profit.tree</field>
+    <field name="model">sale.profit</field>
+    <field name="arch" type="xml">
+      <tree string="Product Profitability" create="false">
+        <field name="default_code"/>
+        <field name="product_id"/>
+        <field name="product_uom_qty" sum="# of Qty"/>
+        <field name="price_total"/>
+        <!--<field name="cost_total"/>-->
+        <field name="profit"/>
+        <field name="product_uom" invisible="1"/>
+        <field name="date" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="year" invisible="1"/>
+        <field name="day" invisible="1"/>
+        <field name="month" invisible="1"/>
+        <field name="warehouse_id" invisible="1"/>
+        <field name="company_id" invisible="1" groups="base.group_multi_company"/>
+        <field name="partner_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="state" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_profit_graph" model="ir.ui.view">
+    <field name="name">sale.report.graph</field>
+    <field name="model">sale.report</field>
+    <field name="arch" type="xml">
+      <graph string="Sales Analysis" type="bar">
+        <field name="product_id"/>
+        <field name="price_total"/>
+        <field name="state" group="True"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="view_sale_profit_search" model="ir.ui.view">
+    <field name="name">sale.profit.search</field>
+    <field name="model">sale.profit</field>
+    <field name="arch" type="xml">
+      <search string="Sales Profit">
+        <field name="date"/>
+        <field name="date_confirm"/>
+        <field name="partner_id"/>
+        <field name="product_id"/>
+        <field name="user_id"/>
+        <field name="categ_id" filter_domain="[('categ_id','child_of',self)]" context="{'product_tree_search':True}"/>
+        <field name="product_supplier_id"/>
+
+        <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok','=',True)]"/>
+        <filter string="Can be Purchased" name="purchase_ok" domain="[('purchase_ok','=',True)]"/>
+        <separator/>
+        <filter string="Active" name="active" domain="[('active','=',True)]"/>
+        <filter string="Inactive" name="inactive" domain="[('active','=',False)]"/>
+        <separator/>
+        <filter string="New Zealand" name="new_zealand" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter string="Australia" name="australia" domain="[('company_id.name','=','Australia')]"/>
+
+        <group expand="1" string="Group By...">
+          <filter string="Salesperson" icon="terp-personal" name="User" context="{'group_by':'user_id'}"/>
+          <filter string="Partner" icon="terp-partner" name="Customer" context="{'group_by':'partner_id'}"/>
+          <filter string="Product" icon="terp-accessories-archiver" context="{'group_by':'product_id','set_visible':True}"/>
+
+          <filter string="Category of Product" icon="terp-stock_symbol-selection" name="Category" context="{'group_by':'categ_id'}"/>
+          <filter string="Supplier of Product" icon="terp-go-home" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+          <filter string="Company of Product" name="group_company" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+
+          <filter string="Status of Product" icon="terp-stock_effects-object-colorize" context="{'group_by':'state'}"/>
+          <filter string="Status of Order" icon="terp-stock_effects-object-colorize" context="{'group_by':'state'}"/>
+
+          <filter string="Shop" icon="terp-go-home" context="{'group_by':'warehouse_id'}"/>
+          <filter string="Year" name="group_year" context="{'group_by':'year'}" help="Ordered Year of the sales order"/>
+          <filter string="Month" name="group_month" icon="terp-go-month" context="{'group_by':'month'}" help="Ordered month of the sales order"/>
+          <filter string="Day" icon="terp-go-today" context="{'group_by':'day'}" help="Ordered date of the sales order"/>
+
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_profit" model="ir.actions.act_window">
+    <field name="name">Product Profitability</field>
+    <field name="res_model">sale.profit</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,graph</field>
+    <field name="search_view_id" ref="view_sale_profit_search"/>
+    <field name="view_id" ref="view_sale_profit_tree"/>
+    <field name="context">{'search_default_group_company':1, 'search_default_group_year':1, 'search_default_group_month':1}</field>
+  </record>
+
+  <menuitem action="action_sale_profit" id="menu_sale_profit" parent="sales_team.menu_sale_report" sequence="10" groups="sales_team.group_sale_manager"/>
+
+
+  <!-- Sale Seasonal Analysis -->
+
+  <record id="view_sale_seasonal_analysis_tree" model="ir.ui.view">
+    <field name="name">sale.seasonal.analysis.tree</field>
+    <field name="model">sale.seasonal.analysis</field>
+    <field name="arch" type="xml">
+      <tree string="Seasonal Analysis">
+        <field name="product_id" invisible="1"/>
+        <field name="state" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="user_id" invisible="1"/>
+        <field name="frequency" invisible="1"/>
+        <!--<field name="sale"/>-->
+        <!--<field name="profit"/>-->
+        <!--<field name="sale_rate"/>-->
+        <!--<field name="profit_rate"/>-->
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_analysis_form" model="ir.ui.view">
+    <field name="name">sale.seasonal.analysis.form</field>
+    <field name="model">sale.seasonal.analysis</field>
+    <field name="arch" type="xml">
+      <form string="Seasonal Analysis">
+        <group>
+          <field name="product_id"/>
+          <field name="state"/>
+          <group>
+            <field name="month_sale"/>
+            <field name="month_cost"/>
+            <field name="last_month_sale"/>
+            <field name="month_sale_gain"/>
+          </group>
+          <group>
+            <field name="quarter_sale"/>
+            <field name="quarter_cost"/>
+            <field name="last_quarter_sale"/>
+            <field name="quarter_sale_gain"/>
+          </group>
+          <group>
+            <field name="month_profit"/>
+            <field name="month_cost"/>
+            <field name="last_month_profit"/>
+            <field name="month_profit_rate"/>
+          </group>
+          <group>
+            <field name="quarter_profit"/>
+            <field name="quarter_cost"/>
+            <field name="last_quarter_profit"/>
+            <field name="quarter_profit_rate"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_analysis_graph" model="ir.ui.view">
+    <field name="name">sale.seasonal.analysis.graph</field>
+    <field name="model">sale.seasonal.analysis</field>
+    <field name="arch" type="xml">
+      <graph string="Seasonal Analysis" type="bar">
+        <field name="product_id"/>
+        <field name="month_sale"/>
+        <field name="quarter_sale"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_analysis_search" model="ir.ui.view">
+    <field name="name">sale.seasonal.analysis.search</field>
+    <field name="model">sale.seasonal.analysis</field>
+    <field name="arch" type="xml">
+      <search string="Sales Profit">
+        <field name="product_id"/>
+
+        <filter string="Quotation" name="fltr_draft" domain="[('state','in',['draft','sent'])]"/>
+        <filter string="Sales" name="fltr_sales" domain="[('state','not in',['draft','sent'])]"/>
+        <separator/>
+        <filter string="New Zealand" name="new_zealand" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter string="Australia" name="australia" domain="[('company_id.name','=','Australia')]"/>
+        <separator/>
+        <filter string="First Time" name="first" domain="[('frequency','=','first')]"/>
+        <filter string="Repeat" name="repeat" domain="[('frequency','=','repeat')]"/>
+        <separator/>
+        <filter string="Month - 30 Days" name="month" domain="[]" context="{'show_month':1}"/>
+        <filter string="Quarter - 90 Days" name="quarter" domain="[]" context="{'show_quarter':1}"/>
+        <filter string="Year - 365 Days" name="year" domain="[]" context="{'show_year':1}"/>
+
+        <group expand="1" string="Group By...">
+          <filter string="Company" name="group_company" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+          <filter string="Category" name="group_category" icon="terp-stock_symbol-selection" context="{'group_by':'categ_id'}"/>
+          <filter string="Product" name="group_product" icon="terp-accessories-archiver" context="{'group_by':'product_id','set_visible':True}"/>
+          <filter string="Salesperson" icon="terp-personal" name="User" context="{'group_by':'user_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_seasonal_analysis" model="ir.actions.act_window">
+    <field name="name">Seasonal Analysis</field>
+    <field name="res_model">sale.seasonal.analysis</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form,graph</field>
+    <field name="search_view_id" ref="view_sale_seasonal_analysis_search"/>
+    <field name="context">{'search_default_fltr_draft':1, 'search_default_fltr_sales':1, 'search_default_group_company':1, 'search_default_group_category':1, 'search_default_group_product':1, 'search_default_month':1}</field>
+    <field name="view_id" ref="view_sale_seasonal_analysis_tree"/>
+  </record>
+
+  <record id="view_sale_seasonal_analysis_dynamic_form" model="ir.ui.view">
+    <field name="name">sale.seasonal.analysis.dynamic.form</field>
+    <field name="model">sale.seasonal.analysis.dynamic</field>
+    <field name="arch" type="xml">
+      <form string="Seasonal Analysis">
+        <group>
+          <field name="date" required="1"/>
+        </group>
+        <footer>
+          <button name="open_seasonal_report" type="object" class="oe_highlight" string="Open Report"/>
+          or
+          <button name="cancel" special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_sale_seasonal_analysis_dynamic" model="ir.actions.act_window">
+    <field name="name">Seasonal Analysis</field>
+    <field name="res_model">sale.seasonal.analysis.dynamic</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <menuitem action="action_sale_seasonal_analysis_dynamic" id="menu_sale_seasonal_analysis" parent="sales_team.menu_sale_report" sequence="10"/>
+
+  <!-- Payment Analysis -->
+
+  <record id="view_payment_report_tree" model="ir.ui.view">
+    <field name="name">Payment Analysis</field>
+    <field name="model">payment.report</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree string="List" class="payment_report_tree">
+        <field name="type"/>
+        <field name="name"/>
+        <field name="date"/>
+        <field name="date_order" string="Sale Order Date"/>
+        <field name="method"/>
+        <field name="user_id"/>
+        <field name="comment"/>
+        <field name="amount" sum="Total"/>
+        <field name="company_id"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_payment_report_search" model="ir.ui.view">
+    <field name="name">payment.report</field>
+    <field name="model">payment.report</field>
+    <field name="arch" type="xml">
+      <search string="Sale Order Payment Analysis">
+        <filter name="payment" string="Payment" domain="[('type','=','payment')]"/>
+        <filter name="refund" string="Refund" domain="[('type','=','refund')]"/>
+        <field name="user_id" string="Saelesperson"/>
+        <field name="date" string="Payment Date"/>
+        <field name="type" string="Type"/>
+        <field name="method"/>
+        <field name="comment"/>
+        <field name="company_id"/>
+        <group expand="0" string="Group By...">
+          <filter string="Type" icon="terp-go-month" domain="[]" context="{'group_by':'type'}"/>
+          <filter string="Payment Method" icon="terp-go-month" domain="[]" context="{'group_by':'method'}"/>
+          <filter string="Company" name="company" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
+          <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_order'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_payment_report" model="ir.actions.act_window">
+    <field name="name">Payment Analysis</field>
+    <field name="res_model">payment.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="view_payment_report_tree"/>
+  </record>
+
+  <menuitem name="Payment Analysis" id="menu_sale_payment_analysis_report" parent="account.account_reports_business_intelligence_menu" action="action_payment_report" groups="account.group_account_invoice" sequence="1"/>
+
+  <!-- Payment Review -->
+
+  <record id="view_payment_review_tree" model="ir.ui.view">
+    <field name="name">Payment Review</field>
+    <field name="model">payment.report</field>
+    <field name="priority">64</field>
+    <field name="type">tree</field>
+    <field name="arch" type="xml">
+      <tree string="Payment Review" create="false" class="payment_report_tree">
+        <button name="open_payment" icon="fa-link" type="object"/>
+        <field name="date"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="type"/>
+        <field name="method"/>
+        <field name="amount" sum="Total"/>
+        <field name="comment"/>
+        <field name="user_id"/>
+        <field name="company_id"/>
+        <field name="reviewed"/>
+        <field name="reviewed_date" invisible="1"/>
+        <field name="reviewer_id" invisible="1"/>
+        <button name="open_order" icon="gtk-go-down" type="object" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_payment_review_form" model="ir.ui.view">
+    <field name="name">Payment Review</field>
+    <field name="model">payment.report</field>
+    <field name="priority">64</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+      <form string="Payment Review" create="false" edit="false">
+        <group>
+          <group>
+            <field name="type" readonly="1"/>
+            <field name="method" readonly="1"/>
+            <field name="amount" readonly="1"/>
+            <field name="comment" readonly="1"/>
+          </group>
+          <group>
+            <field name="date" readonly="1"/>
+            <field name="reviewed" readonly="1"/>
+            <field name="reviewed_date" readonly="1"/>
+            <field name="reviewer_id" readonly="1"/>
+          </group>
+          <group>
+            <field name="order_id" readonly="1"/>
+            <field name="partner_id" readonly="1"/>
+            <field name="user_id" readonly="1"/>
+            <field name="company_id" readonly="1"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_payment_review_search" model="ir.ui.view">
+    <field name="name">payment.report</field>
+    <field name="model">payment.report</field>
+    <field name="priority">64</field>
+    <field name="arch" type="xml">
+      <search string="Sale Order Payment Analysis">
+        <filter name="payment" string="Payment" domain="[('type','=','payment')]"/>
+        <filter name="refund" string="Refund" domain="[('type','=','refund')]"/>
+        <separator/>
+        <filter name="manual_payment" string="Manual Payment" domain="[('user_id','!=',1)]"/>
+        <filter name="to_be_reviewed" string="To Be Reviewed" domain="[('reviewed','=',False)]"/>
+        <field name="user_id" string="Saelesperson"/>
+        <field name="date" string="Payment Date"/>
+        <field name="type" string="Type"/>
+        <field name="method"/>
+        <field name="comment"/>
+        <field name="company_id"/>
+        <group expand="0" string="Group By...">
+          <filter string="Type" icon="terp-go-month" domain="[]" context="{'group_by':'type'}"/>
+          <filter string="Payment Method" icon="terp-go-month" domain="[]" context="{'group_by':'method'}"/>
+          <filter string="Company" name="company" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
+          <filter string="Month" icon="terp-go-month" domain="[]" context="{'group_by':'date_order'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_payment_review" model="ir.actions.act_window">
+    <field name="name">Payment Review</field>
+    <field name="res_model">payment.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_payment_review_search"/>
+    <field name="context">{'search_default_to_be_reviewed':1}</field>
+  </record>
+
+  <record id="action_payment_review_view1" model="ir.actions.act_window.view">
+    <field eval="1" name="sequence"/>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="view_payment_review_tree"/>
+    <field name="act_window_id" ref="action_payment_review"/>
+  </record>
+
+  <record id="action_payment_review_view2" model="ir.actions.act_window.view">
+    <field eval="5" name="sequence"/>
+    <field name="view_mode">form</field>
+    <field name="view_id" ref="view_payment_review_form"/>
+    <field name="act_window_id" ref="action_payment_review"/>
+  </record>
+
+
+  <menuitem name="Sales" id="menu_finance_sales" sequence="1" parent="account.menu_finance"/>
+
+  <menuitem name="Payment Review" id="menu_payment_review" parent="menu_finance_sales" action="action_payment_review" sequence="1"/>
+
+
+  <!-- Sale Seasonal Forecast -->
+
+  <record id="view_sale_seasonal_forecast_tree" model="ir.ui.view">
+    <field name="name">sale.seasonal.forecast.tree</field>
+    <field name="model">sale.seasonal.forecast</field>
+    <field name="arch" type="xml">
+      <tree string="Seasonal Forecast">
+        <field name="product_id" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <!--<field name="sale"/>-->
+        <!--<field name="profit"/>-->
+        <!--<field name="sale_rate"/>-->
+        <!--<field name="profit_rate"/>-->
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_forecast_form" model="ir.ui.view">
+    <field name="name">sale.seasonal.forecast.form</field>
+    <field name="model">sale.seasonal.forecast</field>
+    <field name="arch" type="xml">
+      <form string="Seasonal Forecast">
+        <group>
+          <field name="product_id"/>
+          <group>
+            <field name="month_sale"/>
+            <field name="month_cost"/>
+          </group>
+          <group>
+            <field name="quarter_sale"/>
+            <field name="quarter_cost"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_forecast_graph" model="ir.ui.view">
+    <field name="name">sale.seasonal.forecast.graph</field>
+    <field name="model">sale.seasonal.forecast</field>
+    <field name="arch" type="xml">
+      <graph string="Seasonal Forecast" type="bar">
+        <field name="product_id"/>
+        <field name="month_sale"/>
+        <field name="quarter_sale"/>
+      </graph>
+    </field>
+  </record>
+
+  <record id="view_sale_seasonal_forecast_search" model="ir.ui.view">
+    <field name="name">sale.seasonal.forecast.search</field>
+    <field name="model">sale.seasonal.forecast</field>
+    <field name="arch" type="xml">
+      <search string="Sales Profit">
+        <field name="product_id"/>
+        <separator/>
+        <filter string="New Zealand" name="new_zealand" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter string="Australia" name="australia" domain="[('company_id.name','=','Australia')]"/>
+        <separator/>
+        <filter string="Month - 30 Days" name="month" domain="[]" context="{'show_month':1}"/>
+        <filter string="Quarter - 90 Days" name="quarter" domain="[]" context="{'show_quarter':1}"/>
+        <filter string="Year - 365 Days" name="year" domain="[]" context="{'show_year':1}"/>
+
+        <group expand="1" string="Group By...">
+          <filter string="Company" name="group_company" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+          <filter string="Category" name="group_category" icon="terp-stock_symbol-selection" context="{'group_by':'categ_id'}"/>
+          <filter string="Product" name="group_product" icon="terp-accessories-archiver" context="{'group_by':'product_id','set_visible':True}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_seasonal_forecast" model="ir.actions.act_window">
+    <field name="name">Seasonal Forecast</field>
+    <field name="res_model">sale.seasonal.forecast</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form,graph</field>
+    <field name="search_view_id" ref="view_sale_seasonal_forecast_search"/>
+    <field name="context">{'search_default_group_company':1, 'search_default_group_category':1, 'search_default_group_product':1, 'search_default_month':1}</field>
+    <field name="view_id" ref="view_sale_seasonal_forecast_tree"/>
+  </record>
+
+  <menuitem action="action_sale_seasonal_forecast" id="menu_sale_seasonal_forecast" parent="sales_team.menu_sale_report" sequence="10" groups="sales_team.group_sale_salesman_all_leads,purchase.group_purchase_manager"/>
+
+
+  <!--MTD-->
+
+  <record id="view_sale_mtd_report_tree" model="ir.ui.view">
+    <field name="name">sale.mtd.report.tree</field>
+    <field name="model">sale.mtd.report</field>
+    <field name="arch" type="xml">
+      <tree string="Sales MTD">
+        <field name="company_id"/>
+        <field name="mtd" sum="total"/>
+        <field name="pm_mtd"/>
+        <field name="py_mtd"/>
+        <field name="pm" sum="total"/>
+        <field name="py" sum="total"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_sale_mtd_report_form" model="ir.ui.view">
+    <field name="name">sale.mtd.report.form</field>
+    <field name="model">sale.mtd.report</field>
+    <field name="arch" type="xml">
+      <form string="Sales MTD">
+        <group>
+          <field name="company_id"/>
+          <group>
+            <field name="mtd"/>
+            <field name="pm_mtd"/>
+            <field name="py_mtd"/>
+          </group>
+          <group>
+            <field name="pm"/>
+            <field name="py"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_sale_mtd_report_search" model="ir.ui.view">
+    <field name="name">sale.mtd.report.search</field>
+    <field name="model">sale.mtd.report</field>
+    <field name="arch" type="xml">
+      <search string="Sales Profit">
+        <field name="company_id"/>
+        <!--<field name="date_from" context="{'date_from': self}"/>-->
+        <!--<field name="date_to" context="{'date_to': self}"/>-->
+      </search>
+    </field>
+  </record>
+
+  <record id="action_sale_mtd_report" model="ir.actions.act_window">
+    <field name="name">Sales MTD</field>
+    <field name="res_model">sale.mtd.report</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_sale_mtd_report_search"/>
+    <field name="context">{'search_default_date_from': (context_today()-relativedelta(day=1)).strftime('%m/%d/%Y'),
+      'search_default_date_to': (context_today()-relativedelta(days=1)).strftime('%m/%d/%Y')}
+    </field>
+  </record>
+
+
+  <menuitem action="action_sale_mtd_report" id="menu_sale_mtd_report" parent="sales_team.menu_sale_report" sequence="10" groups="sales_team.group_sale_salesman_all_leads,purchase.group_purchase_manager"/>
+
+
+  <!--Product Ranking-->
+
+  <record id="view_product_sales_ranking_tree" model="ir.ui.view">
+    <field name="name">product.sales.ranking.tree</field>
+    <field name="model">product.sales.ranking</field>
+    <field name="arch" type="xml">
+      <tree string="Product Ranking" colors="green:rank_change&gt;0;red:rank_change&lt;0">
+        <field name="current_rank"/>
+        <field name="default_code"/>
+        <!--<field name="name"/>-->
+        <field name="current_sold"/>
+        <field name="rank_change"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_product_sales_ranking_form" model="ir.ui.view">
+    <field name="name">product.sales.ranking.form</field>
+    <field name="model">product.sales.ranking</field>
+    <field name="arch" type="xml">
+      <form string="Product Ranking">
+        <group>
+          <group>
+            <field name="default_code"/>
+            <!--<field name="name"/>-->
+          </group>
+          <group>
+            <field name="current_rank"/>
+            <field name="current_sold"/>
+
+            <field name="previous_rank"/>
+            <field name="previous_sold"/>
+
+            <field name="rank_change"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_product_sales_ranking_search" model="ir.ui.view">
+    <field name="name">product.sales.ranking.search</field>
+    <field name="model">product.sales.ranking</field>
+    <field name="arch" type="xml">
+      <search string="Product Ranking">
+        <field name="product_id"/>
+        <field name="default_code"/>
+        <!--<field name="name"/>-->
+      </search>
+    </field>
+  </record>
+
+  <record id="action_product_sales_ranking" model="ir.actions.act_window">
+    <field name="name">Product Ranking</field>
+    <field name="res_model">product.sales.ranking</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_product_sales_ranking_search"/>
+  </record>
+
+  <menuitem action="action_product_sales_ranking" id="menu_product_sales_ranking" parent="sales_team.menu_sale_report" sequence="30"/>
+
+
+  <!--Product Casae-->
+
+  <record id="view_product_cases_tree" model="ir.ui.view">
+    <field name="name">product.cases.tree</field>
+    <field name="model">product.cases</field>
+    <field name="arch" type="xml">
+      <tree string="Product Cases">
+        <button name="open_product" icon="fa-share" type="object"/>
+        <field name="default_code"/>
+        <field name="name"/>
+        <field name="sold"/>
+        <field name="product_case"/>
+        <field name="product_case_count"/>
+        <field name="product_id" invisible="1"/>
+        <field name="company_id" invisible="1"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="bayesian"/>
+
+        <!--<field name="all_case" invisible="1"/>-->
+        <!--<field name="all_case_count" invisible="1"/>-->
+        <!--<field name="issue_id" invisible="1"/>-->
+        <!--<field name="resolution_id" invisible="1"/>-->
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_product_cases_form" model="ir.ui.view">
+    <field name="name">product.cases.form</field>
+    <field name="model">product.cases</field>
+    <field name="arch" type="xml">
+      <form string="Product Cases">
+        <group>
+          <group>
+            <field name="default_code"/>
+            <field name="name"/>
+            <field name="product_id"/>
+            <field name="company_id"/>
+            <field name="categ_id"/>
+            <!--<field name="issue_id"/>-->
+            <!--<field name="resolution_id"/>-->
+          </group>
+          <group>
+            <field name="sold"/>
+            <field name="product_case"/>
+          </group>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_product_cases_search" model="ir.ui.view">
+    <field name="name">product.cases.search</field>
+    <field name="model">product.cases</field>
+    <field name="arch" type="xml">
+      <search string="Product Cases">
+        <field name="default_code"/>
+        <field name="name"/>
+        <field name="product_id"/>
+        <field name="categ_id"/>
+        <group expand="1" string="Group By...">
+          <filter name="grp_company" string="Company" domain="[]" context="{'group_by': 'company_id'}"/>
+          <filter name="grp_category" string="Category" domain="[]" context="{'group_by': 'categ_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_product_cases" model="ir.actions.act_window">
+    <field name="name">Product Cases</field>
+    <field name="res_model">product.cases</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_product_cases_search"/>
+    <field name="context">{}</field>
+  </record>
+
+  <menuitem action="action_product_cases" id="menu_product_cases" parent="sales_team.menu_sale_report" sequence="31"/>
+
+  <!--Report Sales Targets-->
+
+  <record id="view_report_sale_period_target_tree" model="ir.ui.view">
+    <field name="name">report.sale.period.target.tree</field>
+    <field name="model">report.sale.period.target</field>
+    <field name="arch" type="xml">
+      <tree string="Sales Targets" colors="blue:weeks_left&gt;0">
+        <field name="period_id"/>
+        <field name="user_id"/>
+        <field name="sales"/>
+        <field name="pro_rata_target"/>
+        <field name="target"/>
+        <field name="unpaid_sales"/>
+        <field name="weeks_left"/>
+        <field name="target_rate"/>
+        <field name="pre_order_value"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_report_sale_period_target_form" model="ir.ui.view">
+    <field name="name">report.sale.period.target.form</field>
+    <field name="model">report.sale.period.target</field>
+    <field name="arch" type="xml">
+      <form string="Sales Targets">
+        <sheet>
+          <group>
+            <field name="period_id"/>
+            <field name="user_id"/>
+            <field name="sales"/>
+            <field name="pro_rata_target"/>
+            <field name="target"/>
+            <field name="unpaid_sales"/>
+            <field name="weeks_left"/>
+            <field name="target_rate"/>
+            <field name="pre_order_value"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_report_sale_period_target" model="ir.ui.view">
+    <field name="name">report.sale.period.target.search</field>
+    <field name="model">report.sale.period.target</field>
+    <field name="arch" type="xml">
+      <search string="Sales Targets">
+        <group expand="1" string="Group By...">
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_report_sale_period_target" model="ir.actions.act_window">
+    <field name="name">Sales Targets</field>
+    <field name="res_model">report.sale.period.target</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+    <field name="search_view_id" ref="view_report_sale_period_target"/>
+    <field name="context">{}</field>
+  </record>
+
+  <menuitem action="action_report_sale_period_target" id="menu_report_sale_target" parent="sales_team.menu_sale_report" sequence="33"/>
+
+</odoo>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <template id="assets_backend" name="mail assets" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/tradetested/static/src/js/jquery.jsonview.min.js"></script>
+        <script type="text/javascript" src="/tradetested/static/src/js/tt_list_widgets.js"></script>
+        <script type="text/javascript" src="/tradetested/static/src/js/tt_form_widgets.js"></script>
+        <script type="text/javascript" src="/tradetested/static/src/js/tt_custom.js"></script>
+        <script type="text/javascript" src="/tradetested/static/src/js/watcher.js"></script>
+        <link href="/tradetested/static/src/css/jquery.jsonview.css" rel="stylesheet" type="text/css"/>
+        <link href="/tradetested/static/src/css/tradetested.css" rel="stylesheet" type="text/css"/>
+      </xpath>
+    </template>
+
+    <menuitem id="menu_config_api" parent="base.menu_administration" name="Connections" sequence="1"/>
+
+    <!--Templates-->
+    <template id="layout" name="Web layout" inherit_id="web.layout">
+      <xpath expr="//title" position="replace">
+        <title>The Brain</title>
+      </xpath>
+      <xpath expr="//link[@rel='shortcut icon']" position="replace">
+        <link rel="shortcut icon" href="/tradetested/static/src/img/favicon.ico" type="image/x-icon"/>
+      </xpath>
+    </template>
+
+
+    <template id="menu_secondary" inherit_id="web.menu_secondary">
+      <xpath expr="//div[@class='o_sub_menu_footer']" position="replace">
+        <div class="oe_footer"/>
+      </xpath>
+    </template>
+
+    <template id="login" inherit_id="web.login">
+      <xpath expr="//label[@for='login']" position="replace">
+        <label for="login" class="control-label">Username</label>
+      </xpath>
+
+    </template>
+
+    <template id="web.login_layout" name="Login Layout">
+      <t t-call="web.layout">
+        <t t-set="head">
+          <t t-call-assets="web.assets_backend"/>
+        </t>
+        <t t-set="body_classname" t-value="'container login'"/>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3 o_database_list">
+            <div class="text-center">
+              <img t-attf-src="/tradetested/static/src/img/logo_black.png"/>
+              <div class="note">
+                <!--<p>It's been a bit of a <a href="https://www.youtube.com/watch?v=IaI5JCxOCdw" target="_blank">waiting game</a>, but we finally have a new <a href="https://www.youtube.com/watch?v=NL9T42SVnN0" target="_blank">Brain</a>.</p>-->
+              </div>
+            </div>
+            <t t-raw="0"/>
+          </div>
+        </div>
+      </t>
+    </template>
+  </data>
+
+  <data noupdate="1">
+
+    <record id="ir_cron_price_change_email" model="ir.cron">
+      <field name="name">Price Change Email</field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="interval_number">24</field>
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall"/>
+      <field name="active" eval="0"/>
+      <field eval="'product.product'" name="model"/>
+      <field eval="'price_change_email_cron'" name="function"/>
+      <field eval="'()'" name="args"/>
+      <field eval="&quot;&quot;&quot;2014-05-03 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_update_special_price" model="ir.cron">
+      <field name="name">Update Product Special Price</field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="interval_number">7</field>
+      <field name="interval_type">days</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall"/>
+      <field name="active">0</field>
+      <field eval="&quot;&quot;&quot;2014-04-27 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+      <field eval="'product.product'" name="model"/>
+      <field eval="'update_special_price_cron'" name="function"/>
+      <field eval="'(28,)'" name="args"/>
+    </record>
+
+    <record id="ir_cron_month_end_stock_report" model="ir.cron">
+      <field name="name">Month End stock Reports</field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="interval_number">1</field>
+      <field name="interval_type">months</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall"/>
+      <field name="active" eval="0"/>
+      <field eval="'product.product'" name="model"/>
+      <field eval="'month_end_report_cron'" name="function"/>
+      <field eval="'()'" name="args"/>
+      <field eval="&quot;&quot;&quot;2017-01-01 00:00:01&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_pending_cases" model="ir.cron">
+      <field name="name">Reopen Pending Cases</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">12</field>
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'crm.helpdesk'" name="model" />
+      <field eval="'reopen_pending_cases'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2014-05-31 00:10:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_scs_export_api" model="ir.cron">
+      <field name="name">SCS Export API</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">30</field>
+      <field name="interval_type">minutes</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'scs.export.api'" name="model" />
+      <field eval="'export_to_scs_cron'" name="function" />
+      <field eval="'()'" name="args" />
+    </record>
+
+    <record id="ir_cron_update_reordering_rules" model="ir.cron">
+      <field name="name">Update Reordering Rules</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">weeks</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'stock.warehouse.orderpoint'" name="model" />
+      <field eval="'update_min_max_qty_cron'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2014-05-03 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_customer_segmentation" model="ir.cron">
+      <field name="name">Customer Segmentation</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">weeks</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'crm.segmentation'" name="model" />
+      <field eval="'run_segmentation_cron'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2014-05-03 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_customer_merge" model="ir.cron">
+      <field name="name">Merge Customers</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">weeks</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'res.partner'" name="model" />
+      <field eval="'merge_customers'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2014-05-03 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_price_monitor" model="ir.cron">
+      <field name="name">Price Monitor</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">24</field>
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'price.monitor'" name="model" />
+      <field eval="'get_price_cron'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2014-05-03 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_mailchimp" model="ir.cron">
+      <field name="name">Mailchimp</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">24</field>
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'mailchimp.config'" name="model" />
+      <field eval="'mailchimp_export_cron'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2015-12-01 11:00:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+    <record id="ir_cron_showroom_cash_up" model="ir.cron">
+      <field name="name">Showroom Cash</field>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">24</field>
+      <field name="interval_type">hours</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="active" eval="0"/>
+      <field eval="'sale.order'" name="model" />
+      <field eval="'cash_up_cron'" name="function" />
+      <field eval="'()'" name="args" />
+      <field eval="&quot;&quot;&quot;2016-01-01 03:55:00&quot;&quot;&quot;" name="nextcall"/>
+    </record>
+
+  </data>
+</odoo>

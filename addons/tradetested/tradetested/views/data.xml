@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data noupdate="1">
+
+<!-- Order Held Categories -->
+
+    <record id="held_categ_address_issue" model="sale.order.held.category">
+      <field name="code">waiting_address</field>
+      <field name="name">Address Issue</field>
+    </record>
+
+    <record id="held_categ_future_delivery" model="sale.order.held.category">
+      <field name="code">future_delivery</field>
+      <field name="name">Future Delivery</field>
+    </record>
+
+    <record id="held_categ_future_payment" model="sale.order.held.category">
+      <field name="code">future_payment</field>
+      <field name="name">Future Payment</field>
+    </record>
+
+    <record id="held_categ_payment_review" model="sale.order.held.category">
+      <field name="code">payment_review</field>
+      <field name="name">Payment Review</field>
+    </record>
+
+    <record id="channel_not_defined" model="sale.channel">
+      <field name="code">not_defined</field>
+      <field name="name">Not defined</field>
+    </record>
+
+    <record id="channe_phone" model="sale.channel">
+      <field name="code">phone</field>
+      <field name="name">Phone</field>
+    </record>
+
+    <record id="channel_showroom" model="sale.channel">
+      <field name="code">showroom</field>
+      <field name="name">Showroom</field>
+    </record>
+
+    <record id="channel_website" model="sale.channel">
+      <field name="code">website</field>
+      <field name="name">Website</field>
+    </record>
+
+    <record id="channel_trademe" model="sale.channel">
+      <field name="code">trademe</field>
+      <field name="name">Trade Me</field>
+    </record>
+
+    <record id="channel_ebay" model="sale.channel">
+      <field name="code">ebay</field>
+      <field name="name">Ebay</field>
+    </record>
+
+    <record id="channel_daily_deal" model="sale.channel">
+      <field name="code">daily_deal</field>
+      <field name="name">Daily Deal</field>
+    </record>
+
+    <record id="channel_wholesale" model="sale.channel">
+      <field name="code">wholesale</field>
+      <field name="name">Wholesale</field>
+    </record>
+
+  </data>
+</odoo>

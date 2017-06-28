@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="view_company_form_inherit_payment" model="ir.ui.view">
+      <field name="name">res.company.form.payment_details</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="arch" type="xml">
+        <!--<field name="overdue_msg" position="after">-->
+          <!--<separator string="Payment Details" colspan="4"/>-->
+          <!--<field name="payment_details" nolabel="1" colspan="4"/>-->
+        <!--</field>-->
+        <notebook position="before">
+          <field name="extra_logo" widget="image" class="oe_avatar"/>
+          <br/>
+          <br/>
+        </notebook>
+      </field>
+    </record>
+
+    <!--App Menus-->
+    <record model="ir.ui.menu" id="base.module_mi">
+      <field name="groups_id" eval="[(6,0,[ref('tradetested.group_deprecated')])]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="base.menu_module_updates">
+      <field name="groups_id" eval="[(6,0,[ref('tradetested.group_deprecated')])]"/>
+    </record>
+
+    <menuitem id="base.menu_management" name="Apps" sequence="0" parent="base.menu_administration" />
+    <!--  groups="base.group_system"-->
+
+    <!--Mail-->
+
+    <record model="ir.ui.view" id="email_compose_message_wizard_form">
+      <field name="name">mail.compose.message.form</field>
+      <field name="model">mail.compose.message</field>
+      <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+      <field name="arch" type="xml">
+        <button name="save_as_template" position="attributes">
+          <attribute name="groups">base.group_system</attribute>
+        </button>
+      </field>
+    </record>
+
+    <!--Users-->
+
+    <record id="base.view_users_tree" model="ir.ui.view">
+      <field name="name">res.users.tree.tt</field>
+      <field name="model">res.users</field>
+      <field name="arch" type="xml">
+        <tree string="Users">
+          <field name="name"/>
+          <field name="login"/>
+          <field name="team_id"/> <!-- default_section_id is changed to team_id -->
+          <field name="lang"/>
+          <field name="date"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_users_form_simple_modif" model="ir.ui.view">
+      <field name="name">res.users.preferences.form</field>
+      <field name="model">res.users</field>
+      <field eval="18" name="priority"/>
+      <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+      <field name="arch" type="xml">
+        <field name="tz" position="after">
+          <field name="team_id" option="{'no_open':1, 'no_create':1}"/>
+        </field>
+      </field>
+    </record>
+
+    <!--Filters-->
+
+    <record id="ir_filters_view_search" model="ir.ui.view">
+      <field name="model">ir.filters</field>
+      <field name="inherit_id" ref="base.ir_filters_view_search"/>
+      <field name="arch" type="xml">
+        <filter name="my_filters" position="after">
+          <filter string="Show All filters" domain="[]" context="{'show_hidden': True}" name="all_filters" help="Filters created by myself"/>
+        </filter>
+      </field>
+    </record>
+
+    <record id="base.actions_ir_filters_view" model="ir.actions.act_window">
+      <field name="name">Filters</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">ir.filters</field>
+      <field name="context">{'search_default_all_filters': True}</field>
+    </record>
+
+
+    <record model="ir.ui.view" id="email_template_form1">
+      <field name="name">email.template.form</field>
+      <field name="model">mail.template</field>
+      <field name="inherit_id" ref="mail.email_template_form"/>
+      <field name="arch" type="xml">
+        <field name="body_html" position="replace">
+          <field name="body_html" widget="text" options="{'style-inline': true}"/>
+        </field>
+      </field>
+    </record>
+
+
+  </data>
+</odoo>

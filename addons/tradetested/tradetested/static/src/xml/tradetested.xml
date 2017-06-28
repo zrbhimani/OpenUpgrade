@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+
+  <t t-extend="UserMenu">
+    <t t-jquery="ul[class=dropdown-menu]" t-operation="replace">
+      <ul class="dropdown-menu">
+        <li><a href="#" data-menu="about">About</a></li>
+        <li class="divider"/>
+        <li><a href="#" data-menu="settings">Preferences</a></li>
+        <li><a href="#" data-menu="logout">Log out</a></li>
+      </ul>
+    </t>
+  </t>
+
+  <t t-extend="UserMenu.about">
+    <t t-jquery="div[class='col-sm-offset-2 col-md-offset-2 col-sm-8 col-md-8 user-details']" t-operation="replace">
+      <div class="col-sm-offset-2 col-md-offset-2 col-sm-8 col-md-8 user-details">
+        <div class="user-image">
+          <img src="/web/static/src/img/logo2.png" alt="Brain" title="Brain" class="img-circle"/>
+        </div>
+        <div class="user-info-block">
+          <div class="user-heading">
+            <h3>
+              Version <t t-esc="db_info.server_version"/>
+              (Community Edition)
+            </h3>
+            <t t-if="db_info.expiration_date">
+              <h5>Database expiration: <t t-esc="new moment(db_info.expiration_date).format('LL')"/></h5>
+            </t>
+          </div>
+        </div>
+      </div>
+    </t>
+  </t>
+
+  <t t-name="FieldTextraw_html">
+    <div t-att-class="'oe_form_field oe_form_field_html'" t-att-style="widget.node.attrs.style">
+      <t t-if="! widget.get('effective_readonly')">
+        <textarea/>
+      </t>
+    </div>
+  </t>
+
+  <t t-name="FieldSerialized">
+    <div class="oe_form_field oe_form_field_text form_serialized">
+    </div>
+  </t>
+
+  <t t-name="tradetested.UnorderedList">
+    <ul class="tt_list_of_char">
+        <t t-foreach="widget.get('value')" t-as="val">
+            <li><t t-esc="val"/></li>
+        </t>
+    </ul>
+  </t>
+
+  <t t-name="tradetested.ExternalImage">
+    <div class="tt_external_image">
+        <img t-att-src="widget.get('value')"/>
+    </div>
+  </t>
+
+  <t t-name="FieldStockIndicator">
+    <span class="oe_form_field oe_form_field_email" t-att-style="widget.node.attrs.style">
+      <img src="#" title="#" width="16" height="16"/>
+    </span>
+  </t>
+
+    <!--
+        Chatter main div
+    -->
+  <t t-name="mail.Chatter">
+    <div class="o_chatter">
+      <div class="o_chatter_topbar">
+        <button type="button" class="btn btn-sm btn-primary o_chatter_button_new_message" title="Send an email">New email</button>
+        <button class="btn btn-sm btn-link o_chatter_button_log_note" title="Log a note. Followers will not be notified.">Log an internal note</button>
+      </div>
+    </div>
+  </t>
+
+  <!--Chatter Attachments Image-->
+  <t t-name="mail.Attachment">
+    <div t-attf-class="o_attachment #{attachment.upload ? 'o_attachment_uploading' : ''}" t-att-title="attachment.name">
+      <a class="o_image" t-att-href='attachment.url' target="_blank" t-att-data-mimetype="attachment.mimetype" t-attf-data-src="/web/image/#{attachment.id}/100x80">
+        <t t-if="attachment.mimetype=='image/png' or attachment.mimetype=='image/jpg' or attachment.mimetype=='image/jpeg' or attachment.mimetype=='image/bmp'">
+          <img t-attf-src="/web/image/#{attachment.id}/100x80"/>
+        </t>
+          <span class='o_attachment_name'><t t-esc='attachment.name'/></span>
+      </a>
+      <t t-if="editable">
+        <div class="o_attachment_delete">
+          <i class='fa fa-times-circle' title="Delete this attachment" t-att-data-id="attachment.id"/>
+        </div>
+        <div class="o_attachment_progress_bar">
+          Uploading
+        </div>
+      </t>
+    </div>
+  </t>
+
+
+</templates>
+

@@ -1,0 +1,1024 @@
+<?xml version="1.0"?>
+<odoo>
+  <data>
+
+    <!-- Product  -->
+
+    <menuitem name="Products" id="menu_products" parent="sales_team.menu_base_partner" sequence="7"/>
+
+    <record id="product.product_normal_action_sell" model="ir.actions.act_window">
+      <field name="name">Products</field>
+    </record>
+
+    <record model="ir.ui.menu" id="product.menu_products">
+      <field name="name">Products</field>
+      <field name="groups_id" eval="[(6,0,[])]"/>
+      <field name="parent_id" ref="menu_products"/>
+    </record>
+
+    <record id="product.product_product_tree_view" model="ir.ui.view">
+      <field name="name">product.product.tree</field>
+      <field name="model">product.product</field>
+      <field eval="7" name="priority"/>
+      <field name="arch" type="xml">
+        <tree string="Products">
+          <!--colors="blue:state in ('draft', 'end', 'obsolete');black:state not in ('draft', 'end', 'obsolete')"-->
+          <field name="default_code" string="SKU"/>
+          <field name="name"/>
+          <field name="list_price" string="Standard Price"/>
+          <field name="special_price"/>
+          <!--<field name="supply_method" />-->
+          <field name="categ_id" invisible="1"/>
+          <field name="type" invisible="1"/>
+          <!--<field name="variants" groups="product.group_product_variant" />-->
+          <field name="uom_id" string="Unit of Measure" groups="product.group_uom"/>
+          <field name="lst_price" invisible="1"/>
+          <field name="price" invisible="not context.get('pricelist',False)"/>
+          <field name="standard_price" invisible="1"/>
+          <field name="state"/>
+          <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="product_normal_form_view" model="ir.ui.view">
+      <field name="name">product.normal.form</field>
+      <field name="model">product.product</field>
+      <field eval="5" name="priority"/>
+      <field name="arch" type="xml">
+        <form string="Product">
+          <sheet>
+            <!--<field name="is_product_variant" invisible="1"/>-->
+            <field name='product_variant_count' invisible='1'/>
+            <field name="id" invisible="True"/>
+            <div class="oe_button_box" name="button_box">
+              <button string="Traceability" type="object" name="action_view_stock_moves" class="oe_stat_button" icon="fa-arrows-v" groups="stock.group_stock_user" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"/>
+              <button type="object" name="action_view_orderpoints" attrs="{'invisible':['|',('type', '!=', 'product'),('nbr_reordering_rules', '==', 1)]}" class="oe_stat_button" icon="fa-refresh">
+                <field name="nbr_reordering_rules" widget="statinfo"/>
+              </button>
+              <button type="object" name="action_view_orderpoints" attrs="{'invisible':['|',('type', '!=', 'product'),('nbr_reordering_rules', '!=', 1)]}" class="oe_stat_button" icon="fa-refresh">
+                <div class="o_form_field o_stat_info mr4">
+                  <span class="o_stat_text">Min:</span>
+                  <span class="o_stat_text">Max:</span>
+                </div>
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="reordering_min_qty"/>
+                  </span>
+                  <span class="o_stat_value">
+                    <field name="reordering_max_qty"/>
+                  </span>
+                </div>
+              </button>
+              <button string="Routes" type="object" name="action_view_routes" attrs="{'invisible':[('type', '!=', 'product')]}" groups="stock.group_adv_location" class="oe_stat_button" icon="fa-cogs"/>
+              <button class="oe_stat_button" name="%(mrp.template_open_bom)d" attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}" type="action" icon="fa-flask">
+                <field string="Bill of Materials" name="bom_count" widget="statinfo"/>
+              </button>
+              <button class="oe_stat_button" name="%(purchase.action_purchase_line_product_tree)d" type="action" icon="fa-shopping-cart" string="Purchases">
+                <!--<field string="Purchases" name="purchase_count" widget="statinfo"/>-->
+              </button>
+              <button class="oe_stat_button" name="action_view_sales" type="object" icon="fa-usd" string="Sales">
+                <!--<field string="Sales" name="sales_count" widget="statinfo"/>-->
+              </button>
+              <button type="object" name="action_open_quants" attrs="{'invisible':[('type', '!=', 'product')]}" class="oe_stat_button" icon="fa-building-o" string="On Hand">
+                <!--<field name="qty_available_copy" widget="statinfo" string="On Hand"/>-->
+              </button>
+              <button string="Documents" name="product_open_documents" type="object" class="oe_stat_button" icon="fa-file">
+                <div class="o_form_field o_stat_info mr4">
+                </div>
+                <div class="o_form_field o_stat_info">
+                  <span class="o_stat_value">
+                    (<field name="doc_count" nolabel="1" class="oe_inline"/>)
+                  </span>
+                </div>
+
+              </button>
+            </div>
+            <!--<field name="image_large" widget="external_image"/>-->
+            <div class="oe_title">
+              <label class="oe_edit_only" for="name" string="Product Name"/>
+              <h1>
+                <field name="name"/>
+              </h1>
+              <label for="categ_id" class="oe_edit_only"/>
+              <h2>
+                <field name="categ_id"/>
+              </h2>
+              <div name="options" groups="base.group_user">
+                <field name="sale_ok"/>
+                <label for="sale_ok"/>
+                <field name="purchase_ok"/>
+                <label for="purchase_ok"/>
+              </div>
+            </div>
+            <notebook>
+              <page string="Information">
+                <group>
+                  <group>
+                    <field name="type"/>
+                    <field name="default_code" string="SKU"/>
+                    <field name="barcode" placeholder="e.g. 5901234123457"/>
+                    <label string=""/>
+                    <button name="generate_barcode" string="Generate" type="object" attrs="{'invisible':[('barcode','!=',False)]}" class="oe_link oe_edit_only"/>
+                    <field name="uom_id" groups="product.group_uom"/>
+                    <field name="main_location_id"/>
+                  </group>
+                  <group name="status" string="Status">
+                    <field name="active"/>
+                    <field name="state"/>
+                    <field name="date_obsolete" invisible="1"/>
+                    <field name="replacement_product_id" attrs="{'invisible':['|',('purchase_ok','=',False) ,('state','not in',['obsolete','end'])]}"/>
+                    <field name="replacing_product_id" readonly="1" attrs="{'invisible':[('replacing_product_id','=',False)]}"/>
+                    <field name="product_manager"/>
+                  </group>
+                </group>
+                <group>
+                  <group name="Weights" string="Weights">
+                    <field name="weight" attrs="{'readonly':['|',('type','=','service'),('bom_ids','!=',[])]}"/>
+                    <field name="weight_net" attrs="{'readonly':['|',('type','=','service'),('bom_ids','!=',[])]}"/>
+                    <field digits="(14, 3)" name="volume" attrs="{'readonly':['|',('type','=','service'),('bom_ids','!=',[])]}" string="Freight Volume"/>
+                    <field digits="(14, 3)" name="volume_container" attrs="{'readonly':['|',('type','=','service'),('bom_ids','!=',[])]}"/>
+                    <field digits="(14, 3)" name="volume_storage" attrs="{'readonly':['|',('type','=','service'),('bom_ids','!=',[])]}"/>
+                  </group>
+                  <group string="Pricing">
+                    <field name="list_price_copy" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="special_price_copy" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="special_from_date_copy"/>
+                    <field name="special_to_date_copy"/>
+                  </group>
+                </group>
+                <group>
+                  <group name="Packaging" string="Packaging">
+                    <field name="carton_qty"/>
+                  </group>
+                  <group string="Shipping">
+                    <field name="shipping_group" string="Shipping Group"/>
+                  </group>
+                </group>
+                <field name="description" placeholder="describe the product characteristics..." attrs="{'required':[('magento_enabled','=',True)]}"/>
+              </page>
+              <page string="Inventory" groups="base.group_user">
+                <group name="inventory">
+                  <group string="Stock and Expected Variations">
+                    <label for="qty_available"/>
+                    <div>
+                      <field name="qty_available" class="oe_inline"/>
+                      <button name="%(stock.action_view_change_product_quantity)d" string="Update" type="action" attrs="{'invisible': [('type', '!=', 'product')]}" class="oe_link"/>
+                    </div>
+                    <field name="incoming_qty" class="oe_inline"/>
+                    <field name="outgoing_qty" class="oe_inline"/>
+                    <field name="virtual_available" class="oe_inline"/>
+                    <field name="saleable_qty"/>
+                    <field name="po_expected_date"/>
+                    <field name="po_expected_qty"/>
+                  </group>
+                  <group name="distress" string="Distressed Stock" attrs="{'invisible':[('sale_ok','=',False)]}">
+                    <field name="dist_weeks" readonly="1"/>
+                    <field name="dist_qty" readonly="1"/>
+                    <field name="dist_cost" groups="purchase.group_purchase_user" readonly="1"/>
+                  </group>
+                  <group name="stock_property" groups="base.group_no_one" string="Locations">
+                    <field name="company_id" widget="selection" domain="[('name','!=','Group')]" required="1"/>
+                    <field name="property_stock_procurement" domain="[('usage','=','procurement')]"/>
+                    <field name="property_stock_production" domain="[('usage','=','production')]"/>
+                    <field name="property_stock_inventory" domain="[('usage','=','inventory')]"/>
+                  </group>
+                </group>
+                <group string="Bill of Materials">
+                  <field name="bom_ids" colspan="4" nolabel="1">
+                    <tree>
+                      <field name="sequence" string="Priority"/>
+                      <field name="code"/>
+                      <field name="product_id"/>
+                      <field name="product_qty"/>
+                      <field name="type"/>
+                    </tree>
+                  </field>
+                </group>
+              </page>
+              <page string="Procurements" groups="base.group_user">
+                <group name="procurement">
+                  <group name="general">
+                    <field name="route_ids" widget="many2many_checkboxes" attrs="{'invisible':[('type', 'in', ['service', 'digital'])]}"/>
+                    <field name="property_cost_method" groups="product.group_costing_method"/>
+                    <field name="cost_method"/>
+                    <field name="standard_price" attrs="{'readonly':[('cost_method','=','average')]}"/>
+                    <button name="%(stock_account.action_view_change_standard_price)d" string="- update" type="action" attrs="{'invisible':[('cost_method','&lt;&gt;','average')]}" class="oe_link" groups="product.group_costing_method"/>
+                  </group>
+                  <group name="procurement_uom" groups="product.group_uom" string="Purchase">
+                    <field name="uom_po_id"/>
+                  </group>
+                </group>
+                <group string="Purchase Forecast" attrs="{'invisible':[('purchase_ok','=',False)]}">
+                  <field name="forecast_model" readonly="1"/>
+                  <field name="afv_purchase_qty" readonly="1"/>
+                  <field name="afv_purchase_cost" groups="purchase.group_purchase_user" readonly="1"/>
+                </group>
+                <group name="delay" string="Delays">
+                  <label for="produce_delay"/>
+                  <div>
+                    <field name="produce_delay" class="oe_inline"/>
+                    days
+                  </div>
+                </group>
+                <separator string="Suppliers"/>
+                <field name="seller_ids" context="{'default_company_id':company_id, 'uom_id': uom_id}"/>
+                <separator string="Reordering Rules" groups="purchase.group_purchase_manager"/>
+                <field name="reorder_ids" colspan="4" nolabel="1" groups="purchase.group_purchase_manager">
+                  <tree string="Reordering Rules">
+                    <field name="name"/>
+                    <field name="warehouse_id" groups="stock.group_locations"/>
+                    <field name="location_id" groups="stock.group_locations"/>
+                    <field name="product_id"/>
+                    <field name="product_uom" groups="product.group_uom"/>
+                    <field name="product_min_qty"/>
+                    <field name="product_max_qty"/>
+                    <field name="active"/>
+                  </tree>
+                </field>
+                <separator string="Description for Suppliers"/>
+                <field name="description_purchase" placeholder="This note will be displayed on requests for quotation..."/>
+              </page>
+              <page string="Sales" attrs="{'invisible':[('sale_ok','=',False)]}">
+                <group name="sale">
+                  <group string="Sale Conditions">
+                    <label for="warranty"/>
+                    <div>
+                      <field name="warranty" class="oe_inline"/>months
+                    </div>
+                    <label for="sale_delay"/>
+                    <div>
+                      <field name="sale_delay" attrs="{'readonly':[('sale_ok','=',False)]}" class="oe_inline" style="vertical-align:baseline"/>days
+                    </div>
+                  </group>
+                  <group name="properties" string="Accounting">
+                    <field name="property_account_income_id" domain="[('internal_type','=','other'),('deprecated','=',False)]" groups="account.group_account_user"/>
+                    <field name="property_account_expense_id" domain="[('internal_type','=','other'),('deprecated','=',False)]" groups="account.group_account_user"/>
+                    <field name="taxes_id" attrs="{'readonly':[('sale_ok','=',0)],'required':[('sale_ok','=',True)]}" widget="many2many_tags"/>
+                    <field name="supplier_taxes_id" widget="many2many_tags"/>
+                  </group>
+                </group>
+                <separator string="Description for Quotations"/>
+                <field name="description_sale" placeholder="note to be displayed on quotations..."/>
+                <group attrs="{'invisible':[('sale_ok','=',False)]}">
+                  <field name="currency_id" invisible="1"/>
+                  <group string="Pricing">
+                    <field name="list_price" string="Standard Price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="special_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="special_from_date"/>
+                    <field name="special_to_date"/>
+                  </group>
+                  <group string="Price @ Margin" col="4">
+                    <label for="margin_for_price"/>
+                    <div>
+                      <field name="margin_for_price" class="oe_inline"/>
+                      %%
+                    </div>
+                    <button name="%(action_update_price_margin)d" string="Update Margin" type="action" context="{'type':'update_margin'}" class="oe_link"/>
+                    <newline/>
+                    <field name="price_of_margin" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                  </group>
+                  <group string="Margin @ Price" col="4">
+                    <field name="price_for_margin" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <button name="%(action_update_price_margin)d" string="Update Price" type="action" context="{'type':'update_price'}" class="oe_link"/>
+                    <newline/>
+                    <label for="margin_of_price"/>
+                    <div>
+                      <field name="margin_of_price" class="oe_inline"/>
+                      %%
+                    </div>
+                  </group>
+                  <group string="Price by Margin">
+                    <field name="price_at_20" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="price_at_30" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="price_at_40" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="price_at_50" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="price_at_60" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                  </group>
+                  <group string="Competitor Pricing">
+                    <field name="comp_lowest" options="{'no_open':True, 'no_follow':True}"/>
+                    <field name="comp_lowest_price"/>
+                    <field name="comp_lowest_status"/>
+                  </group>
+                </group>
+              </page>
+              <page string="Forecast">
+                <group>
+                  <button name="update_sales_data_and_forecast" string="Update" type="object" class="oe_link oe_left"/>
+                  <br/>
+                  <newline/>
+                  <group>
+                    <field name="recent_velocity" readonly="1"/>
+                    <field name="year_velocity" readonly="1"/>
+                    <field name="afv_yoy" readonly="1"/>
+                  </group>
+                  <group>
+                    <field name="gmroi"/>
+                    <field name="gmros"/>
+                    <field name="avg_price"/>
+                    <field name="avg_stock"/>
+                  </group>
+                </group>
+                <newline/>
+                <field name="sales_data" colspan="4">
+                  <tree colors="blue:forecasted==True">
+                    <field name="sequence"/>
+                    <field name="period" invisible="1"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="product_sales" string="Actual Sales"/>
+                    <field name="unique_sales" invisible="1"/>
+                    <field name="total_sales" invisible="1"/>
+                    <field name="avg_sales" invisible="1"/>
+                    <field name="percent_of_avg" invisible="1"/>
+                    <field name="avg_for_estimate" string="Estimated Sales"/>
+                    <field name="forecasted" invisible="1"/>
+                    <field name="incoming_qty" sum="total"/>
+                    <field name="remaining_qty"/>
+                    <field name="purchase_qty"/>
+                    <field name="method"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Cases">
+                <field name="case_count_ids" colspan="4" nolabel="1">
+                  <tree delete="false" edit="false" create="false">
+                    <field name="categ_id"/>
+                    <field name="months_3" sum="months_3"/>
+                    <field name="months_6" sum="months_6"/>
+                    <field name="months_12" sum="months_12"/>
+                    <field name="total" sum="total"/>
+                  </tree>
+                  <form>
+                    <group>
+                      <field name="categ_id"/>
+                      <field name="months_3" sum="months_3"/>
+                      <field name="months_6" sum="months_6"/>
+                      <field name="months_12" sum="months_12"/>
+                      <field name="total" sum="total"/>
+                    </group>
+                  </form>
+                </field>
+                <field name="case_ids" colspan="4" nolabel="1">
+                  <tree colors="green:state in ('draft','open','pending');" default_order="create_date desc">
+                    <button name="crm_helpdesk_open_window" string="Open" type="object" icon="fa-link"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="name" string="Title"/>
+                    <field name="date_deadline"/>
+                    <field name="user_id"/>
+                    <field name="categ_id" string="Issue" invisible="1"/>
+                    <field name="resolution_id"/>
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Resources">
+                <separator string="Related Products" colspan="4"/>
+                <field name="related_product_ids" colspan="4" nolabel="1">
+                  <tree>
+                    <field name="type"/>
+                    <field name="default_code"/>
+                    <field name="rel_product_id"/>
+                    <field name="list_price"/>
+                    <field name="special_price"/>
+                  </tree>
+                  <form>
+                    <group>
+                      <group>
+                        <field name="type" required="1"/>
+                        <field name="rel_product_id" required="1"/>
+                      </group>
+                      <group>
+                      </group>
+                    </group>
+                  </form>
+                </field>
+                <separator string="Documents" colspan="4"/>
+                <field name="related_document_ids" colspan="4" nolabel="1" context="{'default_type':'binary'}">
+                  <tree string="Documents">
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="datas" filename="datas_fname"/>
+                    <field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+                  </tree>
+                  <form>
+                    <group>
+                      <field name="name" required="1"/>
+                      <field name="type" invisible="1"/>
+                      <field name="datas" filename="datas_fname"/>
+                      <field name="datas_fname" invisible="1" class="oe_inline oe_right"/>
+                      <field name="type"/>
+                    </group>
+                  </form>
+                </field>
+                <separator string="Technical Information" colspan="4"/>
+                <field name="tech_info" colspan="4" nolabel="1"/>
+              </page>
+              <page string="Magento">
+                <group cols="4" columns="2">
+                  <button name="export_to_magento" type="object" string="Export to Magento" attrs="{'invisible':[('magento_enabled','=',False)]}" class="oe_link"/>
+                  <newline/>
+                  <field name="magento_enabled"/>
+                  <field name="magento_url_key" readonly="1" widget="url"/>
+                  <field name="magento_page_title"/>
+                  <field name="magento_ebay_title_appendix"/>
+                  <field name="magento_description"/>
+                  <field name="magento_description_appendix"/>
+                  <field name="magento_short_description"/>
+                  <field name="shipping_description"/>
+                </group>
+              </page>
+              <page string="Trade Me">
+                <field name="trademe_id">
+                  <form>
+                    <group colspan="4" col="2">
+                      <field name="tm_sku"/>
+                    </group>
+                    <group colspan="4">
+                      <field name="title"/>
+                      <field name="subtitle"/>
+                    </group>
+                    <group colspan="4" col="2">
+                      <field name="description"/>
+                    </group>
+                    <field name="category"/>
+                    <field name="extras"/>
+                    <field name="reserve"/>
+                    <field name="length"/>
+                    <field name="buy_now"/>
+                    <field name="buy_now_only"/>
+                  </form>
+                  <tree editable="bottom">
+                    <field name="title"/>
+                  </tree>
+                </field>
+                <group colspan="2" col="4" string="Options">
+                  <field name="trademe_enabled"/>
+                  <field name="trademe_reserve"/>
+                </group>
+              </page>
+              <page string="Log">
+                <group>
+                  <button name="update_stock_activity" string="Update Stock Activity" type="object"/>
+                  <field name="log_ids" colspan="4" nolabel="1" readonly="1">
+                    <tree>
+                      <field name="user_id"/>
+                      <field name="date"/>
+                      <field name="activity"/>
+                      <field name="value_before" widget="text_truncate"/>
+                      <field name="value_after" widget="text_truncate"/>
+                    </tree>
+                    <form>
+                      <field name="user_id"/>
+                      <field name="value_before"/>
+                      <field name="date"/>
+                      <field name="value_after"/>
+                      <field name="activity"/>
+                    </form>
+                  </field>
+                </group>
+              </page>
+              <page string="Competitors" attrs="{'invisible':[('sale_ok','!=',True)]}">
+                <label for="comp_config_lines"/>
+                <field name="comp_config_lines" colspan="4" nolabel="1">
+                  <tree editable="bottom" colors="red:status=='error'">
+                    <field name="monitor_id" widget="selection" required="1"/>
+                    <field name="external_sku" required="1"/>
+                    <field name="last_update" readonly="1"/>
+                    <field name="last_price" readonly="1"/>
+                    <field name="status" readonly="1"/>
+                    <button name="open_website" string="Open" type="object" icon="fa-clone"/>
+                  </tree>
+                </field>
+                <label for="comp_price_ids"/>
+                <field name="comp_price_ids" colspan="4" nolabel="1" mode="tree">
+                  <tree string="Logs" colors="blue:current==True;">
+                    <field name="current"/>
+                    <field name="monitor_id"/>
+                    <field name="date"/>
+                    <field name="price"/>
+                    <field name="status"/>
+                    <button name="open_website" string="Open" type="object" icon="fa-clone"/>
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="obj_watcher_ids" widget="obj_watchers" groups="base.group_user"/>
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+
+    <!--<record id="product_normal_form_view" model="ir.ui.view">-->
+    <!--<field name="name">product.normal.form</field>-->
+    <!--<field name="model">product.product</field>-->
+    <!--<field name="inherit_id" ref="product.product_normal_form_view"/>-->
+    <!--<field eval="32" name="priority"/>-->
+    <!--<field name="arch" type="xml">-->
+    <!--<field name="virtual_available" position="after">-->
+    <!--<field name="saleable_qty"/>-->
+    <!--<field name="po_expected_date"/>-->
+    <!--<field name="po_expected_qty"/>-->
+    <!--</field>-->
+    <!--<field name="list_price" position="attributes">-->
+    <!--<attribute name="string">Standard Price</attribute>-->
+    <!--</field>-->
+    <!--<field name="fm_id" position="attributes">-->
+    <!--<attribute name="invisible">1</attribute>-->
+    <!--</field>-->
+    <!--<group name="status" position="replace"/>-->
+    <!--<field name="stock_available" position="attributes">-->
+    <!--<attribute name="invisible">1</attribute>-->
+    <!--</field>-->
+    <!--<field name="stock_on_order" position="attributes">-->
+    <!--<attribute name="invisible">1</attribute>-->
+    <!--</field>-->
+    <!--<field name="bom_stock" position="attributes">-->
+    <!--<attribute name="invisible">1</attribute>-->
+    <!--</field>-->
+    <!--<field name="company_id" position="attributes">-->
+    <!--<attribute name="domain">[('name','!=','Group')]</attribute>-->
+    <!--<attribute name="required">1</attribute>-->
+    <!--</field>-->
+    <!--<field name="cost_method" position="before">-->
+    <!--<field name="drop_ship" attrs="{'invisible':[('procure_method','!=','make_to_order')]}"/>-->
+    <!--</field>-->
+    <!--<button string="Bill of Materials" type="action" position="replace">-->
+    <!--<button string="Bill of Materials" name="product_open_bom" type="object"/>-->
+    <!--</button>-->
+    <!--<group name="Weights" position="replace"/>-->
+
+    <!--<group string="Stock and Expected Variations" position="after">-->
+    <!--<group>-->
+    <!--<newline/>-->
+    <!--<group name="distress" string="Distressed Stock" attrs="{'invisible':[('sale_ok','=',False)]}">-->
+    <!--<field name="dist_weeks" readonly="1"/>-->
+    <!--<field name="dist_qty" readonly="1"/>-->
+    <!--<field name="dist_cost" groups="purchase.group_purchase_user" readonly="1"/>-->
+    <!--</group>-->
+    <!--</group>-->
+    <!--</group>-->
+    <!--<group name="lot" position="replace"/>-->
+
+    <!--<field name="standard_price" position="attributes">-->
+    <!--<attribute name="groups">purchase.group_purchase_user</attribute>-->
+    <!--</field>-->
+    <!--<group name="delay" position="before">-->
+    <!--<group></group>-->
+    <!--</group>-->
+    <!-- -->
+    <!--</field>-->
+    <!--</record>-->
+
+    <record id="product_search_form_view" model="ir.ui.view">
+      <field name="name">product.search.tt</field>
+      <field name="model">product.product</field>
+      <field name="inherit_id" ref="product.product_search_form_view"/>
+      <field name="arch" type="xml">
+        <field name="name" position="replace">
+          <field name="name_id"/>
+          <field name="supplier_id"/>
+          <field name="name" string="Product" filter_domain="['|',('name','ilike',self),('default_code','ilike',self)]"/>
+          <field name="default_code" string="Supplier Code" filter_domain="[('seller_ids.product_code','ilike',self)]"/>
+          <field name="state"/>
+          <field name="doc_count" nolabel="1" class="oe_inline" invisible="1"/>
+          <field name="categ_id" filter_domain="[('categ_id','child_of',self)]" context="{'product_tree_search':True}"/>
+        </field>
+
+        <filter name="filter_to_sell" position="after">
+          <separator/>
+          <filter string="Active" name="active_products" domain="[('active','=',True)]"/>
+          <filter string="Inactive" name="inactive_products" domain="[('active','=',False)]"/>
+          <separator/>
+        </filter>
+
+      </field>
+    </record>
+
+    <record id="product.product_normal_action_sell" model="ir.actions.act_window">
+      <field name="context">{"search_default_filter_to_sell":1, 'case_order':'create_date desc'}</field>
+    </record>
+
+
+    <!--Product Category-->
+
+    <record id="product_category_form_view" model="ir.ui.view">
+      <field name="name">product.category.form</field>
+      <field name="model">product.category</field>
+      <field name="priority">2</field>
+      <field name="arch" type="xml">
+        <form class="oe_form_configuration">
+          <sheet>
+            <div class="oe_title">
+              <label for="name" string="Category name" class="oe_edit_only"/>
+              <h1>
+                <field name="name" placeholder="e.g. Lamps"/>
+              </h1>
+            </div>
+            <notebook>
+              <page string="General">
+                <group name="first" col="4" string="Category Type">
+                  <field name="parent_id"/>
+                  <field name="type"/>
+                  <field name="active"/>
+                </group>
+              </page>
+              <page string="Cases">
+                <field name="case_ids" colspan="4" nolabel="1">
+                  <tree colors="green:state in ('draft','open','pending');">
+                    <button name="crm_helpdesk_open_window" string="Open" type="object" icon="fa-link"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="name" string="Title"/>
+                    <field name="date_deadline"/>
+                    <field name="user_id"/>
+                    <field name="product_id"/>
+                    <field name="categ_id" string="Issue" invisible="1"/>
+                    <field name="resolution_id" invisible="1"/>
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </page>
+              <page string="Sales Data">
+                <button name="update_category_sales" string="Update Category Sales" type="object" class="oe_link"/>
+                <field name="categ_sales" colspan="4" nolabel="1"/>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record id="product_category_search_view" model="ir.ui.view">
+      <field name="name">product.category.property.form.inherit</field>
+      <field name="model">product.category</field>
+      <field name="inherit_id" ref="product.product_category_search_view"/>
+      <field name="arch" type="xml">
+        <field name="name" position="before">
+          <filter name="all" string="All" domain="['|',('active','=',True),('active','=',False)]"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="product.product_category_action_form" model="ir.actions.act_window">
+      <field name="context">{'search_default_all':1}</field>
+    </record>
+
+
+    <!-- TradeMe Products -->
+
+    <record model="ir.ui.view" id="product_product_trademe_list_view">
+      <field name="name">product.supplierinfo.form</field>
+      <field name="model">product.product.trademe</field>
+      <field name="arch" type="xml">
+        <tree string="Product Trademe">
+          <field name="default_code"/>
+          <field name="product_id"/>
+          <field name="title"/>
+          <field name="categ_id" invisible="1"/>
+          <field name="type" invisible="1"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="product_product_trademe_search_view">
+      <field name="name">product.search.tt</field>
+      <field name="model">product.product.trademe</field>
+      <field name="arch" type="xml">
+        <search string="Trademe">
+
+          <filter string="Services" domain="[('product_id.type','=','service')]"/>
+          <filter string="Products" domain="[('product_id.type','=','product')]" help="Stockable products"/>
+          <filter string="Consumable" domain="[('product_id.type','=','consu')]" name="consumable" help="Consumable products"/>
+          <separator/>
+          <filter name="filter_to_purchase" string="To Purchase" icon="terp-accessories-archiver+" domain="[('product_id.purchase_ok', '=', 1)]"/>
+          <filter name="filter_to_purchase" string="Can be Purchased" icon="terp-accessories-archiver+" domain="[('product_id.purchase_ok', '=', 1)]"/>
+          <filter string="Can be Sold" name="filter_to_sell" icon="terp-accessories-archiver-minus" domain="[('product_id.sale_ok','=',1)]"/>
+          <field name="title" string="Trademe Title"/>
+          <field name="product_name_id"/>
+          <field name="product_supplier_id"/>
+          <field name="product_id" string="Product" filter_domain="['|',('product_id.name','ilike',self),('product_id.default_code','ilike',self)]"/>
+          <field name="default_code" string="SKU"/>
+          <!--<field name="state"/>-->
+          <separator/>
+          <filter string="Active" name="active_products" domain="[('active','=',True)]"/>
+          <filter string="Inactive" name="inactive_products" domain="[('active','=',False)]"/>
+          <separator/>
+          <field name="categ_id" filter_domain="[('categ_id','child_of',self)]" context="{'product_tree_search':True}"/>
+          <group expand="0" string="Group by...">
+            <filter string="Category" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'categ_id'}"/>
+            <filter string="Type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'type'}"/>
+            <filter string="Company" icon="terp-go-home" domain="[]" context="{'group_by' : 'company_id'}" groups="base.group_multi_company"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_trademe">
+      <field name="name">Trademe Products</field>
+      <field name="res_model">product.product.trademe</field>
+      <field name="view_type">form</field>
+      <field name='view_mode'>tree,form</field>
+    </record>
+
+    <menuitem action="action_product_trademe" id="menu_product_trademe" parent="menu_products" sequence="120"/>
+
+
+    <!-- Product's SupplierInfo -->
+
+    <record model="ir.ui.view" id="product_supplierinfo_form_view">
+      <field name="name">product.supplierinfo.form</field>
+      <field name="model">product.supplierinfo</field>
+      <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+      <field name="arch" type="xml">
+        <field name="company_id" position="attributes">
+          <attribute name="domain">[('name','!=','Group')]</attribute>
+        </field>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="product_supplierinfo_list_view">
+      <field name="name">product.supplierinfo.list</field>
+      <field name="model">product.supplierinfo</field>
+      <field eval="64" name="priority"/>
+      <field name="arch" type="xml">
+        <tree string="Supplier Information">
+          <field name="default_code"/>
+          <field name="product_id"/>
+          <field name="company_id"/>
+          <field name="name"/>
+          <field name="delay"/>
+          <field name="min_qty"/>
+          <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_supplier_info">
+      <field name="name">Product Suppliers</field>
+      <field name="res_model">product.supplierinfo</field>
+      <field name="view_type">form</field>
+      <field name='view_mode'>tree,form</field>
+      <field name="view_id" ref="product_supplierinfo_list_view"/>
+    </record>
+
+    <menuitem action="action_product_supplier_info" id="product_suppliers_info" parent="menu_products" sequence="110"/>
+
+
+    <!--Product's Sale Order Lines-->
+
+    <act_window
+            context="{'search_default_product_id': active_id, 'default_product_id': active_id, 'order':'id desc'}"
+            id="action_order_line_product_tree"
+            name="Sales Order Lines"
+            res_model="sale.order.line"
+            src_model="product.product"
+            groups="sales_team.group_sale_salesman"/>
+
+    <record id="product.product_template_action" model="ir.actions.act_window">
+      <field name="res_model">product.product</field>
+    </record>
+
+    <menuitem action="product.product_normal_action_sell" id="menu_product_product" parent="menu_products" sequence="100"/>
+
+    <!--Forecast Views-->
+    <record id="view_product_category_sales_tree" model="ir.ui.view">
+      <field name="name">product.category.sales</field>
+      <field name="model">product.category.sales</field>
+      <field name="arch" type="xml">
+        <tree string="Category Sales">
+          <field name="sequence"/>
+          <field name="period" invisible="1"/>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="categ_id"/>
+          <field name="unique_sales"/>
+          <field name="total_sales"/>
+          <field name="avg_sales"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_product_sales_tree" model="ir.ui.view">
+      <field name="name">product.sales.data</field>
+      <field name="model">product.sales.data</field>
+      <field name="arch" type="xml">
+        <tree string="Product Sales" colors="blue:forecasted==True">
+          <field name="sequence"/>
+          <field name="period" invisible="1"/>
+          <field name="start_date"/>
+          <field name="end_date"/>
+          <field name="categ_id"/>
+          <field name="product_sales" string="Actual Sales"/>
+          <field name="unique_sales" invisible="1"/>
+          <field name="total_sales" invisible="1"/>
+          <field name="avg_sales" invisible="1"/>
+          <field name="percent_of_avg" invisible="1"/>
+          <field name="avg_for_estimate"/>
+          <field name="forecasted"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_product_sales_form" model="ir.ui.view">
+      <field name="name">product.sales.data</field>
+      <field name="model">product.sales.data</field>
+      <field name="arch" type="xml">
+        <form string="Sales Data">
+          <group colspan="4">
+            <field name="product_id"/>
+            <field name="categ_id"/>
+          </group>
+          <group>
+            <group>
+              <field name="sequence"/>
+              <field name="period"/>
+              <field name="start_date"/>
+              <field name="end_date"/>
+              <field name="method"/>
+              <field name="forecasted"/>
+              <field name="error_msg"/>
+            </group>
+            <group>
+              <field name="product_sales"/>
+              <field name="percent_of_avg"/>
+              <field name="unique_sales"/>
+              <field name="total_sales"/>
+              <field name="avg_sales"/>
+              <field name="avg_for_estimate"/>
+              <field name="incoming_qty"/>
+              <field name="purchase_qty"/>
+              <field name="remaining_qty"/>
+            </group>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <!--Documents-->
+
+    <record id="view_product_document_tree" model="ir.ui.view">
+      <field name="model">ir.attachment</field>
+      <field name="priority">128</field>
+      <field name="arch" type="xml">
+        <tree string="Attachments" create="0" edit="0" delete="0">
+          <field name="name"/>
+          <field name="datas_fname" invisible="1"/>
+          <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>
+          <field name="type" invisible="1"/>
+          <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}" string="URL"/>
+          <field name="create_uid"/>
+          <field name="create_date"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_product_document_form" model="ir.ui.view">
+      <field name="model">ir.attachment</field>
+      <field name="priority">64</field>
+      <field name="arch" type="xml">
+        <form string="Attachments" create="0" edit="0" delete="0">
+          <sheet>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name"/>
+            </h1>
+            <group>
+              <group>
+                <field name="type"/>
+                <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>
+                <field name="datas_fname" invisible="1" attrs="{'invisible':[('type','=','url')]}" class="oe_inline oe_right"/>
+                <field name="url" widget="url" attrs="{'invisible':[('type','=','binary')]}" string="URL"/>
+              </group>
+              <group groups="base.group_no_one">
+                <label for="create_uid" string="Creation"/>
+                <div name="creation_div">
+                  <field name="create_uid" readonly="1" class="oe_inline"/>
+                  on
+                  <field name="create_date" readonly="1" class="oe_inline"/>
+                </div>
+              </group>
+              <group name="description_group" string="Description" colspan="4">
+                <field name="description" nolabel="1"/>
+              </group>
+              <group string="Products" colspan="4">
+                <field name="product_ids" colspan="4" nolabel="1">
+                  <tree>
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <!--<field name="supply_method"/>-->
+                    <field name="state"/>
+                  </tree>
+                </field>
+              </group>
+              <group string="Categories" colspan="4">
+                <field name="categ_ids" colspan="4" nolabel="1"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_product_document_kanban" model="ir.ui.view">
+      <field name="name">product.document.kanban</field>
+      <field name="model">ir.attachment</field>
+      <field name="arch" type="xml">
+        <kanban create="0" edit="0" delete="0">
+          <field name="name"/>
+          <field name="datas_fname"/>
+          <field name="file_type_icon"/>
+          <field name="url"/>
+          <templates>
+            <t t-name="kanban-box">
+              <div class="oe_kanban_global_click">
+                <div class="oe_kanban_vignette">
+                  <div class="oe_attachment">
+                    <a type="open">
+                      <div t-if="record.file_type_icon.value != 'webimage'">
+                        <img t-att-src="'/mail/static/src/img/mimetypes/' + record.file_type_icon.value + '.png'"/>
+                      </div>
+                      <div t-if="record.file_type_icon.value == 'webimage' and !record.url.value">
+                        <img t-att-src="kanban_image('ir.attachment', 'datas', record.id.value, {'preview_image': 'image_small'})" class="oe_avatar oe_kanban_avatar_smallbox"/>
+                      </div>
+                      <div t-if="record.file_type_icon.value == 'webimage' and record.url.value">
+                        <img t-att-src="record.url.value" width="48px" height="48px"/>
+                      </div>
+                      <t t-if="record.datas_fname.value">
+                        <div class="oe_name" style="width:100px; word-wrap:break-word; display:inline-block;">
+                          <field name="datas_fname"/>
+                        </div>
+                      </t>
+                      <t t-if="record.url.value">
+                        <div class="oe_name" style="width:100px; word-wrap:break-word; display:inline-block;">
+                          <span t-esc="record.url.value.split('/').pop()"/>
+                        </div>
+                      </t>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+
+    <record id="view_product_document_search" model="ir.ui.view">
+      <field name="model">ir.attachment</field>
+      <field name="priority">64</field>
+      <field name="arch" type="xml">
+        <search string="Attachments">
+          <field name="name" filter_domain="['|', ('name','ilike',self), ('datas_fname','ilike',self)]" string="Attachment"/>
+          <field name="product_ids"/>
+          <field name="categ_ids"/>
+          <separator/>
+          <group expand="0" string="Group By...">
+
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_product_document">
+      <field name="name">Documents</field>
+      <field name="res_model">ir.attachment</field>
+      <field name="view_type">form</field>
+      <field name='view_mode'>kanban,tree,form</field>
+      <field name="search_view_id" ref="view_product_document_search"/>
+      <field name="domain">[('res_model','=','product.document')]</field>
+      <field name="context">{'default_res_model':'product.document'}</field>
+    </record>
+
+    <record id="action_product_document_view_1" model="ir.actions.act_window.view">
+      <field eval="1" name="sequence"/>
+      <field name="view_mode">kanban</field>
+      <field name="act_window_id" ref="action_product_document"/>
+    </record>
+
+    <record id="action_product_document_view_2" model="ir.actions.act_window.view">
+      <field eval="2" name="sequence"/>
+      <field name="view_mode">form</field>
+      <field name="act_window_id" ref="action_product_document"/>
+      <field name="view_id" ref="view_product_document_form"/>
+    </record>
+
+    <record id="action_product_document_view_3" model="ir.actions.act_window.view">
+      <field eval="3" name="sequence"/>
+      <field name="view_mode">tree</field>
+      <field name="act_window_id" ref="action_product_document"/>
+      <field name="view_id" ref="view_product_document_tree"/>
+    </record>
+
+    <menuitem action="action_product_document" id="menu_product_document" parent="menu_products" sequence="130"/>
+
+  </data>
+</odoo>

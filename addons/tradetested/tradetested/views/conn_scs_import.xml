@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="menu_scs_config" name="SCS" parent="menu_config_api" sequence="140"/>
+
+    <record id="group_scs_notification" model="res.groups">
+      <field name="name">SCS Notification</field>
+    </record>
+
+
+    <record id="scs_notification_tree_view" model="ir.ui.view">
+      <field name="name">scs.notification.form</field>
+      <field name="model">scs.notification</field>
+      <field name="arch" type="xml">
+        <tree string="SCS Notifications" colors="green:state=='done';red:state=='error'">
+          <field name="id"/>
+          <field name="date"/>
+          <field name="user_id"/>
+          <field name="so_id"/>
+          <field name="do_id"/>
+          <field name="dispatch_exception"/>
+          <field name="dispatch_message"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="scs_notification_form_view" model="ir.ui.view">
+      <field name="name">scs.notification.form</field>
+      <field name="model">scs.notification</field>
+      <field name="arch" type="xml">
+        <form string="SCS Notifications">
+          <header>
+            <button name="process_notification" string="Process Notification" type="object" class="oe_highlight"/>
+            <button name="set_archived" string="Archive" type="object" attrs="{'invisible':[('active','=',False)]}"/>
+            <button name="set_unarchived" string="Unarchive" type="object" attrs="{'invisible':[('active','=',True)]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"done":"green","error":"red"}'/>
+          </header>
+          <group>
+            <group>
+              <field name="date"/>
+              <field name="user_id"/>
+              <field name="active" readonly="1"/>
+            </group>
+            <group>
+              <field name="so_id"/>
+              <field name="do_id"/>
+              <field name="dispatch_exception" readonly="1"/>
+            </group>
+          </group>
+          <group colspan="4" string="Error" attrs="{'invisible':[('state','!=','error')]}">
+            <field name="error_msg" colspan="4" nolabel="1"/>
+          </group>
+          <group colspan="4" string="Notification Data">
+            <field name="params" colspan="4" nolabel="1"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_notification">
+      <field name="name">SCS Notifications</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.notification</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="view_id" ref="scs_notification_tree_view"/>
+    </record>
+
+    <menuitem id="menu_scs_notification" action="action_scs_notification" parent="menu_scs_config" sequence="140"/>
+
+    <!-- SCS Notification menus for warehouse -->
+
+    <record id="scs_notification_warhouse_tree_view" model="ir.ui.view">
+      <field name="name">scs.notification.warehouse.tree</field>
+      <field name="model">scs.notification</field>
+      <field name="priority">64</field>
+      <field name="arch" type="xml">
+        <tree string="SCS Notifications" create="false" edit="false" colors="violet:dispatch_exception==True;green:state=='done';red:state=='error'">
+          <button name="process_notification" string="Process Notification" type="object" class="oe_highlight" states="draft" icon="fa-cogs"/>
+          <field name="id"/>
+          <field name="date"/>
+          <button name="open_sale_order" string="Open Order" type="object" icon="fa-link"/>
+          <field name="so_id"/>
+          <button name="open_delivery_order" string="Open Delivery" type="object" icon="fa-link"/>
+          <field name="do_id"/>
+          <field name="dispatch_exception"/>
+          <field name="dispatch_message"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="scs_notification_warehouse_form_view" model="ir.ui.view">
+      <field name="name">scs.notification.warehouse.form</field>
+      <field name="model">scs.notification</field>
+      <field name="arch" type="xml">
+        <form string="SCS Notifications" create="false" edit="false">
+          <header>
+            <button name="process_notification" string="Process Notification" type="object" class="oe_highlight" states="draft"/>
+            <button name="set_archived" string="Archive" type="object" attrs="{'invisible':[('active','=',False)]}"/>
+            <button name="set_unarchived" string="Unarchive" type="object" attrs="{'invisible':[('active','=',True)]}"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"done":"green","error":"red"}'/>
+          </header>
+          <group>
+            <group>
+              <field name="date"/>
+              <field name="active" readonly="1"/>
+            </group>
+            <group>
+              <field name="so_id"/>
+              <field name="do_id"/>
+              <field name="dispatch_exception" readonly="1"/>
+            </group>
+          </group>
+          <group colspan="4" string="Error" attrs="{'invisible':[('state','!=','error')]}">
+            <field name="error_msg" colspan="4" nolabel="1"/>
+          </group>
+          <group colspan="4" string="Notification Data">
+            <field name="params" colspan="4" nolabel="1"/>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_notification_warehouse">
+      <field name="name">SCS Notifications</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.notification</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+    </record>
+
+    <record id="action_scs_notification_warehouse_view1" model="ir.actions.act_window.view">
+      <field eval="1" name="sequence"/>
+      <field name="view_mode">tree</field>
+      <field name="view_id" ref="scs_notification_warhouse_tree_view"/>
+      <field name="act_window_id" ref="action_scs_notification_warehouse"/>
+    </record>
+
+    <record id="action_scs_notification_warehouse_view2" model="ir.actions.act_window.view">
+      <field eval="5" name="sequence"/>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="scs_notification_warehouse_form_view"/>
+      <field name="act_window_id" ref="action_scs_notification_warehouse"/>
+    </record>
+
+    <!--<menuitem id="menu_scs_notification_warehouse" action="action_scs_notification_warehouse" parent="stock.menu_traceability"/>-->
+
+    <!--Process SCS notification in bulk -->
+
+    <record id="process_scs_notification_bulk_form_view" model="ir.ui.view">
+      <field name="name">process.scs.notification.bulk.form</field>
+      <field name="model">process.scs.notification.bulk</field>
+      <field name="arch" type="xml">
+        <form string="Process SCS notifications">
+          <group>
+
+          </group>
+          <footer>
+              <button name="button_process_bulk" string="Process Notifications" type="object" class="oe_highlight"/>
+              <button name="button_archive_bulk" string="Archive" type="object"/>
+              <button name="button_unarchive_bulk" string="Unarchive" type="object"/>
+              or
+              <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <act_window name="Process SCS Notifications"
+            src_model="scs.notification"
+            res_model="process.scs.notification.bulk"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_import_product_images"/>
+
+    <!-- SCS.SOH -->
+
+    <record id="scs_soh_tree_view" model="ir.ui.view">
+      <field name="name">scs.soh.form</field>
+      <field name="model">scs.soh</field>
+      <field name="arch" type="xml">
+        <tree string="SCS SOH">
+          <field name="id"/>
+          <field name="date"/>
+          <field name="user_id"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="scs_soh_form_view" model="ir.ui.view">
+      <field name="name">scs.soh.form</field>
+      <field name="model">scs.soh</field>
+      <field name="arch" type="xml">
+        <form string="SCS SOH">
+          <header>
+            <button name="process" string="Process" type="object" class="oe_highlight"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,done" statusbar_colors='{"done":"green","error":"red"}'/>
+          </header>
+          <group>
+            <group>
+              <field name="date"/>
+              <field name="user_id"/>
+            </group>
+            <group>
+
+            </group>
+          </group>
+          <notebook>
+            <page string="Variances">
+              <field name="variance_ids">
+                <tree>
+                  <field name="sku"/>
+                  <field name="product_id"/>
+                  <field name="description"/>
+                  <field name="soh"/>
+                  <field name="commited"/>
+                  <field name="stock"/>
+                  <field name="variance" invisible="1"/>
+                </tree>
+              </field>
+            </page>
+            <page string="Comparison">
+              <field name="comparison_ids">
+                <tree>
+                  <field name="sku"/>
+                  <field name="product_id"/>
+                  <field name="description"/>
+                  <field name="soh"/>
+                  <field name="commited"/>
+                  <field name="stock"/>
+                </tree>
+              </field>
+            </page>
+            <page string="Params">
+              <field name="params" colspan="4" nolabel="1"/>
+            </page>
+          </notebook>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_soh">
+      <field name="name">SCS SOH</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.soh</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="view_id" ref="scs_soh_tree_view"/>
+    </record>
+
+    <menuitem id="menu_scs_soh" action="action_scs_soh" parent="menu_scs_config" sequence="140"/>
+
+    <!-- SCS SOH Comparison Report -->
+
+    <record id="scs_soh_comparison_tree_view" model="ir.ui.view">
+      <field name="name">scs.soh.comparison.form</field>
+      <field name="model">scs.soh.comparison</field>
+      <field name="arch" type="xml">
+        <tree string="SCS SOH Comparison">
+          <field name="sku"/>
+          <field name="product_id"/>
+          <field name="description"/>
+          <field name="soh"/>
+          <field name="commited"/>
+          <field name="stock"/>
+          <field name="variance"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_scs_soh_comparison_search" model="ir.ui.view">
+      <field name="name">scs.soh.comparison.search</field>
+      <field name="model">scs.soh.comparison</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+        <search string="SCS SOH Comparison">
+          <filter string="Products with Variance" name="variance" domain="[('variance','!=',0)]"/>
+          <separator/>
+          <field name="sku"/>
+          <field name="description"/>
+          <separator/>
+             <!--<filter string="SKU" icon="terp-go-home" domain="[]" context="{'group_by' : 'sku'}" /> -->
+        </search>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_scs_soh_comparison">
+      <field name="name">SCS SOH Comparison</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">scs.soh.comparison</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="scs_soh_comparison_tree_view"/>
+      <field name="context">{'most_recent':True, 'search_default_variance':True}</field>
+    </record>
+
+    <!--<menuitem id="menu_scs_soh_comparison" parent="stock.menu_warehouse_report" action="action_scs_soh_comparison" sequence="40" groups="tradetested.group_stock_dispatch"/>-->
+
+
+</odoo>

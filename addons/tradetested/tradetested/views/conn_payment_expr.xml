@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <data noupdate="1">
+    <record id="seq_dps_transaction" model="ir.sequence">
+      <field name="name">DPS Transaction</field>
+      <field name="code">dps.transaction</field>
+      <field name="prefix">TT</field>
+      <field name="padding">4</field>
+      <field name="company_id" eval="False"/>
+    </record>
+  </data>
+
+  <data>
+
+    <record id="cc_payment_express_transaction_tree" model="ir.ui.view">
+      <field name="name">cc.transaction.tree</field>
+      <field name="model">cc.transaction</field>
+      <field name="arch" type="xml">
+        <tree string="Payment Express Transaction">
+          <field name="cc_id"/>
+          <field name="datesettlement"/>
+          <field name="amount"/>
+          <field name="currency"/>
+          <field name="cardnumber"/>
+          <field name="dpstxnref"/>
+          <field name="txntype"/>
+          <field name="responsetext"/>
+          <field name="order_id"/>
+          <field name="amount_refunded"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="cc_payment_express_transaction_form" model="ir.ui.view">
+      <field name="name">cc.transaction.form</field>
+      <field name="model">cc.transaction</field>
+      <field name="arch" type="xml">
+        <form string="Payment Express Transaction">
+          <group>
+            <group>
+              <field name="cardnumber"/>
+              <field name="amount"/>
+              <field name="currency"/>
+              <field name="txntype"/>
+              <field name="amount_refunded"/>
+            </group>
+            <group>
+              <field name="datesettlement"/>
+              <field name="dpstxnref"/>
+              <field name="responsetext"/>
+              <field name="order_id"/>
+            </group>
+          </group>
+        </form>
+      </field>
+    </record>
+
+    <record id="view_cc_transaction_search" model="ir.ui.view">
+      <field name="name">cc.transaction.search</field>
+      <field name="model">cc.transaction</field>
+      <field name="arch" type="xml">
+        <search string="CC Transaction">
+          <field name="cc_id"/>
+          <field name="currency"/>
+          <field name="order_id"/>
+          <field name="txntype"/>
+          <field name="cardnumber"/>
+          <group expand="1" string="Group By...">
+            <filter string="Company/CC Account" icon="terp-personal" name="grp_cc" context="{'group_by':'cc_id'}"/>
+            <filter string="Currency" icon="terp-personal" name="grp_cur" context="{'group_by':'currency'}"/>
+            <filter string="Date" icon="terp-personal" name="grp_date" context="{'group_by':'datesettlement'}"/>
+            <filter string="Txn Type" icon="terp-personal" name="grp_txntype" context="{'group_by':'txntype'}"/>
+            <filter string="Card Number" icon="terp-personal" name="grp_cardnum" context="{'group_by':'cardnumber'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_payment_express_transaction">
+      <field name="name">Payment Express Transactions</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cc.transaction</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="context">{'search_default_cc_id': active_id}</field>
+    </record>
+
+    <!--Payment Express-->
+
+    <record id="cc_payment_express_tree_view" model="ir.ui.view">
+      <field name="name">cc.payment.express.tree</field>
+      <field name="model">cc.payment.express</field>
+      <field name="arch" type="xml">
+        <tree string="Payment Express">
+          <field name="company_id"/>
+          <field name="username"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="cc_payment_express_form_view" model="ir.ui.view">
+      <field name="name">cc.payment.express.form</field>
+      <field name="model">cc.payment.express</field>
+      <field name="arch" type="xml">
+        <form string="Payment Express">
+          <header>
+
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button name="%(action_payment_express_transaction)d" string="View Transactions" type="action"/>
+            </div>
+            <group>
+              <group>
+                <field name="host" required="1"/>
+                <field name="company_id" required="1"/>
+              </group>
+              <group>
+                <field name="username" required="1" password="0"/>
+                <field name="password" readonly="1" string="Encrypted Password" password="1"/>
+                <field name="password_dummy" required="0" password="1"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_cc_payment_express">
+      <field name="name">Payment Express</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cc.payment.express</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_cc_payment_express" action="action_cc_payment_express" parent="menu_config_api" sequence="120"/>
+
+  </data>
+</odoo>

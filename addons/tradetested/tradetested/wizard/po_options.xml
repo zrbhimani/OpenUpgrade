@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_merge_purchase_orders_form" model="ir.ui.view">
+      <field name="name">merge.purchase.orders.form</field>
+      <field name="model">merge.purchase.orders</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Merge Draft Sales Orders">
+          <field name="not_allowed" invisible="1"/>
+          <h2>
+            <field name="message" nolabel="1" readonly="1"/>
+          </h2>
+          <field name="related_orders" colspan="4" nolabel="1" attrs="{'invisible':[('not_allowed','=',True)]}">
+            <tree fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('wait','confirmed');red:state in ('except_invoice','except_picking')" string="Purchase Order">
+              <field name="message_unread" invisible="1"/>
+              <field name="name" string="Reference"/>
+              <field name="date_order"/>
+              <field name="partner_id"/>
+              <field name="partner_ref"/>
+              <field name="company_id"  widget="selection" groups="base.group_multi_company"/>
+              <!--<field name="minimum_planned_date" />-->
+              <!--invisible="context.get('quotation_only', False)"-->
+              <field name="landing_date"/>
+              <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed"/>
+              <field name="amount_total" sum="Total amount"/>
+              <field name="state"/>
+            </tree>
+          </field>
+          <footer>
+            <button name="merge_purchase_orders" string="Yes! Merge" type="object" class="oe_highlight" attrs="{'invisible':[('not_allowed','=',True)]}"/>
+            <button special="cancel" string="Close" class="oe_highlight" attrs="{'invisible':[('not_allowed','=',False)]}"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_merge_purchase_orders" model="ir.actions.act_window">
+      <field name="name">Merge Draft Purchase orders</field>
+      <field name="res_model">merge.purchase.orders</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="view_id" ref="view_merge_purchase_orders_form"/>
+      <field name="target">new</field>
+    </record>
+
+    <record id="view_eta_update_form" model="ir.ui.view">
+      <field name="name">eta.update.form</field>
+      <field name="model">eta.update</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Send ETA Update">
+          <group>
+            <field name="order_ids" colspan="4" nolabel="1"/>
+          </group>
+          <group>
+            <group>
+              <field name="count_orders"/>
+            </group>
+            <group>
+
+            </group>
+          </group>
+          <footer>
+            <button name="send_eta_update" string="Schedule ETA Update" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Cancel" class="oe_link" default_focus="1"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_send_eta_update" model="ir.actions.act_window">
+      <field name="name">Send ETA Update</field>
+      <field name="res_model">eta.update</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+</odoo>

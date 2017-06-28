@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <record model="sql.export" id="record_xero_export_products_1">
+      <field name="name">Xero Items 1</field>
+      <field name="model_id" ref="model_xero_configuration"/>
+      <field name="sql">
+        SELECT
+        p.default_code as "*ItemCode",
+        t.name as "ItemName",
+
+        '' as "PurchasesDescription",
+        t.standard_price as "PurchasesUnitPrice",
+        '' as "PurchasesAccount",
+        '' as "PurchasesTaxRate",
+
+        '' as "SalesDescription",
+        t.list_price as "SalesUnitPrice",
+        '' as "SalesAccount",
+        '' as "SalesTaxRate",
+
+        '' as "InventoryAssetAccount",
+        '' as "CostOfGoodsSoldAccount"
+        FROM
+        product_product p, product_template t
+        WHERE
+        p.product_tmpl_id = t.id and
+        p.default_code is not null and
+        purchase_ok = True
+        ORDER BY
+        t.id, p.id limit 900
+      </field>
+    </record>
+
+    <record model="sql.export" id="record_xero_export_products_2">
+      <field name="name">Xero Items 2</field>
+      <field name="model_id" ref="model_xero_configuration"/>
+      <field name="sql">
+        SELECT
+        p.default_code as "*ItemCode",
+        t.name as "ItemName",
+
+        '' as "PurchasesDescription",
+        t.standard_price as "PurchasesUnitPrice",
+        '' as "PurchasesAccount",
+        '' as "PurchasesTaxRate",
+
+        '' as "SalesDescription",
+        t.list_price as "SalesUnitPrice",
+        '' as "SalesAccount",
+        '' as "SalesTaxRate",
+
+        '' as "InventoryAssetAccount",
+        '' as "CostOfGoodsSoldAccount"
+        FROM
+        product_product p, product_template t
+        WHERE
+        p.product_tmpl_id = t.id and
+        p.default_code is not null and
+        purchase_ok = True
+        ORDER BY
+        t.id, p.id limit 900 offset 900
+      </field>
+    </record>
+
+    <record model="sql.export" id="record_xero_export_products_3">
+      <field name="name">Xero Items 3</field>
+      <field name="model_id" ref="model_xero_configuration"/>
+      <field name="sql">
+        SELECT
+        p.default_code as "*ItemCode",
+        t.name as "ItemName",
+
+        '' as "PurchasesDescription",
+        t.standard_price as "PurchasesUnitPrice",
+        '' as "PurchasesAccount",
+        '' as "PurchasesTaxRate",
+
+        '' as "SalesDescription",
+        t.list_price as "SalesUnitPrice",
+        '' as "SalesAccount",
+        '' as "SalesTaxRate",
+
+        '' as "InventoryAssetAccount",
+        '' as "CostOfGoodsSoldAccount"
+        FROM
+        product_product p, product_template t
+        WHERE
+        p.product_tmpl_id = t.id and
+        p.default_code is not null and
+        purchase_ok = True
+        ORDER BY
+        t.id, p.id limit 900 offset 1800
+      </field>
+    </record>
+  </data>
+
+  <data>
+    <record model="ir.ui.view" id="xero_form_view">
+      <field name="name">Xero Configuration</field>
+      <field name="model">xero.configuration</field>
+      <field name="arch" type="xml">
+        <form string="Xero Configuration">
+          <header>
+            <div>
+              <button name="authenticate" string="Test Connection" type="object" states="draft"/>
+              <button name="reset" string="Reset" type="object" states="connected"/>
+              <button name="export_products" string="Export Products" type="object" states="connected"/>
+              <button name="export_purchase_orders" string="Export Purchase Orders" type="object" states="connected"/>
+              <field name="state" widget="statusbar" nolabel="1"/>
+            </div>
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="consumer_key" required="1" password="True"/>
+                <field name="consumer_secret" required="1" password="True"/>
+                <field name="company_id" required="1"/>
+              </group>
+            </group>
+            <div attrs="{'invisible':[('state','=','connected')]}">
+              <label for="rsa_key"/>
+              <field name="rsa_key"/>
+            </div>
+            <div attrs="{'invisible':[('state','=','connected')]}">
+              <p>Please Go to <a target="_blank" href="https://app.xero.com/Application">app.xero.com/Application</a> to register Private Application and Generate Consumer Key and Secret, different types of Xero application are explained <a
+                      target="_blank" href="http://developer.xero.com/setup-an-application">here</a>, Private Applications explained
+                <a target="_blank" href="http://developer.xero.com/documentation/getting-started/private-applications/">here</a>
+              </p>
+
+              <p>to Generate X509 certificate, follow
+                <a target="_blank" href="http://developer.xero.com/documentation/advanced-docs/public-private-keypair/">this link</a>
+              </p>
+
+            </div>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_xero_tree">
+      <field name="name">xero.configuration.tree</field>
+      <field name="model">xero.configuration</field>
+      <field name="arch" type="xml">
+        <tree string="Xero Configuration">
+          <field name="name"/>
+          <field name="company_id"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_xero_configuration">
+      <field name="name">Xero</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">xero.configuration</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="view_xero_tree"/>
+    </record>
+
+    <menuitem action="action_xero_configuration" parent="menu_config_api" id="menu_xero_configuration" sequence="1"/>
+
+  </data>
+</odoo>

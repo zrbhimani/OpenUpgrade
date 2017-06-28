@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<odoo>
+
+  <!--BOM Sets Replenishment-->
+
+  <record id="view_bom_sets_replenishment_tree" model="ir.ui.view">
+    <field name="name">bom.sets.replenishment</field>
+    <field name="model">bom.sets.replenishment</field>
+    <field name="arch" type="xml">
+      <tree string="BoM Sets Replenishment" create="false" edit="false" delete="false">
+        <field name="default_code" string="SKU"/>
+        <!--<field name="name" />-->
+        <field name="qty_available"/>
+        <field name="virtual_available"/>
+        <field name="qty_required"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_bom_sets_replenishment_form" model="ir.ui.view">
+    <field name="name">bom.sets.replenishment</field>
+    <field name="model">bom.sets.replenishment</field>
+    <field name="arch" type="xml">
+      <form string="BoM Sets Replenishment" create="false" edit="false" delete="false">
+        <group>
+          <group>
+            <field name="default_code" string="SKU"/>
+            <!--<field name="name" />-->
+            <field name="product_id"/>
+          </group>
+          <group>
+            <field name="qty_available"/>
+            <field name="virtual_available"/>
+            <field name="qty_required"/>
+          </group>
+        </group>
+        <separator string="Bill of Materials"/>
+        <field name="bom_ids" colspan="4" nolabel="1"/>
+        <separator string="BoM Products"/>
+        <field name="product_ids" colspan="4" nolabel="1"/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_bom_sets_replenishment_search" model="ir.ui.view">
+    <field name="name">Search</field>
+    <field name="model">bom.sets.replenishment</field>
+    <field name="arch" type="xml">
+      <search string="Product">
+        <field name="default_code" string="Product" filter_domain="['|',('default_code','ilike',self)]"/>
+        <!--,('name','ilike',self)-->
+
+        <field name="product_id"/>
+        <newline/>
+        <group expand="0" string="Group By...">
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_bom_sets_replenishment">
+    <field name="name">BoM Sets Replenishment</field>
+    <field name="res_model">bom.sets.replenishment</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="menu_bom_sets_replenishment" parent="purchase.purchase_report" action="action_bom_sets_replenishment" sequence="20" groups="purchase.group_purchase_user"/>
+
+  <!--Buying Forecast-->
+
+  <record id="product_buying_forecast_tree_view" model="ir.ui.view">
+    <field name="name">product.product.buying.forecast.tree</field>
+    <field name="model">product.product</field>
+    <field eval="32" name="priority"/>
+    <field name="arch" type="xml">
+      <tree string="Buying Forecast" colors="blue:afv_purchase_qty&gt;0">
+        <field name="default_code" string="SKU"/>
+        <field name="name"/>
+        <field name="company_id"/>
+
+        <field name="afv_purchase_qty" sum="t_qty" string="Purchase Quantity (AFV)"/>
+        <field name="afv_purchase_cost" sum="t_cost" string="Purchase Cost (AFV)"/>
+
+        <field name="categ_id" invisible="1"/>
+        <field name="seller_id" invisible="1"/>
+
+        <field name="po_expected_date" invisible="1"/>
+        <field name="po_expected_qty" invisible="1"/>
+
+      </tree>
+    </field>
+  </record>
+
+  <record id="product_buying_forecast_search_view" model="ir.ui.view">
+    <field name="name">Search</field>
+    <field name="model">product.product</field>
+    <field eval="32" name="priority"/>
+    <field name="arch" type="xml">
+      <search string="Search Partner">
+        <filter string="Can be Purchased" name="purchase_ok" domain="[('purchase_ok','=',True)]"/>
+        <separator/>
+        <filter string="Sellable" name="sellable" domain="[('state','=','sellable')]"/>
+
+        <separator/>
+        <filter string="Active" name="active" domain="[('active','=',True)]"/>
+        <filter string="Inactive" name="active" domain="[('active','=',False)]"/>
+        <separator/>
+        <filter string="New Zealand" name="new_zealand" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter string="Australia" name="australia" domain="[('company_id.name','=','Australia')]"/>
+
+        <field name="po_expected_date"/>
+        <field name="po_expected_qty"/>
+        <newline/>
+        <group expand="0" string="Group By...">
+          <filter name="g_company" string="Company" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter name="g_supplier" string="Supplier" domain="[]" context="{'group_by':'seller_id'}"/>
+          <filter name="g_proudct" string="Product" domain="[]" context="{'group_by':'id'}"/>
+          <filter string="Category" domain="[]" context="{'group_by':'categ_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_product_buying_forecast" model="ir.actions.act_window">
+    <field name="name">Buying Forecast</field>
+    <field name="res_model">product.product</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="product_buying_forecast_tree_view"/>
+    <field name="context">{'search_default_g_company':1, 'search_default_g_supplier':1, 'search_default_g_product':1, 'search_default_purchase_ok':1, 'search_default_sellable':1, 'default_order':'afv_purchase_cost desc'}</field>
+    <field name="search_view_id" ref="product_buying_forecast_search_view"/>
+  </record>
+
+  <!--Distressed Stock-->
+
+  <record id="product_distressed_stock_tree_view" model="ir.ui.view">
+    <field name="name">product.product.distressed.stock.tree</field>
+    <field name="model">product.product</field>
+    <field eval="32" name="priority"/>
+    <field name="arch" type="xml">
+      <tree string="Distressed Stock">
+        <field name="default_code" string="SKU"/>
+        <field name="name"/>
+        <!--<field name="supply_method" />-->
+        <field name="company_id"/>
+        <field name="dist_weeks"/>
+        <field name="dist_qty"/>
+        <field name="dist_cost" groups="purchase.group_purchase_user"/>
+        <field name="categ_id" invisible="1"/>
+        <field name="seller_id" invisible="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="product_distressed_stock_search_view" model="ir.ui.view">
+    <field name="name">Search</field>
+    <field name="model">product.product</field>
+    <field eval="32" name="priority"/>
+    <field name="arch" type="xml">
+      <search string="Search Partner">
+        <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok','=',True)]"/>
+        <filter string="New Zealand" name="new_zealand" domain="[('company_id.name','=','New Zealand')]"/>
+        <filter string="Australia" name="australia" domain="[('company_id.name','=','Australia')]"/>
+        <newline/>
+        <group expand="0" string="Group By...">
+          <filter string="Category" domain="[]" context="{'group_by':'categ_id'}"/>
+          <filter string="Company" domain="[]" context="{'group_by':'company_id'}"/>
+          <filter string="Seller" domain="[]" context="{'group_by':'seller_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record model="ir.actions.act_window" id="action_product_distressed_stock">
+    <field name="name">Distressed Stock</field>
+    <field name="res_model">product.product</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree</field>
+    <field name="view_id" ref="product_distressed_stock_tree_view"/>
+    <field name="search_view_id" ref="product_distressed_stock_search_view"/>
+  </record>
+
+
+  <!-- Export Buying Forecast -->
+
+  <record id="view_purhcase_calc_export" model="ir.ui.view">
+    <field name="name">purchase.calc.export.form</field>
+    <field name="model">purchase.calc.export</field>
+    <field name="arch" type="xml">
+      <form string="Calc Export">
+        <group>
+          <field name="export_xlsx" filename="export_fname" readonly="1"/>
+          <field name="export_fname" invisible="1"/>
+        </group>
+        <footer>
+          <button name="update_and_print_excel" type="object" string="Update Forecast and Download" class="oe_highlight" attrs="{'invisible':[('export_xlsx','!=',False)]}"/>
+          <button name="print_excel" type="object" string="Download xlsx" class="oe_highlight" attrs="{'invisible':[('export_xlsx','!=',False)]}"/>
+          or
+          <button special="cancel" string="Cancel" class="oe_link"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <act_window
+          id="act_view_purchase_calc_export"
+          name="Export Buying Forecast"
+          key2="client_action_multi"
+          view_mode="form"
+          target="new"
+          res_model="purchase.calc.export"
+          src_model="product.product"/>
+
+
+</odoo>

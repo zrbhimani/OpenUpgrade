@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record id="purchase_order_form" model="ir.ui.view">
+      <field name="name">purchase.order.form</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <button name="button_cancel" position="after">
+          <field name="related_exists" invisible="1"/>
+          <button name="%(action_merge_purchase_orders)d" string="Merge" type="action" class="oe_highlight" attrs="{'invisible':['|',('state','!=','draft'),('related_exists','!=',True)]}"/>
+          <button name="%(action_send_eta_update)d" string="Send ETA Update" type="action" class="oe_highlight" states="confirmed,approved"/>
+        </button>
+        <field name="message_ids" position="after">
+          <div style="padding-right:160px; text-align:center">
+            <button name="%(action_open_message)d" string="Edit Notes" type="action" class="oe_link"/>
+          </div>
+        </field>
+        <field name="order_line" position="before">
+          <field name="is_order_line_readonly" invisible="1"/>
+        </field>
+        <field name="order_line" position="after">
+          <group attrs="{'invisible':[('state','not in',['draft','sent'])]}">
+            <label for="held"/>
+            <div>
+              <field name="held" style="width:20px"/>
+              <field name="held_reason" style="width:120px" attrs="{'invisible':[('held','!=',True)]}"/>
+              <field name="held_date" style="width:70px" attrs="{'invisible':[('held','!=',True)]}"/>
+            </div>
+          </group>
+        </field>
+        <field name="order_line" position="attributes">
+          <attribute name="attrs">{'readonly':[('is_order_line_readonly','=',True)]}</attribute>
+        </field>
+        <field name="dest_address_id" position="after">
+          <field name="landing_date"/>
+        </field>
+        <field name="company_id" position="attributes">
+          <attribute name="domain">[('name','!=','Group')]</attribute>
+        </field>
+        <field name="company_id" position="after">
+          <field name="sale_id" readonly="1"/>
+        </field>
+        <xpath expr="//field[@name='order_line']/tree/field[@name='qty_invoiced']" position="replace"/>
+        <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
+          <field name="sequence" widget="handle"/>
+        </xpath>
+        <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+          <attribute name="context">{'po_company_id':parent.company_id, 'po_supplier_id': parent.partner_id}</attribute>
+          <attribute name="options">{'no_create':True,'create':False,'create_edit':False}</attribute>
+        </xpath>
+        <field name="partner_ref" position="after">
+          <field name="container_number"/>
+          <field name="case_exists" invisible="1"/>
+          <div attrs="{'invisible':[('case_exists','=',False)]}" colspan="2" style="margin-top:15px">
+            <span style="color:red">
+              <label string="Warning: There are outstanding cases related to this supplier"/>
+            </span>
+          </div>
+        </field>
+        <notebook position="inside">
+          <page string="Payments">
+            <button name="add_payment" type="object" string="Add an item" class="oe_link"/>
+            <field name="payment_ids" context="{'purchase_order_id':active_id, 'inline':1}">
+              <tree create="false">
+                <field name="type"/>
+                <field name="date"/>
+                <field name="method"/>
+                <field name="amount"/>
+                <field name="comment"/>
+              </tree>
+            </field>
+            <group class="oe_subtotal_footer oe_right" colspan="2" name="payments_field_total">
+              <field name="payments_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+              <field name="refunds_total" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+              <div class="oe_subtotal_footer_separator oe_inline">
+                <label for="payments_total_less_refunds"/>
+                <button name="button_dummy" states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+              </div>
+              <field name="payments_total_less_refunds" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </group>
+            <div class="oe_clear"/>
+          </page>
+          <page string="Activity Log">
+            <field name="log_ids" readonly="1">
+              <tree>
+                <field name="user_id"/>
+                <field name="date"/>
+                <field name="activity"/>
+                <field name="value_before"/>
+                <field name="value_after"/>
+              </tree>
+              <form>
+                <field name="user_id"/>
+                <field name="value_before"/>
+                <field name="date"/>
+                <field name="value_after"/>
+                <field name="activity"/>
+              </form>
+            </field>
+          </page>
+        </notebook>
+        <field name="amount_total" position="after">
+          <field name="balance_remaining" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}" string="Balance"/>
+        </field>
+        <field name="partner_ref" position="before">
+          <field name="supplier_terms"/>
+        </field>
+        <field name="incoterm_id" position="after">
+          <field name="group_id"/>
+        </field>
+        <field name="message_follower_ids" position="before">
+          <field name="obj_watcher_ids" widget="obj_watchers" groups="base.group_user"/>
+        </field>
+        <field name="is_shipped" position="replace"/>
+        <field name="group_id" position="after">
+          <field name="is_shipped"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="view_purchase_order_tree" model="ir.ui.view">
+      <field name="name">purchase.order.tree.tradetested</field>
+      <field name="model">purchase.order</field>
+      <field name="priority" eval="1"/>
+      <field name="arch" type="xml">
+        <tree decoration-bf="message_unread==True" decoration-muted="state=='cancel'" decoration-info="state in ('wait','confirmed')" string="Purchase Order">
+          <field name="message_unread" invisible="1"/>
+          <field name="name" string="Reference"/>
+          <field name="date_order"/>
+          <field name="partner_id"/>
+          <field name="partner_ref"/>
+          <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+          <field name="landing_date"/>
+          <field name="date_planned"/>
+          <field name="amount_total" sum="Total amount" widget="monetary"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="purchase_order_search_inherit">
+      <field name="name">purchase.order.list.select.inherit</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+      <field name="arch" type="xml">
+        <field name="name" position="replace">
+          <field name="name" string="Reference" filter_domain="['|',('name','ilike',self),('partner_ref','ilike',self)]"/>
+          <field name="container_number"/>
+        </field>
+        <filter name="not_invoiced" position="after">
+          <filter name="not_received" string="Not Received" domain="[('order_line.is_shipped','=',False)]"/>
+          <filter name="not_held" string="Not Held" domain="['|',('held','=', False),('held_date','&lt;',current_date)]"/>
+        </filter>
+      </field>
+    </record>
+
+    <!--<menuitem action="procurement.action_orderpoint_form" id="menu_stock_order_points" parent="purchase.menu_purchase_config" sequence="10"/>-->
+
+    <record id="purchase_order_payment_form" model="ir.ui.view">
+      <field name="name">purchase.order.payment.form</field>
+      <field name="model">purchase.order.payment</field>
+      <field name="arch" type="xml">
+        <form string="Payment">
+          <group>
+            <group>
+              <field name="type"/>
+              <field name="method" required="1"/>
+              <field name="amount"/>
+              <field name="comment"/>
+            </group>
+            <group>
+              <field name="date"/>
+              <field name="user_id" readonly="1"/>
+              <separator string="" colspan="2"/>
+            </group>
+            <field name="purchase_order_id" invisible="1"/>
+          </group>
+          <footer invisible="context.get('inline')">
+            <button name="save" string="Save" type="object" class="oe_highlight"/>
+            or
+            <button special="cancel" string="Discard" class="oe_link"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="purchase.purchase_rfq" model="ir.actions.act_window">
+      <field name="context">{'search_default_not_held': 1}</field>
+    </record>
+
+    <!--Reports Menus-->
+    <menuitem id="purchase.purchase_report" name="Reports" parent="purchase.menu_purchase_root" sequence="99" action="" groups="purchase.group_purchase_manager"/>
+
+    <record model="ir.ui.menu" id="purchase.purchase_report">
+      <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+
+    <menuitem id="report_purchase_analysis" name="Purchase Analysis" parent="purchase.purchase_report" sequence="10" groups="purchase.group_purchase_manager" action="purchase.action_purchase_order_report_all"/>
+
+    <!--Action to open POs from Product-->
+    <record model="ir.actions.act_window" id="action_purchase_line_product_tree">
+      <field name="context">{}</field>
+      <field name="domain">[('product_id','in',active_ids)]</field>
+      <field name="name">Purchases</field>
+      <field name="res_model">purchase.order.line</field>
+      <field name="view_id" ref="purchase.purchase_order_line_tree"/>
+    </record>
+
+    <!--Incoming Products-->
+
+    <menuitem id="menu_purchase_incoming_products" name="Incoming Products" parent="purchase.menu_purchase_root" sequence="3"/>
+
+    <menuitem action="stock.action_receipt_picking_move" id="purchase.menu_action_picking_tree_in_move" parent="menu_purchase_incoming_products" sequence="11"/>
+
+    <!--Incoming Shipments-->
+    <record id="action_stock_picking_incoming_shipments" model="ir.actions.act_window">
+      <field name="name">Incoming Shipments</field>
+      <field name="res_model">stock.picking</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form,calendar</field>
+      <field name="domain">[('picking_type_id.code','=','incoming')]</field>
+    </record>
+
+    <menuitem action="action_stock_picking_incoming_shipments" id="menu_purchase_incoming_shipments" parent="menu_purchase_incoming_products" sequence="12"/>
+
+
+    <!--Purchase order lines-->
+
+    <record id="purchase_order_line_tree" model="ir.ui.view">
+      <field name="name">purchase.order.line.tree</field>
+      <field name="model">purchase.order.line</field>
+      <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+      <field name="arch" type="xml">
+        <field name="order_id" position="before">
+          <button name="open_po" string="Open" type="object" icon="fa-list"/>
+        </field>
+      </field>
+    </record>
+
+    <!--Products-->
+
+    <record id="purchase.product_normal_action_puchased" model="ir.actions.act_window">
+      <field name="res_model">product.product</field>
+    </record>
+
+    <!--Container Bookings-->
+
+    <record model="ir.ui.view" id="purchase_order_calendar_view">
+      <field name="name">Purchase Order Calendar</field>
+      <field name="model">purchase.order</field>
+      <field name="arch" type="xml">
+        <calendar string="Container Bookings" date_start="landing_date" color="partner_id" mode="month">
+          <field name="name"/>
+          <field name="container_number"/>
+        </calendar>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_container_booking_calender" >
+      <field name="name">Container Bookings</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">purchase.order</field>
+      <field name="view_mode">calendar,tree,form</field>
+      <field name="domain">[['state', '!=', 'cancel']]</field>
+      <field name="context">{'search_default_not_held': 1, 'edit':False}</field>
+      <field name="view_id" ref="purchase_order_calendar_view"/>
+    </record>
+
+    <menuitem action="action_container_booking_calender" id="menu_purchase_container_booking" parent="purchase.menu_procurement_management" sequence="10"/>
+
+  </data>
+</odoo>
